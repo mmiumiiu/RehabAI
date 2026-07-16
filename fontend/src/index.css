@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-bg text-ink-primary font-body;
+    margin: 0;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  .input-wrap {
+    @apply flex items-center gap-2 border border-line rounded-btn px-3 py-[11px] bg-[#FCFBF9] focus-within:border-teal-700 transition-colors;
+  }
+  .input-wrap input,
+  .input-wrap select {
+    @apply border-0 outline-none bg-transparent text-sm text-ink-primary w-full font-body;
+  }
+  .field-label {
+    @apply block text-[12.5px] font-semibold text-ink-secondary mb-1.5;
+  }
+  .btn-primary {
+    @apply w-full py-3 rounded-btn bg-teal-700 text-white font-heading text-[14.5px] font-medium hover:bg-teal-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .card {
+    @apply bg-surface border border-line rounded-card;
+  }
+  .toggle-track {
+    @apply relative w-11 h-6 rounded-full flex-shrink-0 cursor-pointer transition-colors;
+  }
+  .field-error {
+    @apply text-[12px] text-danger mt-1;
+  }
+}
+
+/* thin scrollbar for chat / lists */
+.thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: #E6E0D4; border-radius: 8px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* blinking rec dot */
+@keyframes recpulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.rec-pulse { animation: recpulse 1.1s ease-in-out infinite; }

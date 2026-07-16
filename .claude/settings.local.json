@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Read(//Users/mimiu/**)",
+      "Read(//opt/homebrew/opt/**)",
+      "Bash(command -v fnm volta asdf)",
+      "Bash(/opt/homebrew/bin/brew list *)",
+      "Bash(echo \"exit: brew list node = $?\")",
+      "Bash(/opt/homebrew/bin/brew --prefix node)",
+      "Bash(/opt/homebrew/bin/brew install *)",
+      "Bash(awk '{print $3}')",
+      "Bash(npm run *)",
+      "Bash(/usr/bin/python3 test.py)",
+      "Bash(curl -fL -o pose_landmarker_full.task https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task)",
+      "Bash(npx vite *)",
+      "Read(//tmp/**)"
+    ]
+  }
+}
