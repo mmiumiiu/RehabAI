@@ -22,29 +22,31 @@ export default function Dashboard() {
       </div>
 
       <SectionTitle>ประวัติล่าสุด</SectionTitle>
-      <table className="w-full border-collapse card overflow-hidden">
-        <thead>
-          <tr className="bg-[#F5F2EA]">
-            {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา', 'คะแนน'].map((h) => (
-              <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {HISTORY.map((r, i) => (
-            <tr key={i} className="border-t border-line">
-              <td className="px-5 py-3 text-[13.5px]">{r.date}</td>
-              <td className="px-5 py-3">
-                <Badge tone={r.type}>{r.type === 'big' ? 'LSVT BIG' : 'LSVT LOUD'}</Badge>
-              </td>
-              <td className="px-5 py-3 text-[13.5px]">{r.duration}</td>
-              <td className="px-5 py-3 text-[13.5px] font-semibold font-mono">{r.score}</td>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse card overflow-hidden min-w-[480px]">
+          <thead>
+            <tr className="bg-[#F5F2EA]">
+              {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา', 'คะแนน'].map((h) => (
+                <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {HISTORY.map((r, i) => (
+              <tr key={i} className="border-t border-line">
+                <td className="px-5 py-3 text-[13.5px]">{r.date}</td>
+                <td className="px-5 py-3">
+                  <Badge tone={r.type}>{r.type === 'big' ? 'LSVT BIG' : 'LSVT LOUD'}</Badge>
+                </td>
+                <td className="px-5 py-3 text-[13.5px]">{r.duration}</td>
+                <td className="px-5 py-3 text-[13.5px] font-semibold font-mono">{r.score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

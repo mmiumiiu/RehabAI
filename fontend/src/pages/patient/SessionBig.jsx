@@ -58,7 +58,7 @@ export default function SessionBig() {
   const complete = reps >= ex.target
 
   return (
-    <div className="min-h-screen bg-bg p-6">
+    <div className="min-h-screen bg-bg p-3 md:p-6">
       <div className="max-w-[1100px] mx-auto grid lg:grid-cols-[1.6fr_1fr] gap-5">
         {/* Cam panel */}
         <div className="relative rounded-2xl overflow-hidden bg-cam aspect-[16/10] flex items-center justify-center">

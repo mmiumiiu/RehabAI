@@ -40,8 +40,16 @@ export function useCamera(enabled = true) {
   return { videoRef, status }
 }
 
-// Requests microphone and exposes a live loudness reading in dB (approx SPL-ish,
-// uncalibrated — real calibration is in the spec backlog §7).
+// Requests microphone and exposes a calibrated loudness reading.
+//
+// Calibration process (status = 'calibrating', ~1 second):
+//   Measures the noise floor (ambient silence) for CALIBRATION_FRAMES frames.
+//   Subtracts that power from every subsequent reading so the meter starts at 0
+//   when the room is quiet and rises with actual vocal output.
+//
+// Output `db` is dB above the measured noise floor, mapped to a 40–90 display
+// scale where 40 = silence and 90 = ~35 dB above noise floor (loud voice).
+// status: 'idle' | 'requesting' | 'calibrating' | 'live' | 'denied' | 'error'
 export function useMicLevel(enabled = true) {
   const [db, setDb] = useState(0)
   const [status, setStatus] = useState('idle')
@@ -50,6 +58,13 @@ export function useMicLevel(enabled = true) {
   useEffect(() => {
     if (!enabled) return
     let ctx, analyser, source, stream, cancelled = false
+    let calibrationSamples = []
+    let noiseFloorPower = null
+    const CALIBRATION_FRAMES = 60  // ~1 s at 60 fps
+    const DISPLAY_MIN = 40
+    const DISPLAY_MAX = 90
+    const SIGNAL_RANGE_DB = 35     // dB above noise floor that maps to display max
+
     setStatus('requesting')
     navigator.mediaDevices
       ?.getUserMedia({ audio: true })
@@ -58,23 +73,39 @@ export function useMicLevel(enabled = true) {
         stream = s
         ctx = new (window.AudioContext || window.webkitAudioContext)()
         analyser = ctx.createAnalyser()
-        analyser.fftSize = 1024
+        analyser.fftSize = 2048
         source = ctx.createMediaStreamSource(stream)
         source.connect(analyser)
-        const data = new Uint8Array(analyser.fftSize)
-        setStatus('live')
+        // Float32Array avoids the 8-bit precision loss of getByteTimeDomainData
+        const data = new Float32Array(analyser.fftSize)
+        setStatus('calibrating')
+
         const loop = () => {
-          analyser.getByteTimeDomainData(data)
+          analyser.getFloatTimeDomainData(data)  // samples in -1…+1
+
           let sum = 0
-          for (let i = 0; i < data.length; i++) {
-            const v = (data[i] - 128) / 128
-            sum += v * v
+          for (let i = 0; i < data.length; i++) sum += data[i] * data[i]
+          const power = sum / data.length  // mean square = RMS²
+
+          if (noiseFloorPower === null) {
+            // ── Calibration phase ───────────────────────────────────────────
+            calibrationSamples.push(power)
+            if (calibrationSamples.length >= CALIBRATION_FRAMES) {
+              noiseFloorPower = calibrationSamples.reduce((a, b) => a + b, 0) / calibrationSamples.length
+              setStatus('live')
+            }
+          } else {
+            // ── Live phase ──────────────────────────────────────────────────
+            // Subtract noise floor power; clamp to 0 so silence stays at min
+            const netPower = Math.max(0, power - noiseFloorPower)
+            const noiseRms = Math.sqrt(noiseFloorPower + 1e-12)
+            const netRms = Math.sqrt(netPower)
+            // dB above noise floor (0 = as loud as noise, positive = louder)
+            const dbAboveNoise = netRms > 1e-9 ? 20 * Math.log10(netRms / noiseRms) : -80
+            const mapped = DISPLAY_MIN + Math.max(0, Math.min(dbAboveNoise, SIGNAL_RANGE_DB)) / SIGNAL_RANGE_DB * (DISPLAY_MAX - DISPLAY_MIN)
+            setDb(Math.round(mapped))
           }
-          const rms = Math.sqrt(sum / data.length)
-          // map RMS → a friendly 40–90 dB-ish scale for the meter
-          const level = rms > 0 ? 20 * Math.log10(rms) : -60
-          const mapped = Math.max(40, Math.min(90, 90 + level * 0.9))
-          setDb(Math.round(mapped))
+
           raf.current = requestAnimationFrame(loop)
         }
         loop()

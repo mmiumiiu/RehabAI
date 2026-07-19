@@ -76,6 +76,18 @@ export const sms = {
   },
 }
 
+// LSVT LOUD per-patient targets set by the therapist in LoudTargetSettings.
+// Stands in for a Firestore doc on the patient's record.
+const LOUD_KEY = 'rehabai_loud_settings'
+export const loudSettings = {
+  get() {
+    try { return JSON.parse(localStorage.getItem(LOUD_KEY) || 'null') } catch { return null }
+  },
+  save({ min, goal, max, reps }) {
+    localStorage.setItem(LOUD_KEY, JSON.stringify({ min, goal, max, reps }))
+  },
+}
+
 // Therapist link (spec §3.3 / §6.1). Patients tap-select a verified therapist
 // and are auto-linked immediately — there is no connection code and no pending
 // approval state anymore. Stands in for users/{uid}/therapistLinks/{therapistId}.

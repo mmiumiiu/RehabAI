@@ -14,14 +14,14 @@ export default function Patients() {
 
   return (
     <div>
-      <header className="flex justify-between items-center px-8 py-5 border-b border-line bg-surface">
+      <header className="flex justify-between items-center px-4 md:px-8 py-4 md:py-5 border-b border-line bg-surface">
         <div>
           <h1 className="font-heading text-[20px] font-semibold text-teal-900">ผู้ป่วยของฉัน</h1>
           <p className="text-[12.5px] text-ink-secondary">ติดตามความคืบหน้าของผู้ป่วยที่เชื่อมต่อแล้ว</p>
         </div>
       </header>
 
-      <div className="px-8 py-7 max-w-[900px] mx-auto">
+      <div className="px-4 md:px-8 py-5 md:py-7 max-w-[900px] mx-auto">
         {/* patients auto-appear when they select this therapist (spec §4.3) */}
         <div className="flex items-start gap-2.5 rounded-btn p-4 mb-6 max-w-[520px] mx-auto" style={{ background: '#E6F0E1' }}>
           <span className="flex-shrink-0 mt-0.5" style={{ color: '#3B6D11' }}><Check size={16} /></span>

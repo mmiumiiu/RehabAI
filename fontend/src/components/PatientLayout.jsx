@@ -3,11 +3,9 @@ import { Logo, Avatar } from './ui.jsx'
 import { Home, Activity, Chart, User, Bell, Chat } from './icons.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
-// Patient app shell: sidebar + topbar. Spec §3.4 keeps 4 primary items; chat is
-// also surfaced here as a shortcut (it remains a link-row in Profile too).
 const NAV = [
   { to: '/home', label: 'หน้าแรก', icon: Home },
-  { to: '/training/big', label: 'ฝึกกายภาพบำบัด', icon: Activity, match: '/training' },
+  { to: '/training/big', label: 'ฝึกกายภาพ', icon: Activity, match: '/training' },
   { to: '/dashboard', label: 'สรุปผล', icon: Chart },
   { to: '/chat', label: 'แชท', icon: Chat },
   { to: '/profile', label: 'โปรไฟล์', icon: User, match: '/profile' },
@@ -28,7 +26,8 @@ export default function PatientLayout() {
 
   return (
     <div className="min-h-screen flex">
-      <aside className="w-[220px] flex-shrink-0 flex flex-col p-4 text-white" style={{ background: '#1F4A40' }}>
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex w-[220px] flex-shrink-0 flex-col p-4 text-white" style={{ background: '#1F4A40' }}>
         <div className="mb-8 px-2 pt-2">
           <Logo light size={34} />
         </div>
@@ -59,12 +58,12 @@ export default function PatientLayout() {
       </aside>
 
       <div className="flex-1 min-w-0 bg-bg flex flex-col">
-        <header className="flex justify-between items-center px-8 py-4 border-b border-line bg-surface">
+        <header className="flex justify-between items-center px-4 md:px-8 py-4 border-b border-line bg-surface">
           <div>
             <p className="text-[12px] text-ink-secondary m-0">{greeting()}</p>
-            <p className="font-heading text-[17px] font-semibold text-teal-900 m-0">{name}</p>
+            <p className="font-heading text-[16px] md:text-[17px] font-semibold text-teal-900 m-0 truncate max-w-[180px] md:max-w-none">{name}</p>
           </div>
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3">
             <button className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-900" title="การแจ้งเตือน">
               <Bell size={18} />
             </button>
@@ -73,12 +72,32 @@ export default function PatientLayout() {
             </button>
           </div>
         </header>
-        <main className="flex-1 overflow-auto">
-          <div className="max-w-[960px] mx-auto w-full px-8 py-7">
+
+        <main className="flex-1 overflow-auto pb-16 md:pb-0">
+          <div className="max-w-[960px] mx-auto w-full px-4 md:px-8 py-5 md:py-7">
             <Outlet />
           </div>
         </main>
       </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-white/10" style={{ background: '#1F4A40' }}>
+        {NAV.map(({ to, label, icon: Icon, match }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) => {
+              const active = isActive || (match && location.pathname.startsWith(match))
+              return `flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] transition-colors ${
+                active ? 'text-white' : 'text-white/50'
+              }`
+            }}
+          >
+            <Icon size={20} />
+            {label}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   )
 }

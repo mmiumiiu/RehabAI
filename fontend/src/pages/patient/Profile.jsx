@@ -46,7 +46,7 @@ export default function Profile() {
       </Card>
 
       <Block title="ข้อมูลส่วนตัว">
-        <div className="grid grid-cols-2 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <Field label="ชื่อ-นามสกุล">
             <Input icon={User} value={profile.name} onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))} />
           </Field>
@@ -70,7 +70,7 @@ export default function Profile() {
       <Block title="เปลี่ยนรหัสผ่าน">
         <div className="grid grid-cols-1 gap-0">
           <Field label="รหัสผ่านปัจจุบัน"><Input type="password" placeholder="••••••••" /></Field>
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <Field label="รหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
             <Field label="ยืนยันรหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
           </div>

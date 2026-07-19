@@ -2,30 +2,37 @@ import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Avatar } from '../../components/ui.jsx'
 import { ArrowLeft, Send, AlertTriangle } from '../../components/icons.jsx'
-import { CHAT_SEED } from '../../lib/mockData.js'
 import { therapistLink } from '../../lib/services.js'
+import { chatService } from '../../lib/chatService.js'
 
-// Falls back to a demo therapist if the user hasn't linked one yet.
 const DEFAULT_THERAPIST = { name: 'ก.พ. ธนกร รักษาดี' }
 const initialsOf = (name) => name.replace(/^กภ\.?|^ก\.พ\.?/, '').trim().slice(0, 2)
 
+// Demo: patient is always mapped to thread "p1"
+const THREAD_ID = 'p1'
+
 export default function Chat() {
-  const [messages, setMessages] = useState(CHAT_SEED)
+  const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
   const endRef = useRef(null)
   const therapist = therapistLink.get() || DEFAULT_THERAPIST
+
+  useEffect(() => {
+    chatService.join(THREAD_ID, (msg) => setMessages((m) => [...m, msg]))
+    return () => chatService.leave()
+  }, [])
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
 
   function send(e) {
     e.preventDefault()
     if (!text.trim()) return
-    setMessages((m) => [...m, { id: Date.now(), from: 'patient', text: text.trim(), at: 'ตอนนี้' }])
+    chatService.send(THREAD_ID, 'patient', text.trim())
     setText('')
   }
 
   return (
-    <div className="max-w-[720px] h-[calc(100vh-140px)] flex flex-col">
+    <div className="max-w-[720px] h-[calc(100vh-196px)] md:h-[calc(100vh-140px)] flex flex-col">
       <Link to="/profile" className="inline-flex items-center gap-1.5 text-[13px] text-ink-secondary hover:text-teal-700 mb-3">
         <ArrowLeft size={16} /> กลับไปโปรไฟล์
       </Link>
@@ -41,7 +48,6 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* persistent non-emergency warning */}
         <div className="flex items-start gap-2 px-5 py-2.5 text-[12px]" style={{ background: '#FDF3D9', color: '#9A6B0A' }}>
           <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
           <p>ช่องทางนี้ไม่ใช่สำหรับเหตุฉุกเฉิน นักกายภาพบำบัดจะตอบภายใน 1-2 วันทำการ หากมีเหตุฉุกเฉินให้ใช้ปุ่ม SOS หรือโทร 1669</p>
