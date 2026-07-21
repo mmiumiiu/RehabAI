@@ -39,7 +39,7 @@ export default function TherapistRegister() {
   const [region, setRegion] = useState(REGIONS[0])
   const hospitals = REGION_HOSPITALS[region] || []
   const [form, setForm] = useState({
-    hospital: hospitals[0] || '', position: '', name: '', email: '', password: '',
+    hospital: hospitals[0] || '', position: 'นักกายภาพบำบัด', name: 'กภ.สมหญิง ดีงาม', email: 'therapist@demo.com', password: 'demo1234',
   })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)

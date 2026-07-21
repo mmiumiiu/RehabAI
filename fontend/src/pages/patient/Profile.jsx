@@ -67,17 +67,6 @@ export default function Profile() {
         </Button>
       </Block>
 
-      <Block title="เปลี่ยนรหัสผ่าน">
-        <div className="grid grid-cols-1 gap-0">
-          <Field label="รหัสผ่านปัจจุบัน"><Input type="password" placeholder="••••••••" /></Field>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <Field label="รหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
-            <Field label="ยืนยันรหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
-          </div>
-        </div>
-        <Button variant="outline" className="w-auto">อัปเดตรหัสผ่าน</Button>
-      </Block>
-
       <Block title="นักกายภาพบำบัดของคุณ">
         {therapist ? (
           <>
@@ -110,6 +99,17 @@ export default function Profile() {
             </Button>
           </>
         )}
+      </Block>
+
+      <Block title="เปลี่ยนรหัสผ่าน">
+        <div className="grid grid-cols-1 gap-0">
+          <Field label="รหัสผ่านปัจจุบัน"><Input type="password" placeholder="••••••••" /></Field>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <Field label="รหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
+            <Field label="ยืนยันรหัสผ่านใหม่"><Input type="password" placeholder="••••••••" /></Field>
+          </div>
+        </div>
+        <Button variant="outline" className="w-auto">อัปเดตรหัสผ่าน</Button>
       </Block>
 
       <Block title="การตั้งค่าอื่นๆ">

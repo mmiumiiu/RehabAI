@@ -12,7 +12,7 @@ export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    name: '', email: '', password: '', confirm: '', stage: 'stage1', accept: false,
+    name: 'สมชาย ใจดี', email: 'patient@demo.com', password: 'demo1234', confirm: 'demo1234', stage: 'stage1', accept: true,
   })
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)

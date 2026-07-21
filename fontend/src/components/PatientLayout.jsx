@@ -25,7 +25,7 @@ export default function PatientLayout() {
   const initials = name.slice(0, 2)
 
   return (
-    <div className="min-h-screen flex">
+    <div className="h-screen flex overflow-hidden">
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[220px] flex-shrink-0 flex-col p-4 text-white" style={{ background: '#1F4A40' }}>
         <div className="mb-8 px-2 pt-2">

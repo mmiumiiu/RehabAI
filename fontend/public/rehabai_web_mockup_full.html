@@ -60,8 +60,6 @@
   .field label{ display:block; font-size:12.5px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
   .input-wrap{ display:flex; align-items:center; gap:8px; border:1px solid var(--border); border-radius:9px; padding:11px 12px; background:#FCFBF9; }
   .input-wrap input, .input-wrap select{ border:none; outline:none; background:transparent; font-size:14px; font-family:inherit; color:var(--text-primary); width:100%; }
-  .input-wrap select{ appearance:none; -webkit-appearance:none; -moz-appearance:none; flex:1; width:auto; cursor:pointer; }
-  .input-wrap .chevron{ flex-shrink:0; opacity:.6; }
   .input-wrap svg{ flex-shrink:0; opacity:.55; }
   .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .btn-primary{ width:100%; padding:12px; border:none; border-radius:9px; background:var(--teal-700); color:#fff; font-family:'Poppins','Sarabun',sans-serif; font-size:14.5px; font-weight:500; cursor:pointer; margin-top:6px; }
@@ -324,12 +322,6 @@
   .acc-fill{ height:100%; background:var(--teal-500); border-radius:10px; }
   .exercise-acc-row span.acc-val{ font-size:12px; font-weight:600; color:var(--teal-900); width:36px; text-align:right; flex-shrink:0; }
   .note-textarea{ width:100%; border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:13px; font-family:inherit; color:var(--text-primary); min-height:90px; resize:none; }
-  .db-range-row{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:14px; }
-  .db-range-row .field label{ font-size:12.5px; }
-  .db-range-row .field .hint{ font-size:10.5px; color:var(--text-muted); margin-top:4px; }
-  .db-preview-bar{ height:14px; border-radius:20px; background:var(--bg); position:relative; overflow:hidden; margin-top:6px; }
-  .db-preview-fill{ position:absolute; top:0; bottom:0; background:linear-gradient(90deg,#EAB86C,#B9542A); border-radius:20px; }
-  .db-preview-marker{ position:absolute; top:-4px; bottom:-4px; width:2px; background:#1F4A40; }
 
   /* chat */
   .chat-shell{ display:flex; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:#fff; height:540px; }
@@ -364,28 +356,6 @@
   .pending-row .p-text{ font-size:12.5px; color:#9A6B0A; }
   .btn-accept{ background:var(--teal-700); color:#fff; border:none; padding:6px 14px; border-radius:7px; font-size:11.5px; font-weight:600; margin-right:6px; }
   .btn-decline{ background:transparent; border:1px solid var(--border); color:var(--text-secondary); padding:6px 14px; border-radius:7px; font-size:11.5px; font-weight:600; }
-
-  /* cascading select wizard (region -> hospital -> therapist) */
-  .wizard-step{ background:#fff; border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:16px; }
-  .wizard-step-head{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-  .wizard-step-num{ width:26px;height:26px;border-radius:50%; background:var(--teal-700); color:#fff; font-size:12px; font-weight:600; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
-  .wizard-step-num.done{ background:#3B6D11; }
-  .wizard-step-title{ font-family:'Poppins','Sarabun',sans-serif; font-size:14.5px; font-weight:600; color:var(--teal-900); }
-  .choice-grid{ display:flex; flex-wrap:wrap; gap:10px; }
-  .choice-btn{ border:1.5px solid var(--border); background:#fff; border-radius:10px; padding:11px 20px; font-size:13px; color:var(--text-primary); font-weight:500; cursor:pointer; }
-  .choice-btn.active{ border-color:var(--teal-700); background:var(--teal-100); color:var(--teal-900); font-weight:600; }
-  .therapist-choice{ display:flex; align-items:center; gap:14px; border:1.5px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:10px; cursor:pointer; }
-  .therapist-choice.active{ border-color:var(--teal-700); background:var(--teal-100); }
-  .therapist-choice .t-avatar{ width:40px;height:40px;border-radius:50%; background:var(--teal-100); color:var(--teal-900); display:flex;align-items:center;justify-content:center; font-size:13px; font-weight:600; flex-shrink:0; }
-  .therapist-choice.active .t-avatar{ background:#fff; }
-  .therapist-choice .t-info{ flex:1; }
-  .therapist-choice h4{ font-size:13.5px; font-weight:600; margin:0 0 2px; }
-  .therapist-choice p{ font-size:11.5px; color:var(--text-secondary); margin:0; }
-  .therapist-choice .check-circle{ width:22px;height:22px;border-radius:50%; border:1.5px solid var(--border); flex-shrink:0; display:flex;align-items:center;justify-content:center; }
-  .therapist-choice.active .check-circle{ background:var(--teal-700); border-color:var(--teal-700); }
-  .match-success{ display:flex; align-items:flex-start; gap:10px; background:#E6F0E1; border:1px solid #C9E0BC; border-radius:12px; padding:16px 18px; margin-top:4px; }
-  .match-success p{ margin:0; font-size:12.5px; color:#3B6D11; line-height:1.6; }
-  .match-success strong{ display:block; font-size:13.5px; margin-bottom:3px; }
 </style>
 </head>
 <body>
@@ -393,7 +363,7 @@
 <div class="page-header">
   <p class="eyebrow">RehabAI · Web UI mockup</p>
   <h1 class="title">ออกแบบหน้าเว็บไซต์ทั้งหมดของ RehabAI</h1>
-  <p>ครบทุกหน้าตามที่ระบุไว้ในเอกสารข้อเสนอโครงการ ออกแบบสำหรับผู้ป่วยพาร์กินสันระยะ 1-2 พร้อมปรับปรุงความสะดวกสำหรับผู้สูงวัย: ฟอร์มสมัครสมาชิกสั้น กระชับ, แจ้งเตือนผ่าน SMS, และระบบเชื่อมต่อนักกายภาพบำบัดแบบเลือกจากรายการ (ภาค → โรงพยาบาล → ชื่อ) ทั้งหมด ไม่ต้องพิมพ์หรือใช้รหัสเชื่อมต่อ เพราะผู้ป่วยเคยพบนักกายภาพบำบัดตัวจริงมาก่อนแล้ว จึงเชื่อมต่อบัญชีให้ทันทีโดยไม่ต้องรออนุมัติ</p>
+  <p>ครบทุกหน้าตามที่ระบุไว้ในเอกสารข้อเสนอโครงการ ออกแบบสำหรับผู้ป่วยพาร์กินสันระยะ 1-2 พร้อมปรับปรุงความสะดวกสำหรับผู้สูงวัย: ย่อฟอร์มสมัครสมาชิกให้สั้นลง แยกการกรอกเบอร์ฉุกเฉินไปทำทีหลังแบบข้ามได้ ลดรหัสเชื่อมต่อเป็นตัวเลข 6 หลัก แจ้งเตือนผ่าน SMS แทนอีเมล และรวมเมนูรองไว้ในหน้าโปรไฟล์เดียว เหลือ sidebar หลักแค่ 4 รายการ</p>
 </div>
 
 <div class="stack">
@@ -477,7 +447,6 @@
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -498,7 +467,7 @@
               </div>
               <div class="train-card">
                 <div class="icon-box loud"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="9" y="4" width="6" height="10" rx="3" stroke="#B9542A" stroke-width="1.7"/><path d="M6 12a6 6 0 0012 0M12 18v2m-3 0h6" stroke="#B9542A" stroke-width="1.7" stroke-linecap="round"/></svg></div>
-                <h3>LSVT LOUD</h3><p>ฝึกความดังของเสียงพูด ผ่านไมโครโฟนพร้อมวัดระดับเสียงแบบเรียลไทม์</p><p class="meta">10 นาที · 2 แบบฝึกหัด</p>
+                <h3>LSVT LOUD</h3><p>ฝึกความดังของเสียงพูด ผ่านไมโครโฟนพร้อมวัดระดับเสียงแบบเรียลไทม์</p><p class="meta">10 นาที · 3 แบบฝึกหัด</p>
                 <button class="mini-btn loud">เริ่มฝึก</button>
               </div>
             </div>
@@ -519,7 +488,6 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -528,18 +496,21 @@
           <div class="app-content">
             <div class="ex-row">
               <div class="step-num">✓</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6v6l3 2" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 9a2.2 2.2 0 11-2.2-2.2" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round"/></svg></div>
               <div class="ex-info"><h4>หมุนไหล่ออก (Shoulder External Rotation) <span class="tag-group stretch">stretch</span></h4><p>ยืนตรง งอศอก 90 องศาแนบลำตัว หมุนแขนออกด้านนอกช้าๆ ค้างไว้ 3-5 วินาทีแล้วหมุนกลับ เน้นยืดกล้ามเนื้อไหล่และเพิ่มช่วงการเคลื่อนไหว</p></div>
               <span class="ex-meta">10 ครั้ง</span>
               <span class="badge done">เสร็จแล้ว</span>
             </div>
             <div class="ex-row">
               <div class="step-num">✓</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 6v3M9 10l3-1 3 1M12 9v10M9 19h6" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10L6 6M15 10l3-4" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round"/></svg></div>
               <div class="ex-info"><h4>Overhead Reach (เอื้อมแขนเหนือศีรษะ) <span class="tag-group stretch">stretch</span></h4><p>ยืนตัวตรง ยกแขนทั้งสองข้างขึ้นเหนือศีรษะให้สุดช่วงที่ทำได้ ค้างไว้ 2 วินาที แล้วลดแขนลงช้าๆ</p></div>
               <span class="ex-meta">10 ครั้ง</span>
               <span class="badge done">เสร็จแล้ว</span>
             </div>
             <div class="ex-row">
               <div class="step-num">3</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 6v4M6 12h12M12 10v9" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="ex-info"><h4>Lateral Raise (กางแขนด้านข้าง) <span class="tag-group strength">strength</span></h4><p>กางแขนออกด้านข้างระดับไหล่ ค้างไว้ 3 วินาทีแล้วลดลง</p></div>
               <span class="ex-meta">10 ครั้ง</span>
               <span class="badge todo">กำลังฝึก</span>
@@ -547,6 +518,7 @@
             </div>
             <div class="ex-row">
               <div class="step-num">4</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="#1F4A40"/><path d="M12 7v6M12 9l5-3M12 9l-3 3M12 13l-6 5M12 13l3 6" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="ex-info"><h4>ยกแขน-ขา (Arm-Leg Raise) <span class="tag-group balance">balance</span></h4><p>คุกเข่าหรือยืนทรงตัว ยกแขนขวาและขาซ้ายขึ้นพร้อมกันให้ขนานพื้น ค้างไว้ 3 วินาที แล้วสลับข้าง เน้นความมั่นคงของแกนกลางลำตัว</p></div>
               <span class="ex-meta">8-10 ครั้ง/ข้าง</span>
               <span class="badge todo">ยังไม่เริ่ม</span>
@@ -554,6 +526,7 @@
             </div>
             <div class="ex-row">
               <div class="step-num">5</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="#1F4A40"/><path d="M12 7v6M12 13l-3-3M9 10v5M12 9l-3 2M12 13l3 6" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="ex-info"><h4>ยกขา + มือแตะเข่าฝั่งตรงข้าม (Marching + Cross Touch) <span class="tag-group balance">balance</span></h4><p>ยืนตรง ยกเข่าขวาขึ้น พร้อมใช้มือซ้ายแตะที่เข่า แล้วสลับข้าง เน้นการทรงตัวและการประสานงานของกล้ามเนื้อ</p></div>
               <span class="ex-meta">10 ครั้ง/ข้าง</span>
               <span class="badge todo">ยังไม่เริ่ม</span>
@@ -561,6 +534,7 @@
             </div>
             <div class="ex-row">
               <div class="step-num">6</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v6M9 9l3 2 3-2M8 19l4-8 4 8" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               <div class="ex-info"><h4>Sit-to-Stand (นั่ง-ยืน) <span class="tag-group strength">strength</span></h4><p>ฝึกการลุกยืนจากเก้าอี้อย่างมั่นคง เน้นแรงขาและการทรงตัว</p></div>
               <span class="ex-meta">10 ครั้ง</span>
               <span class="badge todo">ยังไม่เริ่ม</span>
@@ -568,6 +542,7 @@
             </div>
             <div class="ex-row">
               <div class="step-num">7</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 18V8M8 12l4-4 4 4" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 20h8" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round"/></svg></div>
               <div class="ex-info"><h4>เขย่งเท้า (Heel Raise) <span class="tag-group strength">strength</span></h4><p>ยืนตรง เขย่งปลายเท้าขึ้นให้สูงที่สุด ค้างไว้ 2 วินาที แล้วลดส้นเท้าลง เน้นกล้ามเนื้อน่องและการทรงตัวของข้อเท้า</p></div>
               <span class="ex-meta">10 ครั้ง</span>
               <span class="badge todo">ยังไม่เริ่ม</span>
@@ -575,6 +550,7 @@
             </div>
             <div class="ex-row">
               <div class="step-num">8</div>
+              <div class="ex-thumb icon-box big"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="7" cy="18" r="1.6" stroke="#1F4A40" stroke-width="1.6"/><circle cx="17" cy="18" r="1.6" stroke="#1F4A40" stroke-width="1.6"/><path d="M7 16.5V13a3 3 0 013-3h4a3 3 0 013 3v3.5" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round"/><path d="M7 18h10" stroke="#1F4A40" stroke-width="1.4" stroke-dasharray="1.5 2"/></svg></div>
               <div class="ex-info"><h4>ก้าวถ่ายน้ำหนัก (Weight Shift Step) <span class="tag-group balance">balance</span></h4><p>ยืนตรง ก้าวเท้าออกไปด้านหน้าตามมาร์กที่ระบบกำหนดบนพื้น ถ่ายน้ำหนักตัวไปที่เท้าหน้า แล้วก้าวถอยกลับตำแหน่งเดิม ทำสลับเข้า-ออกต่อเนื่อง ระบบวัดระยะจากปลายเท้าถึงปลายเท้าให้อยู่ในช่วง 30-35 ซม. ทุกครั้งที่ก้าว</p></div>
               <span class="ex-meta">10 ครั้ง/ข้าง</span>
               <span class="badge todo">ยังไม่เริ่ม</span>
@@ -597,15 +573,17 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
         <div class="app-main">
-          <div class="app-topbar"><div><p class="greet-label">ฝึกกายภาพบำบัด</p><p class="greet-name">LSVT LOUD — ฝึกความดังของเสียงพูด</p></div><div class="topbar-right"><span class="progress-pill" style="background:var(--coral-100);color:var(--coral-700);">0/2 ขั้นตอนเสร็จแล้ว</span></div></div>
+          <div class="app-topbar"><div><p class="greet-label">ฝึกกายภาพบำบัด</p><p class="greet-name">LSVT LOUD — ฝึกความดังของเสียงพูด</p></div><div class="topbar-right"><span class="progress-pill" style="background:var(--coral-100);color:var(--coral-700);">2/5 ขั้นตอนเสร็จแล้ว</span></div></div>
           <div class="app-content">
-            <div class="ex-row"><div class="step-num">1</div><div class="ex-info"><h4>ฝึกความดังเสียง</h4><p>เปล่งเสียง "อาา" ให้ดังและยาวที่สุดเท่าที่ทำได้</p></div><span class="ex-meta">5 นาที</span><span class="badge todo">ยังไม่เริ่ม</span><button class="mini-btn loud" style="margin-left:12px;">เริ่มฝึก</button></div>
-            <div class="ex-row"><div class="step-num">2</div><div class="ex-info"><h4>พูดในชีวิตประจำวัน</h4><p>ฝึกพูดประโยคที่ใช้บ่อยในชีวิตประจำวันด้วยเสียงดังชัด</p></div><span class="ex-meta">5 นาที</span><span class="badge todo">ยังไม่เริ่ม</span><button class="mini-btn loud" style="margin-left:12px;">เริ่มฝึก</button></div>
+            <div class="ex-row"><div class="step-num">✓</div><div class="ex-thumb icon-box loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 12c2-4 4-4 6 0s4 4 6 0" stroke="#B9542A" stroke-width="1.7" stroke-linecap="round"/></svg></div><div class="ex-info"><h4>ฝึกหายใจ</h4><p>ฝึกการหายใจเข้าลึกเพื่อเตรียมความพร้อมก่อนออกเสียง</p></div><span class="ex-meta">2 นาที</span><span class="badge done">เสร็จแล้ว</span></div>
+            <div class="ex-row"><div class="step-num">✓</div><div class="ex-thumb icon-box loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="#B9542A" stroke-width="1.7"/></svg></div><div class="ex-info"><h4>บริหารกล้ามเนื้อช่องปาก</h4><p>ฝึกขยับริมฝีปากและลิ้นเพื่อความชัดเจนของคำพูด</p></div><span class="ex-meta">2 นาที</span><span class="badge done">เสร็จแล้ว</span></div>
+            <div class="ex-row"><div class="step-num">3</div><div class="ex-thumb icon-box loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="9" y="4" width="6" height="10" rx="3" stroke="#B9542A" stroke-width="1.6"/><path d="M6 12a6 6 0 0012 0" stroke="#B9542A" stroke-width="1.6" stroke-linecap="round"/></svg></div><div class="ex-info"><h4>ฝึกความดังเสียง</h4><p>เปล่งเสียง "อาา" ให้ดังและยาวที่สุดเท่าที่ทำได้</p></div><span class="ex-meta">3 นาที</span><span class="badge todo">กำลังฝึก</span><button class="mini-btn loud" style="margin-left:12px;">เริ่มฝึก</button></div>
+            <div class="ex-row"><div class="step-num">4</div><div class="ex-thumb icon-box loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 14c2-6 4 6 6 0s4 6 6 0 3-3 4 0" stroke="#B9542A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ex-info"><h4>ฝึกท่วงทำนองเสียง</h4><p>ฝึกเปลี่ยนระดับเสียงสูง-ต่ำตามประโยคตัวอย่าง</p></div><span class="ex-meta">2 นาที</span><span class="badge todo">ยังไม่เริ่ม</span><button class="mini-btn loud" style="margin-left:12px;">เริ่มฝึก</button></div>
+            <div class="ex-row"><div class="step-num">5</div><div class="ex-thumb icon-box loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 8h14M5 12h10M5 16h12" stroke="#B9542A" stroke-width="1.6" stroke-linecap="round"/></svg></div><div class="ex-info"><h4>พูดในชีวิตประจำวัน</h4><p>ฝึกพูดประโยคที่ใช้บ่อยในชีวิตประจำวันด้วยเสียงดังชัด</p></div><span class="ex-meta">1 นาที</span><span class="badge todo">ยังไม่เริ่ม</span><button class="mini-btn loud" style="margin-left:12px;">เริ่มฝึก</button></div>
           </div>
         </div>
       </div>
@@ -727,7 +705,7 @@
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
         <div class="app-main">
-          <div class="app-topbar"><div><p class="greet-label">LSVT LOUD · ขั้นตอนที่ 1/2</p><p class="greet-name">ฝึกความดังเสียง</p></div><div class="topbar-right"><span class="progress-pill" style="background:var(--coral-100);color:var(--coral-700);">01:12</span></div></div>
+          <div class="app-topbar"><div><p class="greet-label">LSVT LOUD · ขั้นตอนที่ 3/5</p><p class="greet-name">ฝึกความดังเสียง</p></div><div class="topbar-right"><span class="progress-pill" style="background:var(--coral-100);color:var(--coral-700);">01:12</span></div></div>
           <div class="app-content">
             <div class="session-shell">
               <div class="mic-panel">
@@ -765,7 +743,6 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -815,7 +792,6 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -883,7 +859,6 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -973,7 +948,6 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
           <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
@@ -1030,16 +1004,26 @@
               </div>
             </div>
 
-            <p class="section-title">นักกายภาพบำบัดของคุณ</p>
+            <p class="section-title">นักกายภาพบำบัดที่เชื่อมต่อ</p>
             <div class="settings-card">
+              <div class="pending-row">
+                <div class="p-text"><strong>กภ.อรุณี แสงใส</strong> (รพ.ชุมชนสมมติ) ขอเชื่อมต่อเพื่อดูความคืบหน้าของคุณ</div>
+                <div><button class="btn-accept">อนุมัติ</button><button class="btn-decline">ปฏิเสธ</button></div>
+              </div>
               <div class="link-row">
                 <div class="l-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" stroke="#1F4A40" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="7" r="3.5" stroke="#1F4A40" stroke-width="1.6"/></svg></div>
-                <div class="l-info"><h5>กภ.สุนิสา รักษ์ดี</h5><p>นักกายภาพบำบัด · โรงพยาบาลศิริราช · เชื่อมต่อแล้ว เห็นความคืบหน้าและแชทกับคุณได้</p></div>
+                <div class="l-info"><h5>กภ.สุนิสา รักษ์ดี</h5><p>รพ.สมมติ · เชื่อมต่อแล้ว เห็นความคืบหน้าและแชทกับคุณได้</p></div>
                 <button class="btn-danger-outline" style="padding:6px 14px;font-size:11.5px;margin:0;">ยกเลิกการเชื่อมต่อ</button>
               </div>
-              <p style="font-size:11px;color:var(--text-muted);margin:12px 0 0;">เชื่อมต่ออัตโนมัติตอนสมัครสมาชิก เนื่องจากคุณเลือกนักกายภาพบำบัดท่านนี้ที่เคยพบกันมาแล้วที่โรงพยาบาล จึงไม่ต้องรออนุมัติ</p>
             </div>
-            <button class="mini-btn">เปลี่ยนนักกายภาพบำบัด</button>
+            <div class="settings-card">
+              <p class="s-title" style="margin-bottom:6px;">รหัสเชื่อมต่อของฉัน</p>
+              <p class="s-desc" style="margin-bottom:12px;">แจ้งรหัสตัวเลข 6 หลักนี้ให้นักกายภาพบำบัดที่คลินิก (พูดทางโทรศัพท์ได้เลย ไม่ต้องพิมพ์) เพื่อขอเชื่อมต่อดูความคืบหน้าของคุณ คุณต้องกดอนุมัติก่อนนักกายภาพบำบัดจึงจะเห็นข้อมูลได้</p>
+              <div class="connect-code-box">
+                <span class="code">482 913</span>
+                <button class="mini-btn">สร้างรหัสใหม่</button>
+              </div>
+            </div>
 
             <p class="section-title">บัญชี</p>
             <div class="danger-card">
@@ -1099,12 +1083,14 @@
           <div class="sidebar-footer"><div class="avatar">พญ</div><div><div class="uname">กภ.สุนิสา รักษ์ดี</div><div class="urole">นักกายภาพบำบัด</div></div></div>
         </div>
         <div class="app-main">
-          <div class="app-topbar"><div><p class="greet-label">ภาพรวม</p><p class="greet-name">ผู้ป่วยของฉัน (12 คน)</p></div></div>
+          <div class="app-topbar"><div><p class="greet-label">ภาพรวม</p><p class="greet-name">ผู้ป่วยของฉัน (12 คน)</p></div><div class="topbar-right"><button class="mini-btn">+ เพิ่มผู้ป่วยด้วยรหัสเชื่อมต่อ</button></div></div>
           <div class="app-content">
-            <div class="settings-card" style="max-width:520px;background:#F5F9F0;border-color:#D6E8C6;">
-              <div style="display:flex;align-items:flex-start;gap:10px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;"><path d="M5 13l4 4L19 7" stroke="#3B6D11" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <p style="margin:0;font-size:12.5px;color:#3B6D11;line-height:1.6;">ผู้ป่วยที่เลือกคุณเป็นนักกายภาพบำบัดตอนสมัครสมาชิก (จากภาค → โรงพยาบาล → รายชื่อนักกายภาพบำบัด) จะปรากฏในรายชื่อนี้ให้อัตโนมัติทันที ไม่ต้องขอรหัสหรือกดเพิ่มเอง เพราะผู้ป่วยเลือกได้เฉพาะนักกายภาพบำบัดที่เคยพบตัวจริงที่โรงพยาบาลมาก่อนเท่านั้น</p>
+            <div class="settings-card" style="max-width:460px;">
+              <p class="s-title" style="margin-bottom:8px;">เพิ่มผู้ป่วยใหม่</p>
+              <p class="s-desc" style="margin-bottom:12px;">ขอรหัสตัวเลข 6 หลักจากผู้ป่วยที่คลินิก (ดูได้ในหน้าโปรไฟล์ของผู้ป่วย พูดทางโทรศัพท์ได้เลย) แล้วกรอกที่นี่ ระบบจะส่งคำขอให้ผู้ป่วยกดอนุมัติก่อนคุณจึงจะเห็นข้อมูลได้</p>
+              <div style="display:flex;gap:10px;">
+                <div class="input-wrap" style="flex:1;"><input type="text" placeholder="กรอกรหัส 6 หลัก เช่น 482913" readonly></div>
+                <button class="mini-btn" style="white-space:nowrap;">ส่งคำขอ</button>
               </div>
             </div>
 
@@ -1203,49 +1189,6 @@
               <div class="exercise-acc-row"><span class="ex-label">ก้าวถ่ายน้ำหนัก</span><div class="acc-track"><div class="acc-fill" style="width:61%;"></div></div><span class="acc-val">61%</span></div>
             </div>
 
-            <p class="section-title">ตั้งค่า LSVT LOUD สำหรับผู้ป่วยคนนี้</p>
-            <div class="settings-card">
-              <p style="font-size:12.5px;color:var(--text-secondary);margin:0 0 16px;line-height:1.6;">กำหนดช่วงความดังเสียง (เดซิเบล) เฉพาะบุคคล ระบบจะใช้ค่านี้แสดงเป็นเป้าหมายในหน้าฝึกจริงของผู้ป่วยแทนค่าเริ่มต้นของระบบ ปรับตามเสียงฐาน (baseline) ของผู้ป่วยแต่ละคน</p>
-              <div class="db-range-row">
-                <div class="field" style="margin-bottom:0;">
-                  <label>ค่าต่ำสุดที่ยอมรับได้ (Min)</label>
-                  <div class="input-wrap">
-                    <select id="loudMinDb" onchange="rehabaiUpdateDbPreview()">
-                      <option value="40">40 dB</option><option value="45">45 dB</option><option value="50">50 dB</option><option value="55">55 dB</option><option value="60" selected>60 dB</option><option value="65">65 dB</option><option value="70">70 dB</option><option value="75">75 dB</option><option value="80">80 dB</option><option value="85">85 dB</option><option value="90">90 dB</option><option value="95">95 dB</option><option value="100">100 dB</option><option value="105">105 dB</option><option value="110">110 dB</option>
-                    </select>
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </div>
-                  <p class="hint">ต่ำกว่านี้ถือว่ายังเบาเกินไป</p>
-                </div>
-                <div class="field" style="margin-bottom:0;">
-                  <label>ค่าเป้าหมาย (Goal)</label>
-                  <div class="input-wrap">
-                    <select id="loudGoalDb" onchange="rehabaiUpdateDbPreview()">
-                      <option value="40">40 dB</option><option value="45">45 dB</option><option value="50">50 dB</option><option value="55">55 dB</option><option value="60">60 dB</option><option value="65">65 dB</option><option value="70">70 dB</option><option value="75">75 dB</option><option value="80" selected>80 dB</option><option value="85">85 dB</option><option value="90">90 dB</option><option value="95">95 dB</option><option value="100">100 dB</option><option value="105">105 dB</option><option value="110">110 dB</option>
-                    </select>
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </div>
-                  <p class="hint">ระดับที่อยากให้ผู้ป่วยทำได้</p>
-                </div>
-                <div class="field" style="margin-bottom:0;">
-                  <label>ค่าสูงสุดที่ไม่ควรเกิน (Max)</label>
-                  <div class="input-wrap">
-                    <select id="loudMaxDb" onchange="rehabaiUpdateDbPreview()">
-                      <option value="40">40 dB</option><option value="45">45 dB</option><option value="50">50 dB</option><option value="55">55 dB</option><option value="60">60 dB</option><option value="65">65 dB</option><option value="70">70 dB</option><option value="75">75 dB</option><option value="80">80 dB</option><option value="85">85 dB</option><option value="90">90 dB</option><option value="95" selected>95 dB</option><option value="100">100 dB</option><option value="105">105 dB</option><option value="110">110 dB</option>
-                    </select>
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </div>
-                  <p class="hint">ดังเกินนี้เสี่ยงตะโกน/ใช้เสียงผิดวิธี</p>
-                </div>
-              </div>
-              <div class="db-preview-bar">
-                <div class="db-preview-fill" id="loudDbPreviewFill"></div>
-                <div class="db-preview-marker" id="loudDbPreviewMarker"></div>
-              </div>
-              <p id="loudDbPreviewLabel" style="font-size:11px;color:var(--text-muted);margin:6px 0 0;"></p>
-              <button class="mini-btn" style="margin-top:14px;" onclick="alert('บันทึกค่าช่วงความดังเสียงสำหรับผู้ป่วยคนนี้แล้ว')">บันทึกค่าสำหรับผู้ป่วยคนนี้</button>
-            </div>
-
             <p class="section-title">ประวัติล่าสุด</p>
             <table class="history">
               <tr><th>วันที่</th><th>ประเภทการฝึก</th><th>ระยะเวลา</th><th>คะแนน</th></tr>
@@ -1330,8 +1273,7 @@
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-6 8 6v8a1 1 0 01-1 1h-4v-6H9v6H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>หน้าแรก</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="4.5" r="1.8" fill="currentColor"/><path d="M12 7v5l-3 7M12 12l3 7M9 10l6-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>ฝึกกายภาพบำบัด</div>
           <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M11 20V4M18 20v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>สรุปผล</div>
-          <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>แชท</div>
-          <div class="nav-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
+          <div class="nav-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>โปรไฟล์</div>
           <div class="sidebar-footer"><div class="avatar">สจ</div><div><div class="uname">สมชาย ใจดี</div><div class="urole">ผู้ป่วย</div></div></div>
         </div>
         <div class="app-main">
@@ -1361,16 +1303,16 @@
     </div>
   </div>
 
-  <!-- 19 THERAPIST PORTAL — REGISTER (HOSPITAL SELECTION) -->
+  <!-- 19 THERAPIST PORTAL — REGISTER (LICENSE VERIFICATION) -->
   <div>
-    <div class="block-label"><div class="num">19</div><span class="name">Therapist Portal — สมัครสมาชิก (เช็คโดเมนอีเมลเทียบโรงพยาบาลแบบเรียลไทม์)</span></div>
+    <div class="block-label"><div class="num">19</div><span class="name">Therapist Portal — สมัครสมาชิก (ยืนยันใบประกอบวิชาชีพ + รออนุมัติ)</span></div>
     <div class="browser">
       <div class="browser-bar"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="address">therapist.rehabai.app/register</div></div>
       <div class="split">
         <div class="brand-panel">
           <div class="brand-mark"><div class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12c2-4 4-4 5 0s3 4 5 0 3-4 5 0 2 4 3 0" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>RehabAI</span></div>
-          <div><h2>เข้าร่วมดูแลผู้ป่วย<br>ผ่าน RehabAI</h2><p class="sub">เลือกโรงพยาบาลที่คุณสังกัด เพื่อความปลอดภัยของข้อมูลผู้ป่วย บัญชีนักกายภาพบำบัดทุกบัญชีต้องได้รับการยืนยันจากโรงพยาบาลก่อนเข้าใช้งานได้ ใช้เวลาตรวจสอบ 1-2 วันทำการ</p></div>
-          <p class="brand-quote">© 2026 RehabAI · สำหรับนักกายภาพบำบัดที่สังกัดโรงพยาบาล/คลินิกที่ร่วมโครงการเท่านั้น</p>
+          <div><h2>เข้าร่วมดูแลผู้ป่วย<br>ผ่าน RehabAI</h2><p class="sub">เพื่อความปลอดภัยของข้อมูลผู้ป่วย บัญชีนักกายภาพบำบัดทุกบัญชีต้องผ่านการยืนยันใบประกอบวิชาชีพก่อนเข้าใช้งานได้ ใช้เวลาตรวจสอบ 1-2 วันทำการ</p></div>
+          <p class="brand-quote">© 2026 RehabAI · สำหรับนักกายภาพบำบัดที่ได้รับใบอนุญาตประกอบวิชาชีพเท่านั้น</p>
         </div>
         <div class="form-panel">
           <div class="form-card" style="max-width:420px;">
@@ -1379,67 +1321,15 @@
               <div class="role-toggle-btn active">นักกายภาพบำบัด</div>
             </div>
             <h2>สมัครสมาชิกนักกายภาพบำบัด</h2>
-            <p class="lead">เลือกโรงพยาบาลของคุณ แล้วกรอกข้อมูลติดต่อ</p>
-
-            <div class="field">
-              <label>เลือกภาค</label>
-              <div class="input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5A7 7 0 105 9.5C5 14.5 12 21 12 21z" stroke="#5B6B66" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.2" stroke="#5B6B66" stroke-width="1.6"/></svg>
-                <select id="therapistRegionSelect" onchange="rehabaiPopulateTherapistHospitals()">
-                  <option>ภาคกลาง</option>
-                  <option>ภาคเหนือ</option>
-                  <option>ภาคตะวันออกเฉียงเหนือ</option>
-                  <option>ภาคใต้</option>
-                  <option>ภาคตะวันออก</option>
-                  <option>ภาคตะวันตก</option>
-                </select>
-                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+            <p class="lead">กรอกข้อมูลเพื่อยืนยันตัวตนทางวิชาชีพ</p>
+            <div class="row-2">
+              <div class="field"><label>ชื่อ-นามสกุล</label><div class="input-wrap"><input type="text" placeholder="สุนิสา รักษ์ดี" readonly></div></div>
+              <div class="field"><label>อีเมลที่ใช้งาน</label><div class="input-wrap"><input type="text" placeholder="therapist@hospital.or.th" readonly></div></div>
             </div>
-
-            <div class="field">
-              <label>สังกัดโรงพยาบาล</label>
-              <div class="input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6M9 11h.01M15 11h.01M9 15h.01M15 15h.01" stroke="#5B6B66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <select id="hospitalSelect" onchange="rehabaiCheckDomain()"></select>
-                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <p style="font-size:11px;color:var(--text-muted);margin:6px 0 0;">ตัวเลือกจะเปลี่ยนตามภาคที่เลือกไว้ด้านบน — พิมพ์เพื่อค้นหาได้เช่นกัน</p>
-
-              <div style="margin-top:10px;">
-                <a href="#" class="link-teal" style="font-size:12px;" onclick="rehabaiToggleAddHospital();return false;">ไม่พบโรงพยาบาลของคุณในรายการ? เพิ่มโรงพยาบาลใหม่</a>
-              </div>
-
-              <div id="addHospitalForm" style="display:none;margin-top:14px;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:10px;">
-                <div class="row-2">
-                  <div class="field"><label>ชื่อโรงพยาบาลใหม่</label><div class="input-wrap"><input type="text" placeholder="เช่น โรงพยาบาลชุมชนบ้านตาก" readonly></div></div>
-                  <div class="field"><label>ภาค</label><div class="input-wrap"><select><option>ภาคกลาง</option><option>ภาคเหนือ</option><option>ภาคตะวันออกเฉียงเหนือ</option><option>ภาคใต้</option><option>ภาคตะวันออก</option><option>ภาคตะวันตก</option></select></div></div>
-                </div>
-                <div class="field" style="margin-bottom:0;"><label>จังหวัด</label><div class="input-wrap"><input type="text" placeholder="เช่น ตาก" readonly></div></div>
-                <div style="display:flex;align-items:flex-start;gap:8px;margin-top:12px;padding:10px 12px;background:#FDF3D9;border-radius:8px;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;"><path d="M12 9v4M12 16h.01M12 2l9 4v6c0 5-3.8 8.7-9 10-5.2-1.3-9-5-9-10V6l9-4z" stroke="#9A6B0A" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                  <p style="margin:0;font-size:11px;color:#9A6B0A;line-height:1.5;">โรงพยาบาลที่เพิ่มใหม่จะยังไม่ปรากฏใน dropdown ของผู้ป่วยทันที ทีมงานจะตรวจสอบก่อนว่าไม่ซ้ำกับรายชื่อที่มีอยู่แล้ว (เช่น สะกดต่างกันแต่เป็นที่เดียวกัน) ก่อนเผยแพร่ให้เลือกได้จริง ใช้เวลา 1-2 วันทำการ</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="field">
-              <label>ตำแหน่งในโรงพยาบาล</label>
-              <div class="input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M20 7l-8-4-8 4v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V7z" stroke="#5B6B66" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                <input type="text" placeholder="เช่น นักกายภาพบำบัด, นักกายภาพบำบัดชำนาญการ" readonly>
-              </div>
-              <p style="font-size:11px;color:var(--text-muted);margin:6px 0 0;">พิมพ์ตำแหน่งของคุณเอง เนื่องจากแต่ละโรงพยาบาลใช้ชื่อตำแหน่งไม่เหมือนกัน</p>
-            </div>
-
-            <div class="field"><label>ชื่อ-นามสกุล</label><div class="input-wrap"><input type="text" placeholder="สุนิสา รักษ์ดี" readonly></div></div>
-            <div class="field">
-              <label>อีเมลที่ใช้งาน</label>
-              <div class="input-wrap">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#5B6B66" stroke-width="1.6"/><path d="M3 6l9 7 9-7" stroke="#5B6B66" stroke-width="1.6"/></svg>
-                <input type="text" id="emailInput" value="sunisa.r@si.mahidol.ac.th" placeholder="therapist@hospital.or.th" oninput="rehabaiCheckDomain()">
-              </div>
-              <div id="emailDomainHint" style="margin-top:8px;"></div>
+            <div class="field"><label>เลขที่ใบประกอบวิชาชีพกายภาพบำบัด</label><div class="input-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z" stroke="#5B6B66" stroke-width="1.6" stroke-linejoin="round"/></svg><input type="text" placeholder="ก.ภ. XXXXX" readonly></div></div>
+            <div class="row-2">
+              <div class="field"><label>สังกัดคลินิก/โรงพยาบาล</label><div class="input-wrap"><input type="text" placeholder="รพ.สมมติ" readonly></div></div>
+              <div class="field"><label>รหัสเชิญจากคลินิก (ถ้ามี)</label><div class="input-wrap"><input type="text" placeholder="ไม่บังคับ" readonly></div></div>
             </div>
             <div class="field"><label>รหัสผ่าน</label><div class="input-wrap"><input type="password" placeholder="••••••••" readonly></div></div>
             <button class="btn-primary">ส่งคำขอสมัครสมาชิก</button>
@@ -1447,7 +1337,7 @@
             <div class="settings-card" style="background:#FDF3D9;border-color:#F0DBA0;margin-top:18px;text-align:left;">
               <div style="display:flex;align-items:flex-start;gap:10px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;"><path d="M12 9v4M12 16h.01M12 2l9 4v6c0 5-3.8 8.7-9 10-5.2-1.3-9-5-9-10V6l9-4z" stroke="#9A6B0A" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                <p style="margin:0;font-size:12px;color:#9A6B0A;line-height:1.6;"><strong>สถานะ: รอการตรวจสอบ</strong><br>ระบบเช็คโดเมนอีเมลเบื้องต้นให้อัตโนมัติ (ดูผลด้านบน) แต่นี่เป็นแค่ <em>สัญญาณเตือนเบื้องต้น ไม่ใช่การอนุมัติ</em> — ทีมงานจะติดต่อแผนกกายภาพบำบัดของโรงพยาบาลที่เลือกไว้เพื่อยืนยันตัวตนอีกครั้งเสมอ ก่อนเปิดใช้งานบัญชีให้ ระบบจะแจ้งผลภายใน 1-2 วันทำการ ระหว่างนี้ยังไม่สามารถดูข้อมูลผู้ป่วยได้</p>
+                <p style="margin:0;font-size:12px;color:#9A6B0A;line-height:1.6;"><strong>สถานะ: รอการตรวจสอบ</strong><br>ทีมงานจะตรวจสอบเลขที่ใบประกอบวิชาชีพกับฐานข้อมูลสภากายภาพบำบัด ก่อนเปิดใช้งานบัญชีให้ ระบบจะแจ้งผลทางอีเมลภายใน 1-2 วันทำการ ระหว่างนี้ยังไม่สามารถดูข้อมูลผู้ป่วยได้</p>
               </div>
             </div>
           </div>
@@ -1456,153 +1346,9 @@
     </div>
   </div>
 
-  <script>
-  var REHABAI_THERAPIST_HOSPITALS_BY_REGION = {
-    "ภาคกลาง": [
-      {name:"โรงพยาบาลศิริราช", domain:"si.mahidol.ac.th"},
-      {name:"โรงพยาบาลจุฬาลงกรณ์", domain:"chulalongkornhospital.go.th"},
-      {name:"โรงพยาบาลรามาธิบดี", domain:"ra.mahidol.ac.th"},
-      {name:"โรงพยาบาลพระมงกุฎเกล้า", domain:"pmk.go.th"},
-      {name:"โรงพยาบาลราชวิถี", domain:"rajavithi.go.th"},
-      {name:"โรงพยาบาลวชิรพยาบาล", domain:""},
-      {name:"โรงพยาบาลตำรวจ", domain:""},
-      {name:"โรงพยาบาลภูมิพลอดุลยเดช", domain:""},
-      {name:"โรงพยาบาลบำรุงราษฎร์", domain:""},
-      {name:"โรงพยาบาลสมิติเวช", domain:""},
-      {name:"โรงพยาบาลกรุงเทพ", domain:""},
-      {name:"โรงพยาบาลพระนั่งเกล้า (นนทบุรี)", domain:""},
-      {name:"โรงพยาบาลปทุมธานี", domain:""},
-      {name:"โรงพยาบาลสมุทรปราการ", domain:""},
-      {name:"โรงพยาบาลสมุทรสาคร", domain:""},
-      {name:"โรงพยาบาลสมุทรสงคราม", domain:""},
-      {name:"โรงพยาบาลนครปฐม", domain:""},
-      {name:"โรงพยาบาลพระนครศรีอยุธยา", domain:""},
-      {name:"โรงพยาบาลสระบุรี", domain:""},
-      {name:"โรงพยาบาลลพบุรี", domain:""},
-      {name:"โรงพยาบาลอ่างทอง", domain:""},
-      {name:"โรงพยาบาลสิงห์บุรี", domain:""},
-      {name:"โรงพยาบาลชัยนาท", domain:""},
-      {name:"โรงพยาบาลเจ้าพระยายมราช (สุพรรณบุรี)", domain:""}
-    ],
-    "ภาคเหนือ": [
-      {name:"โรงพยาบาลมหาราชนครเชียงใหม่", domain:""},
-      {name:"โรงพยาบาลนครพิงค์", domain:""},
-      {name:"โรงพยาบาลลำปาง", domain:""},
-      {name:"โรงพยาบาลลำพูน", domain:""},
-      {name:"โรงพยาบาลพุทธชินราช (พิษณุโลก)", domain:""},
-      {name:"โรงพยาบาลแพร่", domain:""},
-      {name:"โรงพยาบาลน่าน", domain:""},
-      {name:"โรงพยาบาลพะเยา", domain:""},
-      {name:"โรงพยาบาลเชียงรายประชานุเคราะห์", domain:""},
-      {name:"โรงพยาบาลแม่สอด (ตาก)", domain:""},
-      {name:"โรงพยาบาลตาก", domain:""},
-      {name:"โรงพยาบาลสุโขทัย", domain:""},
-      {name:"โรงพยาบาลอุตรดิตถ์", domain:""},
-      {name:"โรงพยาบาลกำแพงเพชร", domain:""},
-      {name:"โรงพยาบาลพิจิตร", domain:""},
-      {name:"โรงพยาบาลเพชรบูรณ์", domain:""},
-      {name:"โรงพยาบาลแม่ฮ่องสอน", domain:""}
-    ],
-    "ภาคตะวันออกเฉียงเหนือ": [
-      {name:"โรงพยาบาลศรีนครินทร์ (ขอนแก่น)", domain:""},
-      {name:"โรงพยาบาลขอนแก่น", domain:""},
-      {name:"โรงพยาบาลอุดรธานี", domain:""},
-      {name:"โรงพยาบาลมหาสารคาม", domain:""},
-      {name:"โรงพยาบาลสรรพสิทธิประสงค์ (อุบลราชธานี)", domain:""},
-      {name:"โรงพยาบาลบุรีรัมย์", domain:""},
-      {name:"โรงพยาบาลมหาราชนครราชสีมา", domain:""},
-      {name:"โรงพยาบาลร้อยเอ็ด", domain:""},
-      {name:"โรงพยาบาลชัยภูมิ", domain:""},
-      {name:"โรงพยาบาลหนองคาย", domain:""},
-      {name:"โรงพยาบาลเลย", domain:""},
-      {name:"โรงพยาบาลสกลนคร", domain:""},
-      {name:"โรงพยาบาลนครพนม", domain:""},
-      {name:"โรงพยาบาลมุกดาหาร", domain:""},
-      {name:"โรงพยาบาลกาฬสินธุ์", domain:""},
-      {name:"โรงพยาบาลยโสธร", domain:""},
-      {name:"โรงพยาบาลอำนาจเจริญ", domain:""},
-      {name:"โรงพยาบาลศรีสะเกษ", domain:""},
-      {name:"โรงพยาบาลสุรินทร์", domain:""},
-      {name:"โรงพยาบาลหนองบัวลำภู", domain:""},
-      {name:"โรงพยาบาลบึงกาฬ", domain:""}
-    ],
-    "ภาคใต้": [
-      {name:"โรงพยาบาลสงขลานครินทร์ (หาดใหญ่)", domain:""},
-      {name:"โรงพยาบาลสุราษฎร์ธานี", domain:""},
-      {name:"โรงพยาบาลวชิระภูเก็ต", domain:""},
-      {name:"โรงพยาบาลตรัง", domain:""},
-      {name:"โรงพยาบาลยะลา", domain:""},
-      {name:"โรงพยาบาลมหาราชนครศรีธรรมราช", domain:""},
-      {name:"โรงพยาบาลกระบี่", domain:""},
-      {name:"โรงพยาบาลชุมพร", domain:""},
-      {name:"โรงพยาบาลระนอง", domain:""},
-      {name:"โรงพยาบาลพังงา", domain:""},
-      {name:"โรงพยาบาลพัทลุง", domain:""},
-      {name:"โรงพยาบาลสตูล", domain:""},
-      {name:"โรงพยาบาลปัตตานี", domain:""},
-      {name:"โรงพยาบาลนราธิวาส", domain:""}
-    ],
-    "ภาคตะวันออก": [
-      {name:"โรงพยาบาลชลบุรี", domain:""},
-      {name:"โรงพยาบาลพระปกเกล้า (จันทบุรี)", domain:""},
-      {name:"โรงพยาบาลระยอง", domain:""},
-      {name:"โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา", domain:""},
-      {name:"โรงพยาบาลตราด", domain:""},
-      {name:"โรงพยาบาลฉะเชิงเทรา", domain:""},
-      {name:"โรงพยาบาลปราจีนบุรี", domain:""},
-      {name:"โรงพยาบาลสระแก้ว", domain:""},
-      {name:"โรงพยาบาลนครนายก", domain:""}
-    ],
-    "ภาคตะวันตก": [
-      {name:"โรงพยาบาลราชบุรี", domain:""},
-      {name:"โรงพยาบาลเพชรบุรี", domain:""},
-      {name:"โรงพยาบาลหัวหิน", domain:""},
-      {name:"โรงพยาบาลกาญจนบุรี", domain:""},
-      {name:"โรงพยาบาลประจวบคีรีขันธ์", domain:""},
-      {name:"โรงพยาบาลบ้านโป่ง (ราชบุรี)", domain:""}
-    ]
-  };
-  function rehabaiPopulateTherapistHospitals(){
-    var region = document.getElementById('therapistRegionSelect').value;
-    var hSel = document.getElementById('hospitalSelect');
-    var list = REHABAI_THERAPIST_HOSPITALS_BY_REGION[region] || [];
-    hSel.innerHTML = list.map(function(h){ return '<option value="'+h.domain+'">'+h.name+'</option>'; }).join('');
-    rehabaiCheckDomain();
-  }
-  function rehabaiToggleAddHospital(){
-    var form = document.getElementById('addHospitalForm');
-    form.style.display = (form.style.display === 'none' || !form.style.display) ? 'block' : 'none';
-  }
-  function rehabaiCheckDomain(){
-    var sel = document.getElementById('hospitalSelect');
-    var email = document.getElementById('emailInput').value.trim();
-    var hint = document.getElementById('emailDomainHint');
-    var expectedDomain = sel.value;
-    var hospitalName = sel.options[sel.selectedIndex].text;
-    var atIndex = email.indexOf('@');
-    var emailDomain = atIndex >= 0 ? email.slice(atIndex+1).toLowerCase() : '';
-
-    if(!expectedDomain){
-      hint.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 16h.01M12 2l9 4v6c0 5-3.8 8.7-9 10-5.2-1.3-9-5-9-10V6l9-4z" stroke="#8E9B96" stroke-width="1.6" stroke-linejoin="round"/></svg>โรงพยาบาลนี้ยังไม่มีข้อมูลโดเมนอีเมลในระบบ จะใช้การตรวจสอบแบบ manual review ทั้งหมด</div>';
-      return;
-    }
-    if(!email || atIndex < 0){
-      hint.innerHTML = '';
-      return;
-    }
-    if(emailDomain === expectedDomain){
-      hint.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#3B6D11;background:#E6F0E1;border-radius:8px;padding:8px 12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#3B6D11" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>อีเมลตรงกับโดเมนของ '+hospitalName+' — ผ่านการเช็คเบื้องต้นอัตโนมัติ</div>';
-    } else {
-      hint.innerHTML = '<div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#9A6B0A;background:#FDF3D9;border-radius:8px;padding:8px 12px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 16h.01M12 2l9 4v6c0 5-3.8 8.7-9 10-5.2-1.3-9-5-9-10V6l9-4z" stroke="#9A6B0A" stroke-width="1.6" stroke-linejoin="round"/></svg>อีเมลนี้ไม่ตรงกับโดเมนของ '+hospitalName+' (@'+expectedDomain+') ระบบจะส่งให้ทีมงานตรวจสอบเพิ่มเติมแบบ manual review</div>';
-    }
-  }
-  document.addEventListener('DOMContentLoaded', rehabaiPopulateTherapistHospitals);
-  </script>
-
-
   <!-- 20 ONBOARDING — ADD EMERGENCY CONTACT (PROGRESSIVE, SKIPPABLE) -->
   <div>
-    <div class="block-label"><div class="num">20</div><span class="name">หลังสมัครสมาชิกครั้งแรก — เพิ่มเบอร์ฉุกเฉิน (แสดงต่อจากหน้าเลือกนักกายภาพบำบัด, ทำทีหลังได้)</span></div>
+    <div class="block-label"><div class="num">20</div><span class="name">หลังสมัครสมาชิกครั้งแรก — เพิ่มเบอร์ฉุกเฉิน (ทำทีหลังได้ ไม่บังคับตอนสมัคร)</span></div>
     <div class="browser">
       <div class="browser-bar"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="address">rehabai.app/onboarding/emergency-contact</div></div>
       <div class="screen-intro" style="min-height:520px;">
@@ -1626,146 +1372,6 @@
     </div>
   </div>
 
-  <!-- 21 ONBOARDING — SELECT YOUR THERAPIST (REGION > HOSPITAL > NAME, TAP-ONLY) -->
-  <div>
-    <div class="block-label"><div class="num">21</div><span class="name">หลังสมัครสมาชิก — เลือกนักกายภาพบำบัดของคุณ (แสดงก่อนขั้นตอนเพิ่มเบอร์ฉุกเฉิน)</span></div>
-    <div class="browser">
-      <div class="browser-bar"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><div class="address">rehabai.app/onboarding/select-therapist</div></div>
-      <div class="screen-intro" style="align-items:stretch;text-align:left;padding:44px 60px;">
-        <div style="text-align:center;">
-          <div class="big-icon" style="margin-left:auto;margin-right:auto;">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" stroke="#1F4A40" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="7" r="3.5" stroke="#1F4A40" stroke-width="1.7"/><path d="M17 9.5a3 3 0 100-6" stroke="#1F4A40" stroke-width="1.7" stroke-linecap="round"/></svg>
-          </div>
-          <h2>เลือกนักกายภาพบำบัดของคุณ</h2>
-          <p class="sub" style="margin-left:auto;margin-right:auto;">เนื่องจากคุณเคยไปพบนักกายภาพบำบัดที่โรงพยาบาลมาแล้วอย่างน้อย 1 ครั้ง เลือกตามขั้นตอนด้านล่างได้เลย — กดเลือกทั้งหมด ไม่ต้องพิมพ์ เพื่อป้องกันการกรอกผิดพลาด</p>
-        </div>
-
-        <div class="wizard-step">
-          <div class="wizard-step-head"><div class="wizard-step-num done">✓</div><div class="wizard-step-title">เลือกภาค</div></div>
-          <div class="input-wrap">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-11.5A7 7 0 105 9.5C5 14.5 12 21 12 21z" stroke="#5B6B66" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.2" stroke="#5B6B66" stroke-width="1.6"/></svg>
-            <select id="regionSelect" onchange="rehabaiPopulateHospitals()">
-              <option>ภาคกลาง</option>
-              <option>ภาคเหนือ</option>
-              <option>ภาคตะวันออกเฉียงเหนือ</option>
-              <option>ภาคใต้</option>
-              <option>ภาคตะวันออก</option>
-              <option>ภาคตะวันตก</option>
-            </select>
-            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-
-        <div class="wizard-step">
-          <div class="wizard-step-head"><div class="wizard-step-num done">✓</div><div class="wizard-step-title">เลือกโรงพยาบาล</div></div>
-          <div class="input-wrap">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6M9 11h.01M15 11h.01M9 15h.01M15 15h.01" stroke="#5B6B66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <select id="hospitalSelectPatient" onchange="rehabaiPopulateTherapists()"></select>
-            <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-        </div>
-
-        <div class="wizard-step">
-          <div class="wizard-step-head"><div class="wizard-step-num">3</div><div class="wizard-step-title">เลือกนักกายภาพบำบัด</div></div>
-
-          <div class="field" style="margin-bottom:0;">
-            <div class="input-wrap">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" stroke="#5B6B66" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="7" r="3.5" stroke="#5B6B66" stroke-width="1.6"/></svg>
-              <select id="therapistSelectPatient" onchange="rehabaiUpdateMatch()"></select>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#5B6B66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <p style="font-size:11px;color:var(--text-muted);margin:6px 0 0;">รายชื่อดึงจากนักกายภาพบำบัดที่สมัครและผ่านการยืนยันแล้วของโรงพยาบาลนี้เท่านั้น</p>
-          </div>
-
-          <div class="match-success" style="margin-top:16px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px;"><path d="M5 13l4 4L19 7" stroke="#3B6D11" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <p id="matchSuccessText"></p>
-          </div>
-        </div>
-
-        <script>
-        var REHABAI_REGION_HOSPITALS = {
-          "ภาคกลาง": ["โรงพยาบาลศิริราช","โรงพยาบาลจุฬาลงกรณ์","โรงพยาบาลรามาธิบดี","โรงพยาบาลพระมงกุฎเกล้า","โรงพยาบาลราชวิถี","โรงพยาบาลวชิรพยาบาล","โรงพยาบาลตำรวจ","โรงพยาบาลภูมิพลอดุลยเดช","โรงพยาบาลบำรุงราษฎร์","โรงพยาบาลสมิติเวช","โรงพยาบาลกรุงเทพ","โรงพยาบาลพระนั่งเกล้า (นนทบุรี)","โรงพยาบาลปทุมธานี","โรงพยาบาลสมุทรปราการ","โรงพยาบาลสมุทรสาคร","โรงพยาบาลสมุทรสงคราม","โรงพยาบาลนครปฐม","โรงพยาบาลพระนครศรีอยุธยา","โรงพยาบาลสระบุรี","โรงพยาบาลลพบุรี","โรงพยาบาลอ่างทอง","โรงพยาบาลสิงห์บุรี","โรงพยาบาลชัยนาท","โรงพยาบาลเจ้าพระยายมราช (สุพรรณบุรี)"],
-          "ภาคเหนือ": ["โรงพยาบาลมหาราชนครเชียงใหม่","โรงพยาบาลนครพิงค์","โรงพยาบาลลำปาง","โรงพยาบาลลำพูน","โรงพยาบาลพุทธชินราช (พิษณุโลก)","โรงพยาบาลแพร่","โรงพยาบาลน่าน","โรงพยาบาลพะเยา","โรงพยาบาลเชียงรายประชานุเคราะห์","โรงพยาบาลแม่สอด (ตาก)","โรงพยาบาลตาก","โรงพยาบาลสุโขทัย","โรงพยาบาลอุตรดิตถ์","โรงพยาบาลกำแพงเพชร","โรงพยาบาลพิจิตร","โรงพยาบาลเพชรบูรณ์","โรงพยาบาลแม่ฮ่องสอน"],
-          "ภาคตะวันออกเฉียงเหนือ": ["โรงพยาบาลศรีนครินทร์ (ขอนแก่น)","โรงพยาบาลขอนแก่น","โรงพยาบาลอุดรธานี","โรงพยาบาลมหาสารคาม","โรงพยาบาลสรรพสิทธิประสงค์ (อุบลราชธานี)","โรงพยาบาลบุรีรัมย์","โรงพยาบาลมหาราชนครราชสีมา","โรงพยาบาลร้อยเอ็ด","โรงพยาบาลชัยภูมิ","โรงพยาบาลหนองคาย","โรงพยาบาลเลย","โรงพยาบาลสกลนคร","โรงพยาบาลนครพนม","โรงพยาบาลมุกดาหาร","โรงพยาบาลกาฬสินธุ์","โรงพยาบาลยโสธร","โรงพยาบาลอำนาจเจริญ","โรงพยาบาลศรีสะเกษ","โรงพยาบาลสุรินทร์","โรงพยาบาลหนองบัวลำภู","โรงพยาบาลบึงกาฬ"],
-          "ภาคใต้": ["โรงพยาบาลสงขลานครินทร์ (หาดใหญ่)","โรงพยาบาลสุราษฎร์ธานี","โรงพยาบาลวชิระภูเก็ต","โรงพยาบาลตรัง","โรงพยาบาลยะลา","โรงพยาบาลมหาราชนครศรีธรรมราช","โรงพยาบาลกระบี่","โรงพยาบาลชุมพร","โรงพยาบาลระนอง","โรงพยาบาลพังงา","โรงพยาบาลพัทลุง","โรงพยาบาลสตูล","โรงพยาบาลปัตตานี","โรงพยาบาลนราธิวาส"],
-          "ภาคตะวันออก": ["โรงพยาบาลชลบุรี","โรงพยาบาลพระปกเกล้า (จันทบุรี)","โรงพยาบาลระยอง","โรงพยาบาลสมเด็จพระบรมราชเทวี ณ ศรีราชา","โรงพยาบาลตราด","โรงพยาบาลฉะเชิงเทรา","โรงพยาบาลปราจีนบุรี","โรงพยาบาลสระแก้ว","โรงพยาบาลนครนายก"],
-          "ภาคตะวันตก": ["โรงพยาบาลราชบุรี","โรงพยาบาลเพชรบุรี","โรงพยาบาลหัวหิน","โรงพยาบาลกาญจนบุรี","โรงพยาบาลประจวบคีรีขันธ์","โรงพยาบาลบ้านโป่ง (ราชบุรี)"]
-        };
-        var REHABAI_HOSPITAL_THERAPISTS = {
-          "โรงพยาบาลศิริราช": [
-            {name:"กภ.สุนิสา รักษ์ดี", pos:"นักกายภาพบำบัด (แผนกเวชศาสตร์ฟื้นฟู)"},
-            {name:"กภ.อรุณี แสงใส", pos:"นักกายภาพบำบัดอาวุโส (แผนกเวชศาสตร์ฟื้นฟู)"},
-            {name:"กภ.วิชาญ ทองดี", pos:"หัวหน้าแผนกกายภาพบำบัด"}
-          ]
-        };
-        function rehabaiDefaultTherapists(hospital){
-          return [
-            {name:"กภ.สมชาย ใจเย็น", pos:"นักกายภาพบำบัด"},
-            {name:"กภ.สมหญิง ประเสริฐ", pos:"นักกายภาพบำบัดอาวุโส"}
-          ];
-        }
-        function rehabaiPopulateHospitals(){
-          var region = document.getElementById('regionSelect').value;
-          var hSel = document.getElementById('hospitalSelectPatient');
-          var list = REHABAI_REGION_HOSPITALS[region] || [];
-          hSel.innerHTML = list.map(function(h){ return '<option>'+h+'</option>'; }).join('');
-          rehabaiPopulateTherapists();
-        }
-        function rehabaiPopulateTherapists(){
-          var hospital = document.getElementById('hospitalSelectPatient').value;
-          var tSel = document.getElementById('therapistSelectPatient');
-          var list = REHABAI_HOSPITAL_THERAPISTS[hospital] || rehabaiDefaultTherapists(hospital);
-          tSel.innerHTML = list.map(function(t){ return '<option data-name="'+t.name+'" data-hospital="'+hospital+'">'+t.name+' — '+t.pos+'</option>'; }).join('');
-          rehabaiUpdateMatch();
-        }
-        function rehabaiUpdateMatch(){
-          var tSel = document.getElementById('therapistSelectPatient');
-          var opt = tSel.options[tSel.selectedIndex];
-          if(!opt) return;
-          var name = opt.getAttribute('data-name');
-          var hospital = opt.getAttribute('data-hospital');
-          document.getElementById('matchSuccessText').innerHTML = '<strong>เชื่อมต่อกับ '+name+' เรียบร้อยแล้ว</strong>เนื่องจากคุณเลือกนักกายภาพบำบัดที่มีตัวตนยืนยันแล้วในระบบ (สังกัด'+hospital+'ตรงกัน) ระบบจึงเชื่อมต่อบัญชีให้ทันที ไม่ต้องรออนุมัติ — '+name+'จะเห็นความคืบหน้าการฝึกของคุณและแชทกับคุณได้ทันที';
-        }
-        rehabaiPopulateHospitals();
-        </script>
-
-        <button class="btn-primary-wide" style="align-self:center;">ดำเนินการต่อ</button>
-        <p class="center-text" style="max-width:420px;margin:10px auto 0;">ไม่พบโรงพยาบาลหรือนักกายภาพบำบัดของคุณในรายการ? <a href="#" class="link-teal">ติดต่อทีมงาน</a></p>
-      </div>
-    </div>
-  </div>
-
 </div>
-
-<script>
-function rehabaiUpdateDbPreview(){
-  var minEl = document.getElementById('loudMinDb');
-  var goalEl = document.getElementById('loudGoalDb');
-  var maxEl = document.getElementById('loudMaxDb');
-  if(!minEl || !goalEl || !maxEl) return;
-  var min = parseInt(minEl.value, 10);
-  var goal = parseInt(goalEl.value, 10);
-  var max = parseInt(maxEl.value, 10);
-  var fill = document.getElementById('loudDbPreviewFill');
-  var marker = document.getElementById('loudDbPreviewMarker');
-  var label = document.getElementById('loudDbPreviewLabel');
-  var scaleMin = 40, scaleMax = 110;
-  var pct = function(v){ return Math.max(0, Math.min(100, (v - scaleMin) / (scaleMax - scaleMin) * 100)); };
-  if(min >= max){
-    label.textContent = 'ค่าต่ำสุดต้องน้อยกว่าค่าสูงสุด';
-    label.style.color = '#B33A2E';
-    fill.style.left = '0%'; fill.style.width = '0%';
-    marker.style.left = '0%';
-    return;
-  }
-  fill.style.left = pct(min) + '%';
-  fill.style.width = (pct(max) - pct(min)) + '%';
-  marker.style.left = pct(goal) + '%';
-  label.style.color = 'var(--text-muted)';
-  label.textContent = 'ช่วงที่ยอมรับได้ ' + min + '-' + max + ' dB · เป้าหมาย ' + goal + ' dB';
-}
-document.addEventListener('DOMContentLoaded', rehabaiUpdateDbPreview);
-</script>
 </body>
 </html>

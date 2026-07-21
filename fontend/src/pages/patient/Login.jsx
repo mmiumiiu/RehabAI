@@ -10,7 +10,7 @@ const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 export default function Login() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ email: '', password: '', remember: true })
+  const [form, setForm] = useState({ email: 'patient@demo.com', password: 'demo1234', remember: true })
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
 
