@@ -4,6 +4,7 @@ dist
 *.log
 .claude/settings.local.json
 ./claude/changelog
+fontend/.env.example
 
 # Python
 __pycache__/
