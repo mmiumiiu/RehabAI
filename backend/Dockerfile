@@ -2,7 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install deps in a separate layer so torch is cached between deploys
+# Install torch CPU-only first (separate layer so it's cached between deploys)
+RUN pip install --no-cache-dir torch==2.3.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Install remaining deps
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
