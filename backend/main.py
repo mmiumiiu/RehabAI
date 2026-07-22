@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
-import json, pathlib
+import json, pathlib, os, hmac, hashlib, base64, httpx
 
 BASE = pathlib.Path(__file__).parent
 
@@ -110,6 +110,57 @@ class ScoreRequest(BaseModel):
     landmarks: List[List[List[float]]]  # [n_frames][33][4: x,y,z,visibility]
     exercise: str
     fps: float = 20.0
+
+LINE_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
+LINE_SECRET = os.getenv("LINE_CHANNEL_SECRET", "")
+LINE_PUSH_URL = "https://api.line.me/v2/bot/message/push"
+
+def _verify_line_signature(body: bytes, signature: str) -> bool:
+    if not LINE_SECRET:
+        return True  # skip verification in dev if secret not set
+    mac = hmac.new(LINE_SECRET.encode(), body, hashlib.sha256).digest()
+    return hmac.compare_digest(base64.b64encode(mac).decode(), signature)
+
+@app.post("/line/webhook")
+async def line_webhook(request: Request):
+    body = await request.body()
+    sig = request.headers.get("X-Line-Signature", "")
+    if not _verify_line_signature(body, sig):
+        raise HTTPException(status_code=400, detail="invalid signature")
+
+    data = json.loads(body)
+    for event in data.get("events", []):
+        if event.get("type") == "message" and event.get("source", {}).get("type") == "user":
+            user_id = event["source"]["userId"]
+            # TODO: persist userId → patient account mapping in Firestore
+            print(f"[Line] new user linked: {user_id}")
+            # Send welcome message
+            if LINE_TOKEN:
+                async with httpx.AsyncClient() as client:
+                    await client.post(
+                        LINE_PUSH_URL,
+                        headers={"Authorization": f"Bearer {LINE_TOKEN}"},
+                        json={"to": user_id, "messages": [{"type": "text", "text": "เชื่อมต่อ RehabAI สำเร็จแล้ว! คุณจะได้รับการแจ้งเตือนการฝึกทาง Line นี้"}]},
+                    )
+    return {"status": "ok"}
+
+@app.post("/line/send")
+async def line_send(payload: dict):
+    """Push a message to a patient's Line account. Called by scheduled jobs."""
+    user_id = payload.get("userId")
+    text = payload.get("text")
+    if not user_id or not text:
+        raise HTTPException(status_code=422, detail="userId and text required")
+    if not LINE_TOKEN:
+        print(f"[Line stub→{user_id}] {text}")
+        return {"ok": True, "stub": True}
+    async with httpx.AsyncClient() as client:
+        res = await client.post(
+            LINE_PUSH_URL,
+            headers={"Authorization": f"Bearer {LINE_TOKEN}"},
+            json={"to": user_id, "messages": [{"type": "text", "text": text}]},
+        )
+    return {"ok": res.status_code == 200}
 
 @app.get("/health")
 def health():

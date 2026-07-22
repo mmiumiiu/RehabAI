@@ -66,12 +66,25 @@ export const auth = {
   },
 }
 
-// SMS gateway stub — logs instead of hitting Twilio/Thai SMS provider.
-export const sms = {
-  async send({ to, body }) {
+// Line OA notification stub — logs instead of hitting Line Messaging API.
+// In production, replace with a backend call to POST /line/send.
+const LINE_USER_KEY = 'rehabai_line_user_id'
+export const lineNotification = {
+  getUserId() {
+    return localStorage.getItem(LINE_USER_KEY) || null
+  },
+  setUserId(userId) {
+    localStorage.setItem(LINE_USER_KEY, userId)
+  },
+  clearUserId() {
+    localStorage.removeItem(LINE_USER_KEY)
+  },
+  async send({ body }) {
+    const userId = this.getUserId()
+    if (!userId) { console.warn('[Line] no userId linked'); return { ok: false } }
     await wait(300)
     // eslint-disable-next-line no-console
-    console.info(`[SMS→${to}] ${body}`)
+    console.info(`[Line→${userId}] ${body}`)
     return { ok: true }
   },
 }

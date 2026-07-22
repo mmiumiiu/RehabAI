@@ -114,7 +114,7 @@ export default function Profile() {
 
       <Block title="การตั้งค่าอื่นๆ">
         {[
-          { to: '/settings/notifications', icon: Bell, label: 'การแจ้งเตือนทาง SMS', desc: 'เตือนให้ฝึกตามวันและเวลาที่ตั้งไว้' },
+          { to: '/settings/notifications', icon: Bell, label: 'การแจ้งเตือนทาง Line', desc: 'เตือนให้ฝึกตามวันและเวลาที่ตั้งไว้ผ่าน Line OA' },
           { to: '/settings/emergency', icon: ShieldCheck, label: 'ผู้ติดต่อฉุกเฉิน', desc: 'จัดการรายชื่อและการโทรฉุกเฉินอัตโนมัติ' },
           { to: '/chat', icon: Chat, label: 'แชทกับนักกายภาพบำบัด', desc: 'ไม่ใช่ช่องทางฉุกเฉิน ตอบภายใน 1-2 วันทำการ' },
         ].map((r) => (
