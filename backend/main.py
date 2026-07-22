@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from typing import List
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 import json, pathlib, os, hmac, hashlib, base64, httpx
+from dotenv import load_dotenv
+load_dotenv()
 
 BASE = pathlib.Path(__file__).parent
 
