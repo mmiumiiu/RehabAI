@@ -26,6 +26,12 @@ function avgConf(repScores) {
   return repScores.reduce((s, r) => s + r.conf, 0) / repScores.length
 }
 
+function stars(conf) {
+  if (conf >= 0.75) return { s: '★★★', label: 'ดีมาก' }
+  if (conf >= 0.50) return { s: '★★☆', label: 'ดี' }
+  return { s: '★☆☆', label: 'ต้องฝึกเพิ่ม' }
+}
+
 export default function SessionBig() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -46,8 +52,8 @@ export default function SessionBig() {
   let barMsg = ex.how.split(' ').slice(0, 8).join(' ') + '…'
   if (complete) barMsg = 'เยี่ยมมาก! ทำครบตามเป้าหมายแล้ว'
   else if (recording) barMsg = 'กำลังวิเคราะห์ท่า…'
-  else if (lastScore?.verdict === 'correct') barMsg = `ท่าถูกต้อง — ${Math.round(lastScore.conf * 100)}%`
-  else if (lastScore?.verdict === 'needs_work') barMsg = `ปรับท่าให้ดีขึ้น — ${Math.round(lastScore.conf * 100)}% (เป้า 50%+)`
+  else if (lastScore?.verdict === 'correct') barMsg = `ท่าถูกต้อง — ${stars(lastScore.conf).s} ${stars(lastScore.conf).label}`
+  else if (lastScore?.verdict === 'needs_work') barMsg = `ปรับท่าให้ดีขึ้น — ${stars(lastScore.conf).s} ${stars(lastScore.conf).label}`
   else if (status === 'live' && !poseReady) barMsg = 'กำลังโหลด AI…'
   else if (status === 'live' && poseReady && !landmarks) barMsg = 'ไม่พบผู้ใช้งานในกล้อง'
 
@@ -103,7 +109,7 @@ export default function SessionBig() {
               className="absolute top-14 right-4 px-3 py-2 rounded-lg text-white text-[13px] font-semibold"
               style={{ background: lastScore.verdict === 'correct' ? 'rgba(78,148,132,0.92)' : 'rgba(185,84,42,0.92)' }}
             >
-              {lastScore.verdict === 'correct' ? '✓ ถูกต้อง' : '⚠ ต้องปรับ'} {Math.round(lastScore.conf * 100)}%
+              {lastScore.verdict === 'correct' ? '✓' : '⚠'} {stars(lastScore.conf).s} {stars(lastScore.conf).label}
             </div>
           )}
 
@@ -125,7 +131,7 @@ export default function SessionBig() {
           stats={[
             {
               k: 'ความแม่นยำท่าทาง',
-              v: accuracy != null ? `${Math.round(accuracy * 100)}%` : modelExercise ? '—' : 'ไม่รองรับ',
+              v: accuracy != null ? `${stars(accuracy).s} ${stars(accuracy).label}` : modelExercise ? '—' : 'ไม่รองรับ',
             },
             { k: 'เวลาในเซสชันนี้', v: clock },
             { k: 'ครั้งที่ประเมินแล้ว', v: `${repScores.length}` },
@@ -151,8 +157,8 @@ export default function SessionBig() {
                     }}
                   >
                     <div className="font-semibold">ครั้งที่ {i + 1}</div>
-                    <div className="text-[18px] font-bold">{Math.round(r.conf * 100)}%</div>
-                    <div className="text-[11px]">{r.verdict === 'correct' ? 'ถูกต้อง' : 'ต้องปรับ'}</div>
+                    <div className="text-[18px] font-bold">{stars(r.conf).s}</div>
+                    <div className="text-[11px]">{stars(r.conf).label}</div>
                   </div>
                 ))}
               </div>
