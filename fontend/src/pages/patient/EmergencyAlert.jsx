@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Check, Phone, MapPin } from '../../components/icons.jsx'
-import { sms } from '../../lib/services.js'
+import { lineNotification } from '../../lib/services.js'
 import { emergencyContactsSeed } from '../../lib/mockData.js'
 
 // Emergency countdown screen (spec §3.15). Order matters:
@@ -20,8 +20,7 @@ export default function EmergencyAlert() {
 
   // step 1: fire SMS immediately on mount
   useEffect(() => {
-    sms.send({
-      to: contact.phone,
+    lineNotification.send({
       body: `[RehabAI] แจ้งเหตุฉุกเฉิน: ${contact.name} โปรดติดต่อผู้ป่วยด่วน พร้อมพิกัดตำแหน่งปัจจุบัน`,
     })
   }, [])
