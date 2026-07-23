@@ -6,13 +6,13 @@ import { emergencyContactsSeed } from '../../lib/mockData.js'
 
 // Emergency countdown screen (spec §3.15). Order matters:
 // 1) immediately notify contact #1 (+location) — non-cancellable
-// 2) countdown before auto-calling 1669 (7s normal, 4s during high-risk)
+// 2) countdown before auto-calling 1669 (15s)
 // 3) cancel / call-now controls
 export default function EmergencyAlert() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const highRisk = params.get('reason') === 'fall'
-  const total = highRisk ? 4 : 7
+  const total = 15
   const contact = emergencyContactsSeed[0]
 
   const [left, setLeft] = useState(total)
