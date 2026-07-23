@@ -29,6 +29,7 @@ export default function NotificationSettings() {
   const [time, setTime] = useState('09:00')
   const [condition, setCondition] = useState('missedOnly')
   const [saved, setSaved] = useState(false)
+  const [testStatus, setTestStatus] = useState(null) // null | 'sending' | 'ok' | 'fail'
 
   // Link-code flow
   const [linkCode, setLinkCode] = useState(null)
@@ -195,13 +196,32 @@ export default function NotificationSettings() {
         </div>
       </Card>
 
-      <Button
-        variant="primary"
-        className="w-auto"
-        onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2000) }}
-      >
-        {saved ? 'บันทึกแล้ว ✓' : 'บันทึกการตั้งค่า'}
-      </Button>
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button
+          variant="primary"
+          className="w-auto"
+          onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2000) }}
+        >
+          {saved ? 'บันทึกแล้ว ✓' : 'บันทึกการตั้งค่า'}
+        </Button>
+
+        {linked && (
+          <button
+            disabled={testStatus === 'sending'}
+            onClick={async () => {
+              setTestStatus('sending')
+              const msg = `⏰ สวัสดีคุณ${user?.name?.split(' ')[0] || ''}!\nอย่าลืมฝึกกายภาพบำบัดวันนี้เวลา ${time} น. นะ\nต่อเนื่อง 5 วันแล้ว ไปต่อได้เลย! 💪\n\nเข้าแอปได้ที่ rehabai.app`
+              const { ok } = await lineNotification.send({ body: msg })
+              setTestStatus(ok ? 'ok' : 'fail')
+              setTimeout(() => setTestStatus(null), 3000)
+            }}
+            className="inline-flex items-center gap-2 border border-[#06C755] text-[#06C755] hover:bg-green-50 disabled:opacity-60 font-semibold text-[13.5px] px-5 py-2.5 rounded-btn transition-colors"
+          >
+            <LineIcon />
+            {testStatus === 'sending' ? 'กำลังส่ง…' : testStatus === 'ok' ? 'ส่งแล้ว ✓' : testStatus === 'fail' ? 'ส่งไม่สำเร็จ ✗' : 'ส่งข้อความทดสอบ'}
+          </button>
+        )}
+      </div>
     </div>
   )
 }
