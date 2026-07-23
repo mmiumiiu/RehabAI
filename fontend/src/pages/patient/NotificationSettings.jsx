@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Toggle, Button } from '../../components/ui.jsx'
 import { ArrowLeft } from '../../components/icons.jsx'
@@ -13,8 +13,13 @@ const CONDITIONS = [
   { value: 'streakBroken', label: 'เตือนเมื่อขาดฝึกติดต่อกัน 2 วันขึ้นไป' },
 ]
 
-// Replace with your Line OA friend URL from Line OA Manager → Messaging API
 const LINE_OA_URL = import.meta.env.VITE_LINE_OA_URL || 'https://line.me/R/ti/p/@rehabai'
+
+const LineIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+  </svg>
+)
 
 export default function NotificationSettings() {
   const { user } = useAuth()
@@ -25,12 +30,53 @@ export default function NotificationSettings() {
   const [condition, setCondition] = useState('missedOnly')
   const [saved, setSaved] = useState(false)
 
-  const toggleDay = (d) => setDays((ds) => (ds.includes(d) ? ds.filter((x) => x !== d) : [...ds, d]))
+  // Link-code flow
+  const [linkCode, setLinkCode] = useState(null)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkError, setLinkError] = useState(null)
+  const pollRef = useRef(null)
+
+  useEffect(() => () => clearInterval(pollRef.current), [])
+
+  async function handleStartLink() {
+    setLinkLoading(true)
+    setLinkError(null)
+    try {
+      const code = await lineNotification.generateLinkCode()
+      setLinkCode(code)
+      pollRef.current = setInterval(async () => {
+        const { userId, expired } = await lineNotification.pollLinkCode(code)
+        if (userId) {
+          clearInterval(pollRef.current)
+          lineNotification.setUserId(userId)
+          setLinked(true)
+          setLinkCode(null)
+        } else if (expired) {
+          clearInterval(pollRef.current)
+          setLinkCode(null)
+          setLinkError('รหัสหมดอายุแล้ว กรุณาลองใหม่')
+        }
+      }, 3000)
+    } catch {
+      setLinkError('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่')
+    } finally {
+      setLinkLoading(false)
+    }
+  }
+
+  function handleCancelLink() {
+    clearInterval(pollRef.current)
+    setLinkCode(null)
+  }
 
   function handleUnlink() {
+    clearInterval(pollRef.current)
     lineNotification.clearUserId()
     setLinked(false)
+    setLinkCode(null)
   }
+
+  const toggleDay = (d) => setDays((ds) => (ds.includes(d) ? ds.filter((x) => x !== d) : [...ds, d]))
 
   return (
     <div className="max-w-[680px]">
@@ -63,28 +109,39 @@ export default function NotificationSettings() {
                 ยกเลิกการเชื่อมต่อ
               </button>
             </div>
+          ) : linkCode ? (
+            <div className="flex flex-col gap-3">
+              <p className="text-[13px] text-ink-secondary leading-relaxed">
+                1. กด <strong>เพิ่มเพื่อน</strong> เพื่อเพิ่ม RehabAI ใน Line<br />
+                2. ส่งรหัสนี้ในแชทของ RehabAI Line OA
+              </p>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="font-mono text-[26px] font-bold tracking-[0.18em] text-teal-800 bg-teal-50 border border-teal-200 px-4 py-2 rounded-lg select-all">
+                  {linkCode}
+                </span>
+                <a href={LINE_OA_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-[13px] px-4 py-2.5 rounded-btn transition-colors">
+                  <LineIcon /> เพิ่มเพื่อน
+                </a>
+              </div>
+              <p className="text-[11.5px] text-ink-muted flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
+                รอการยืนยันจาก Line… (รหัสหมดอายุใน 10 นาที)
+              </p>
+              <button onClick={handleCancelLink} className="text-[11.5px] text-ink-muted underline w-fit">
+                ยกเลิก
+              </button>
+            </div>
           ) : (
             <div className="flex flex-col gap-3">
+              {linkError && <p className="text-[12.5px] text-danger">{linkError}</p>}
               <p className="text-[12.5px] text-ink-secondary">
-                กด <strong>เพิ่มเพื่อน</strong> แล้วส่งข้อความใดก็ได้ใน Line เพื่อเชื่อมต่อบัญชีของคุณ
+                กดปุ่มด้านล่างเพื่อรับรหัสเชื่อมต่อ แล้วส่งรหัสนั้นในแชทของ Line OA RehabAI
               </p>
-              <a
-                href={LINE_OA_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 w-fit bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-btn transition-colors"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-                </svg>
-                เพิ่มเพื่อนใน Line
-              </a>
-              {/* Demo only: simulate linking */}
-              <button
-                onClick={() => { lineNotification.setUserId('U_demo_12345'); setLinked(true) }}
-                className="text-[11.5px] text-ink-muted underline w-fit"
-              >
-                (Demo: จำลองการเชื่อมต่อ)
+              <button onClick={handleStartLink} disabled={linkLoading}
+                className="inline-flex items-center gap-2 w-fit bg-[#06C755] hover:bg-[#05b34c] disabled:opacity-60 text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-btn transition-colors">
+                <LineIcon />
+                {linkLoading ? 'กำลังสร้างรหัส…' : 'เชื่อมต่อ Line'}
               </button>
             </div>
           )}

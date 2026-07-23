@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
-import json, pathlib, os, hmac, hashlib, base64, httpx
+import json, pathlib, os, hmac, hashlib, base64, httpx, secrets, time
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -117,11 +117,45 @@ LINE_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", "")
 LINE_SECRET = os.getenv("LINE_CHANNEL_SECRET", "")
 LINE_PUSH_URL = "https://api.line.me/v2/bot/message/push"
 
+# In-memory link-code store: code -> {expires, userId|None}
+# Codes expire after 10 minutes. Users send the code as a Line message to link accounts.
+_link_codes: dict[str, dict] = {}
+
 def _verify_line_signature(body: bytes, signature: str) -> bool:
     if not LINE_SECRET:
         return True  # skip verification in dev if secret not set
     mac = hmac.new(LINE_SECRET.encode(), body, hashlib.sha256).digest()
     return hmac.compare_digest(base64.b64encode(mac).decode(), signature)
+
+async def _push_line(user_id: str, text: str):
+    if not LINE_TOKEN:
+        print(f"[Line stub→{user_id}] {text}")
+        return
+    async with httpx.AsyncClient() as client:
+        await client.post(
+            LINE_PUSH_URL,
+            headers={"Authorization": f"Bearer {LINE_TOKEN}"},
+            json={"to": user_id, "messages": [{"type": "text", "text": text}]},
+        )
+
+@app.post("/line/link-code")
+def generate_link_code():
+    """Generate a short code the patient sends to the Line OA to link their account."""
+    code = secrets.token_hex(3).upper()  # 6 hex chars e.g. "A3F9B2"
+    now = time.time()
+    _link_codes[code] = {"expires": now + 600, "userId": None}
+    # Prune expired codes
+    for k in [k for k, v in _link_codes.items() if v["expires"] < now]:
+        _link_codes.pop(k, None)
+    return {"code": code}
+
+@app.get("/line/link-code/{code}")
+def check_link_code(code: str):
+    """Poll this until userId is non-null — means the patient messaged the OA."""
+    entry = _link_codes.get(code.upper())
+    if not entry or entry["expires"] < time.time():
+        return {"userId": None, "expired": True}
+    return {"userId": entry["userId"], "expired": False}
 
 @app.post("/line/webhook")
 async def line_webhook(request: Request):
@@ -132,37 +166,33 @@ async def line_webhook(request: Request):
 
     data = json.loads(body)
     for event in data.get("events", []):
-        if event.get("type") == "message" and event.get("source", {}).get("type") == "user":
-            user_id = event["source"]["userId"]
-            # TODO: persist userId → patient account mapping in Firestore
-            print(f"[Line] new user linked: {user_id}")
-            # Send welcome message
-            if LINE_TOKEN:
-                async with httpx.AsyncClient() as client:
-                    await client.post(
-                        LINE_PUSH_URL,
-                        headers={"Authorization": f"Bearer {LINE_TOKEN}"},
-                        json={"to": user_id, "messages": [{"type": "text", "text": "เชื่อมต่อ RehabAI สำเร็จแล้ว! คุณจะได้รับการแจ้งเตือนการฝึกทาง Line นี้"}]},
-                    )
+        if event.get("type") != "message":
+            continue
+        if event.get("source", {}).get("type") != "user":
+            continue
+        user_id = event["source"]["userId"]
+        msg_text = event.get("message", {}).get("text", "").strip().upper()
+
+        # Check if message is a valid link code
+        entry = _link_codes.get(msg_text)
+        if entry and entry["expires"] > time.time() and entry["userId"] is None:
+            entry["userId"] = user_id
+            await _push_line(user_id, "✅ เชื่อมต่อ RehabAI สำเร็จแล้ว!\nคุณจะได้รับการแจ้งเตือนการฝึกทาง Line นี้ 💪")
+        else:
+            # Unknown message — send help
+            await _push_line(user_id, "สวัสดี! ส่งรหัสเชื่อมต่อจากแอป RehabAI มาที่นี่เพื่อเปิดใช้การแจ้งเตือน")
+
     return {"status": "ok"}
 
 @app.post("/line/send")
 async def line_send(payload: dict):
-    """Push a message to a patient's Line account. Called by scheduled jobs."""
+    """Push a message to a patient's Line account."""
     user_id = payload.get("userId")
     text = payload.get("text")
     if not user_id or not text:
         raise HTTPException(status_code=422, detail="userId and text required")
-    if not LINE_TOKEN:
-        print(f"[Line stub→{user_id}] {text}")
-        return {"ok": True, "stub": True}
-    async with httpx.AsyncClient() as client:
-        res = await client.post(
-            LINE_PUSH_URL,
-            headers={"Authorization": f"Bearer {LINE_TOKEN}"},
-            json={"to": user_id, "messages": [{"type": "text", "text": text}]},
-        )
-    return {"ok": res.status_code == 200}
+    await _push_line(user_id, text)
+    return {"ok": True}
 
 @app.get("/health")
 def health():

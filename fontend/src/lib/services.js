@@ -66,9 +66,9 @@ export const auth = {
   },
 }
 
-// Line OA notification stub — logs instead of hitting Line Messaging API.
-// In production, replace with a backend call to POST /line/send.
 const LINE_USER_KEY = 'rehabai_line_user_id'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 export const lineNotification = {
   getUserId() {
     return localStorage.getItem(LINE_USER_KEY) || null
@@ -79,13 +79,25 @@ export const lineNotification = {
   clearUserId() {
     localStorage.removeItem(LINE_USER_KEY)
   },
+  async generateLinkCode() {
+    const res = await fetch(`${API_URL}/line/link-code`, { method: 'POST' })
+    if (!res.ok) throw new Error('Failed to generate link code')
+    return (await res.json()).code
+  },
+  async pollLinkCode(code) {
+    const res = await fetch(`${API_URL}/line/link-code/${code}`)
+    if (!res.ok) return { userId: null, expired: true }
+    return res.json()
+  },
   async send({ body }) {
     const userId = this.getUserId()
     if (!userId) { console.warn('[Line] no userId linked'); return { ok: false } }
-    await wait(300)
-    // eslint-disable-next-line no-console
-    console.info(`[Line→${userId}] ${body}`)
-    return { ok: true }
+    const res = await fetch(`${API_URL}/line/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, text: body }),
+    })
+    return res.ok ? { ok: true } : { ok: false }
   },
 }
 
