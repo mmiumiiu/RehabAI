@@ -23,6 +23,7 @@ import EmergencySettings from './pages/patient/EmergencySettings.jsx'
 import EmergencyAlert from './pages/patient/EmergencyAlert.jsx'
 import Chat from './pages/patient/Chat.jsx'
 import TtsTest from './pages/patient/TtsTest.jsx'
+import LsvtLoudTest from './pages/patient/LsvtLoudTest.jsx'
 
 // Therapist pages
 import TherapistLogin from './pages/therapist/TherapistLogin.jsx'
@@ -57,6 +58,9 @@ export default function App() {
 
       {/* TTS test page (public, no auth needed) */}
       <Route path="/tts-test" element={<TtsTest />} />
+
+      {/* LSVT LOUD test page — dB loudness + word accuracy (public, no auth needed) */}
+      <Route path="/lsvt-test" element={<LsvtLoudTest />} />
 
       {/* Patient app (full-screen session routes live outside the sidebar layout) */}
       <Route

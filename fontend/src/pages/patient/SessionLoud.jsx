@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useMicLevel } from '../../lib/useCamera.js'
+import { useLoudScorer, LOUD_BAND } from '../../lib/useLoudScorer.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import { Mic, Check } from '../../components/icons.jsx'
@@ -22,6 +22,14 @@ function useSessionClock() {
   return { clock: `${mm}:${ss}`, seconds: t }
 }
 
+const VERDICT_TH = {
+  good: 'อยู่ในช่วงดี',
+  soft_ok: 'เบาแต่รับได้',
+  loud_ok: 'ดังแต่รับได้',
+  too_soft: 'เบาเกินไป',
+  too_loud: 'ดังเกินไป',
+}
+
 export default function SessionLoud() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -30,26 +38,28 @@ export default function SessionLoud() {
 
   const settings = loudSettings.get()
   const repGoal = settings?.reps ?? 10
-  const dbGoal = settings?.goal ?? 70
+  // Loudness band is fixed for now (the therapist-adjustable value — see
+  // LOUD_BAND). Target word comes from the exercise step.
+  const band = LOUD_BAND
+  // Word accuracy is scored only when the step opts in (scoreWord !== false).
+  // The "อา" sustain step scores loudness + duration only, so it sends no target.
+  const target = step.scoreWord === false ? '' : step.phrase
 
-  const { db, status } = useMicLevel(true)
-  const { clock, seconds } = useSessionClock()
+  const { clock } = useSessionClock()
 
   const [reps, setReps] = useState(0)
   const [pulse, setPulse] = useState(false)
-  const [lastLoud, setLastLoud] = useState(null) // true=good, false=too quiet, null=not yet
   const [sessionDone, setSessionDone] = useState(false)
   const publishedRef = useRef(false)
 
-  const pct = Math.max(0, Math.min(100, ((db - 40) / (90 - 40)) * 100))
-  const targetPct = ((dbGoal - 40) / (90 - 40)) * 100
-
-  function tap() {
+  // A rep only counts when EVERY scored part (loudness + word and/or duration)
+  // is above 80% — the backend decides this via `passed`. Attempts that fall
+  // short still show feedback but don't advance the counter.
+  function handleScore(data) {
     if (sessionDone) return
-    const loud = db >= dbGoal
-    setLastLoud(loud)
     setPulse(true)
     setTimeout(() => setPulse(false), 200)
+    if (!data?.passed) return
     setReps((r) => {
       const next = r + 1
       if (next >= repGoal && !publishedRef.current) {
@@ -61,7 +71,16 @@ export default function SessionLoud() {
     })
   }
 
-  function stop() {
+  const { db, micStatus, recording, transcript, holdSec, result, error, start, stop } = useLoudScorer({
+    band,
+    target,
+    mode: step.mode ?? 'word',
+    holdMin: step.holdMin ?? 5,
+    holdTarget: step.holdTarget ?? 7,
+    onResult: handleScore,
+  })
+
+  function stopSession() {
     if (!publishedRef.current) {
       publishedRef.current = true
       sessionService.publish(PATIENT_ID, { reps, goal: repGoal, duration: clock, complete: false })
@@ -71,11 +90,28 @@ export default function SessionLoud() {
 
   const progressPct = Math.round((reps / repGoal) * 100)
 
+  // dB meter geometry on the shared 40–90 display scale.
+  const pct = Math.max(0, Math.min(100, ((db - 40) / (90 - 40)) * 100))
+  const bandLeft = ((band.good_min - 40) / (90 - 40)) * 100
+  const bandWidth = ((band.good_max - band.good_min) / (90 - 40)) * 100
+
+  const passed = result?.passed
+  const isSustain = (step.mode ?? 'word') === 'sustain'
+
+  // Up to three scored parts, each shown as its own percentage.
+  const parts = result
+    ? [
+        { key: 'db', label: 'ความดังเสียง', score: result.db.score },
+        result.word && { key: 'word', label: 'ความถูกต้องของคำ', score: result.word.score },
+        result.hold && { key: 'hold', label: 'ระยะเวลาออกเสียง', score: result.hold.score },
+      ].filter(Boolean)
+    : []
+
   return (
     <div className="min-h-screen bg-bg p-3 md:p-6">
       <div className="max-w-[1100px] mx-auto grid lg:grid-cols-[1.6fr_1fr] gap-5">
 
-        {/* Tap panel */}
+        {/* Voice panel */}
         <div className="relative rounded-2xl bg-cam p-6 md:p-9 flex flex-col items-center justify-center gap-5 min-h-[400px]">
           <SOSButton reason="sos" />
 
@@ -104,20 +140,28 @@ export default function SessionLoud() {
             </div>
           </div>
 
-          {/* Big tap button */}
+          {/* Record / speak button */}
           {!sessionDone ? (
             <button
-              onPointerDown={tap}
+              onPointerDown={() => (recording ? stop() : start())}
               className={`w-28 h-28 rounded-full flex flex-col items-center justify-center gap-1 text-white font-semibold text-[13px] select-none transition-transform active:scale-95 ${
                 pulse ? 'scale-95' : ''
               }`}
               style={{
-                background: lastLoud === false ? 'rgba(185,84,42,0.85)' : lastLoud === true ? 'rgba(78,148,132,0.85)' : 'rgba(255,255,255,0.14)',
+                background: recording
+                  ? 'rgba(185,84,42,0.85)'
+                  : passed === false
+                    ? 'rgba(185,84,42,0.85)'
+                    : passed === true
+                      ? 'rgba(78,148,132,0.85)'
+                      : 'rgba(255,255,255,0.14)',
                 boxShadow: '0 0 0 6px rgba(255,255,255,0.06)',
               }}
             >
               <Mic size={28} />
-              กด 1 ครั้ง
+              {recording
+                ? (isSustain ? `${holdSec.toFixed(1)} วิ` : 'กำลังฟัง…')
+                : (isSustain ? 'กดเริ่มออกเสียง' : 'กดแล้วพูด')}
             </button>
           ) : (
             <div className="w-28 h-28 rounded-full bg-[rgba(78,148,132,0.85)] flex flex-col items-center justify-center gap-1 text-white">
@@ -126,36 +170,63 @@ export default function SessionLoud() {
             </div>
           )}
 
-          {/* dB feedback */}
-          {lastLoud !== null && !sessionDone && (
-            <p className="text-[12.5px] font-medium" style={{ color: lastLoud ? '#7FB88A' : '#E39159' }}>
-              {lastLoud ? `เสียงดี (${db} dB) ✓` : `เบาเกินไป — ลองดังขึ้น (${db} dB < ${dbGoal} dB)`}
+          {/* Live sustain hint */}
+          {isSustain && recording && !sessionDone && (
+            <p className="text-[12px] text-white/55 -mt-1">
+              ค้างเสียง "อา" ไว้ให้นานที่สุด · ระบบจะหยุดให้เองเมื่อคุณเงียบ · เป้าหมาย {step.holdMin ?? 5}–{step.holdTarget ?? 7} วินาที
             </p>
           )}
 
-          {/* small dB meter */}
+          {/* Per-attempt feedback — each scored part shown separately */}
+          {result && !sessionDone && (
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-5">
+                {parts.map((p) => (
+                  <div key={p.key}>
+                    <p className="font-heading text-[22px] font-semibold leading-none" style={{ color: p.score >= 80 ? '#7FB88A' : '#E39159' }}>
+                      {p.score}%
+                    </p>
+                    <p className="text-[11px] text-white/55 mt-0.5">{p.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[12px] mt-1.5" style={{ color: passed ? '#7FB88A' : '#E39159' }}>
+                {passed
+                  ? 'ผ่าน — นับ 1 ครั้ง ✓'
+                  : `ยังไม่นับ — ต้องเกิน 80% ทุกส่วน (${VERDICT_TH[result.db.verdict] || result.db.verdict}${result.hold ? `, ค้างเสียง ${result.hold.hold_sec} วิ` : ''}${result.word && result.word.verdict !== 'correct' ? `, ได้ยิน “${transcript || '—'}”` : ''})`}
+              </p>
+            </div>
+          )}
+          {error && !sessionDone && (
+            <p className="text-[12px] text-[#E39159] text-center max-w-[280px]">{error}</p>
+          )}
+
+          {/* Live dB meter with the good band highlighted */}
           <div className="w-full max-w-[260px]">
             <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
+              <div
+                className="absolute top-0 bottom-0 bg-white/25"
+                style={{ left: `${bandLeft}%`, width: `${bandWidth}%` }}
+              />
               <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#B9542A,#E39159)', transition: 'width 0.1s' }} />
-              <div className="absolute -top-0.5 -bottom-0.5 w-0.5 bg-white/40" style={{ left: `${targetPct}%` }} />
             </div>
             <div className="flex justify-between text-[10px] text-white/35 mt-1">
               <span>เบา</span>
-              <span>เป้า {dbGoal} dB</span>
+              <span>ช่วงดี {band.good_min}–{band.good_max}</span>
               <span>ดัง</span>
             </div>
           </div>
 
-          {status === 'calibrating' && (
+          {micStatus === 'calibrating' && (
             <div className="text-white/60 text-[12px] flex items-center gap-1.5">
               <Mic size={15} />
               กำลังวัดเสียงพื้นหลัง — โปรดนิ่งเงียบสักครู่…
             </div>
           )}
-          {(status === 'requesting' || status === 'denied' || status === 'error') && (
+          {(micStatus === 'requesting' || micStatus === 'denied' || micStatus === 'error') && (
             <div className="text-white/60 text-[12px] flex items-center gap-1.5">
               <Mic size={15} />
-              {status === 'denied' ? 'กรุณาอนุญาตไมโครโฟน' : 'กำลังเปิดไมโครโฟน…'}
+              {micStatus === 'denied' ? 'กรุณาอนุญาตไมโครโฟน' : 'กำลังเปิดไมโครโฟน…'}
             </div>
           )}
         </div>
@@ -168,10 +239,11 @@ export default function SessionLoud() {
           tone="loud"
           stats={[
             { k: 'ครั้งที่เสร็จแล้ว', v: `${reps} / ${repGoal}` },
-            { k: 'เป้าหมาย dB', v: `${dbGoal} dB` },
+            { k: 'ช่วงเป้าหมาย dB', v: `${band.good_min}–${band.good_max} dB` },
+            ...(isSustain ? [{ k: 'เป้าหมายค้างเสียง', v: `${step.holdMin ?? 5}–${step.holdTarget ?? 7} วินาที` }] : []),
             { k: 'เวลาในเซสชันนี้', v: clock },
           ]}
-          onStop={stop}
+          onStop={stopSession}
         />
       </div>
 
@@ -184,7 +256,7 @@ export default function SessionLoud() {
       )}
 
       <p className="max-w-[1100px] mx-auto mt-3 text-[11.5px] text-ink-muted">
-        * ค่า dB ยังไม่ได้สอบเทียบ noise floor ของไมโครโฟน — ใช้เพื่อสาธิตการทำงานเท่านั้น
+        * ค่า dB ยังไม่ได้สอบเทียบ noise floor ของไมโครโฟน · ช่วงเป้าหมายและคำจะปรับตามที่นักกายภาพกำหนดให้ผู้ป่วยแต่ละคน
       </p>
     </div>
   )

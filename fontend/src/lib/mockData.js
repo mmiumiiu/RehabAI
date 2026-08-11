@@ -100,9 +100,13 @@ export const BIG_EXERCISES = [
 
 // LSVT LOUD — reduced scope to 2 core steps (spec §3.6).
 // Breathing / oral-motor / pitch-glide drills are out of scope in this phase.
+// `mode` selects which scoring axes apply:
+//   'sustain' → ความดัง + ระยะเวลาออกเสียง · holdMin–holdTarget = ช่วงวินาทีที่ยอมรับ
+//   'word'    → ความดัง + ความถูกต้องของคำ
+// `scoreWord: false` ปิดการให้คะแนนคำ (step "อา" วัดแค่ความดัง + ระยะเวลา)
 export const LOUD_STEPS = [
-  { id: 1, name: 'ฝึกความดังเสียง', detail: 'เปล่งเสียง "อาา" ให้ดังและยาวที่สุด — เป้าหมาย dB อ้างอิงค่าที่นักกายภาพบำบัดตั้งไว้เฉพาะคุณ', minutes: 5, phrase: 'อาาาาา', status: 'todo' },
-  { id: 2, name: 'พูดในชีวิตประจำวัน', detail: 'ฝึกพูดประโยคที่ใช้บ่อยด้วยเสียงดังชัด', minutes: 5, phrase: 'สวัสดีครับ วันนี้อากาศดี', status: 'todo' },
+  { id: 1, name: 'ฝึกออกเสียงค้าง', detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที', minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo' },
+  { id: 2, name: 'พูดในชีวิตประจำวัน', detail: 'ฝึกพูดประโยคที่ใช้บ่อยด้วยเสียงดังชัด', minutes: 5, phrase: 'สวัสดีครับ วันนี้อากาศดี', mode: 'word', status: 'todo' },
 ]
 
 export const RELATIONSHIPS = [

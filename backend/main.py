@@ -7,6 +7,7 @@ import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 import json, pathlib, os, hmac, hashlib, base64, httpx, secrets, time, io
 from gtts import gTTS
 from dotenv import load_dotenv
+from lsvt_loud import router as lsvt_router
 load_dotenv()
 
 BASE = pathlib.Path(__file__).parent
@@ -109,6 +110,9 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+# LSVT LOUD voice scoring (dB band + word accuracy) — see lsvt_loud.py
+app.include_router(lsvt_router)
 
 class ScoreRequest(BaseModel):
     landmarks: List[List[List[float]]]  # [n_frames][33][4: x,y,z,visibility]
