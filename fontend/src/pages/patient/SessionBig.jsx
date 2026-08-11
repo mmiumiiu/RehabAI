@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCamera } from '../../lib/useCamera.js'
 import { usePoseLandmarker } from '../../lib/usePoseLandmarker.js'
 import { useRepScorer } from '../../lib/useRepScorer.js'
+import { useSpeak } from '../../lib/useSpeak.js'
 import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
@@ -43,6 +44,9 @@ export default function SessionBig() {
   const { landmarks, ready: poseReady } = usePoseLandmarker(videoRef, status === 'live')
   const { repCount, repScores, lastScore, recording, modelExercise } =
     useRepScorer(landmarks, exId, status === 'live')
+
+  // Read the exercise instruction aloud 2s after the session opens.
+  useSpeak(`${ex.name} ${ex.how}`, { delayMs: 2000 })
 
   const complete = repCount >= ex.target
   const good = lastScore ? lastScore.verdict === 'correct' : true

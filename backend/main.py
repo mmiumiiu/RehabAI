@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import List
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
-import json, pathlib, os, hmac, hashlib, base64, httpx, secrets, time
+import json, pathlib, os, hmac, hashlib, base64, httpx, secrets, time, io
+from gtts import gTTS
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -197,6 +199,21 @@ async def line_send(payload: dict):
 @app.get("/health")
 def health():
     return {"status": "ok", "exercises": list(EX_MAP.keys())}
+
+@app.get("/tts")
+def tts(text: str = Query(..., min_length=1, max_length=500)):
+    """Thai text-to-speech via gTTS. Returns an mp3 so the voice is identical on
+    every device, independent of the OS's installed voices."""
+    try:
+        buf = io.BytesIO()
+        gTTS(text=text, lang="th").write_to_fp(buf)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"tts failed: {e}")
+    return Response(
+        content=buf.getvalue(),
+        media_type="audio/mpeg",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 @app.post("/score")
 def score(req: ScoreRequest):

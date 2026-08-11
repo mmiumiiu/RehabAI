@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCamera } from '../../lib/useCamera.js'
+import { useSpeak } from '../../lib/useSpeak.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import { Camera, Check } from '../../components/icons.jsx'
@@ -11,6 +12,10 @@ const EX = BIG_EXERCISES.find((e) => e.weightShift)
 export default function SessionWeightShift() {
   const navigate = useNavigate()
   const { videoRef, status } = useCamera(true)
+
+  // Read the exercise instruction aloud 2s after the session opens.
+  useSpeak(`${EX.name} ${EX.how}`, { delayMs: 2000 })
+
   const [reps, setReps] = useState(0)
   const [distance, setDistance] = useState(32) // cm, target 30–35
   const [seconds, setSeconds] = useState(0)

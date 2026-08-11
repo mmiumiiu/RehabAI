@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext.jsx'
 
 import PatientLayout from './components/PatientLayout.jsx'
@@ -21,6 +22,7 @@ import NotificationSettings from './pages/patient/NotificationSettings.jsx'
 import EmergencySettings from './pages/patient/EmergencySettings.jsx'
 import EmergencyAlert from './pages/patient/EmergencyAlert.jsx'
 import Chat from './pages/patient/Chat.jsx'
+import TtsTest from './pages/patient/TtsTest.jsx'
 
 // Therapist pages
 import TherapistLogin from './pages/therapist/TherapistLogin.jsx'
@@ -38,6 +40,12 @@ function RequireAuth({ role, children }) {
 
 export default function App() {
   const { user } = useAuth()
+  const { pathname } = useLocation()
+
+  // Therapist portal renders at 1x; patient portal is scaled up to 1.25x.
+  useEffect(() => {
+    document.body.style.zoom = pathname.startsWith('/therapist') ? '1' : '1.25'
+  }, [pathname])
 
   return (
     <Routes>
@@ -46,6 +54,9 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/onboarding/select-therapist" element={<OnboardingSelectTherapist />} />
       <Route path="/onboarding/emergency-contact" element={<OnboardingEmergency />} />
+
+      {/* TTS test page (public, no auth needed) */}
+      <Route path="/tts-test" element={<TtsTest />} />
 
       {/* Patient app (full-screen session routes live outside the sidebar layout) */}
       <Route

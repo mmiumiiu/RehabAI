@@ -4,3 +4,4 @@ numpy
 pydantic
 httpx
 python-dotenv
+gTTS

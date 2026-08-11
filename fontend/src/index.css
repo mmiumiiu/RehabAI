@@ -9,6 +9,7 @@
   body {
     @apply bg-bg text-ink-primary font-body;
     margin: 0;
+    /* Overall zoom is set per-portal in App.jsx (patient 1.25, therapist 1). */
   }
   h1, h2, h3, h4 {
     @apply font-heading;

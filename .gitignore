@@ -10,5 +10,7 @@ fontend/.env.example
 __pycache__/
 *.pyc
 *.pyo
+.venv/
+backend/.venv/
 fontend/.env.local
 backend/.env
