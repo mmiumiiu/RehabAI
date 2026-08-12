@@ -6,8 +6,8 @@ import { useRepScorer } from '../../lib/useRepScorer.js'
 import { useSpeak } from '../../lib/useSpeak.js'
 import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
-import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
+import { ProgressBar } from '../../components/ui.jsx'
 import { Camera, Check } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 
@@ -63,7 +63,25 @@ export default function SessionBig() {
 
   return (
     <div className="min-h-screen bg-bg p-3 md:p-6">
-      <div className="max-w-[1100px] mx-auto grid lg:grid-cols-[1.6fr_1fr] gap-5">
+      <div className="max-w-[1100px] mx-auto space-y-5">
+
+        {/* Top: demo animation (left) + live camera (right) */}
+        <div className="grid lg:grid-cols-2 gap-5">
+
+        {/* Demo animation — loops continuously */}
+        <div className="relative rounded-2xl overflow-hidden bg-cam aspect-[16/10] flex items-center justify-center">
+          {ex.video ? (
+            <video src={ex.video} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-white/60 text-[13px] text-center px-6">
+              <Camera size={36} className="mx-auto mb-2 opacity-70" />
+              ยังไม่มีวิดีโอสาธิตสำหรับท่านี้
+            </div>
+          )}
+          <span className="absolute top-4 left-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px]">
+            ท่าสาธิต
+          </span>
+        </div>
 
         {/* Camera panel */}
         <div className="relative rounded-2xl overflow-hidden bg-cam aspect-[16/10] flex items-center justify-center">
@@ -125,23 +143,42 @@ export default function SessionBig() {
             {barMsg}
           </div>
         </div>
+        </div>
 
-        <SessionInfoCard
-          name={ex.name}
-          desc={ex.how}
-          reps={repCount}
-          target={ex.target}
-          tone="big"
-          stats={[
-            {
-              k: 'ความแม่นยำท่าทาง',
-              v: accuracy != null ? `${stars(accuracy).s} ${stars(accuracy).label}` : modelExercise ? '—' : 'ไม่รองรับ',
-            },
-            { k: 'เวลาในเซสชันนี้', v: clock },
-            { k: 'ครั้งที่ประเมินแล้ว', v: `${repScores.length}` },
-          ]}
-          onStop={() => navigate('/training/big')}
-        />
+        {/* Bottom: exercise description + progress + stats */}
+        <div className="card p-6">
+          <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+            <div className="min-w-0 flex-1">
+              <h2 className="font-heading text-[18px] font-semibold text-teal-900 mb-1.5">{ex.name}</h2>
+              <p className="text-[13.5px] text-ink-secondary leading-relaxed">{ex.how}</p>
+            </div>
+            <button
+              onClick={() => navigate('/training/big')}
+              className="flex-shrink-0 py-2.5 px-5 rounded-btn border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FBEAE8] transition-colors"
+            >
+              หยุดฝึก
+            </button>
+          </div>
+
+          <ProgressBar value={repCount} max={ex.target} tone="big" />
+          <div className="flex justify-between text-[11.5px] text-ink-muted mt-1.5 mb-4">
+            <span>ครั้งที่ {repCount}</span>
+            <span>เป้าหมาย {ex.target}</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              { k: 'ความแม่นยำท่าทาง', v: accuracy != null ? `${stars(accuracy).s} ${stars(accuracy).label}` : modelExercise ? '—' : 'ไม่รองรับ' },
+              { k: 'เวลาในเซสชันนี้', v: clock },
+              { k: 'ครั้งที่ประเมินแล้ว', v: `${repScores.length}` },
+            ].map((s) => (
+              <div key={s.k} className="rounded-xl bg-bg px-4 py-3 flex flex-col gap-0.5">
+                <span className="text-[11.5px] text-ink-secondary">{s.k}</span>
+                <span className="font-semibold font-mono text-[14px]">{s.v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {complete && (
