@@ -29,6 +29,18 @@ function ExerciseRow({ ex, locked = false, onStart }) {
         </div>
       )}
 
+      {/* Looping demo animation (standing poses only — no seated/chair start) */}
+      {ex.video && (
+        <video
+          src={ex.video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-20 h-16 rounded-[10px] object-cover bg-cam flex-shrink-0"
+        />
+      )}
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <h4 className="font-heading text-[14.5px] font-semibold" style={locked ? { color: '#6B6350' } : undefined}>
