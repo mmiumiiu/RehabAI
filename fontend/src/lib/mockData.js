@@ -106,10 +106,25 @@ export const BIG_EXERCISES = [
 //   'sustain' → ความดัง + ระยะเวลาออกเสียง · holdMin–holdTarget = ช่วงวินาทีที่ยอมรับ
 //   'word'    → ความดัง + ความถูกต้องของคำ
 // `scoreWord: false` ปิดการให้คะแนนคำ (step "อา" วัดแค่ความดัง + ระยะเวลา)
+// `group` ใช้จัดหัวข้อในหน้ารายการฝึก
 export const LOUD_STEPS = [
-  { id: 1, name: 'ฝึกออกเสียงค้าง', detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที', minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo' },
-  { id: 2, name: 'พูดในชีวิตประจำวัน', detail: 'ฝึกพูดประโยคที่ใช้บ่อยด้วยเสียงดังชัด', minutes: 5, phrase: 'สวัสดีครับ วันนี้อากาศดี', mode: 'word', status: 'todo' },
+  { id: 1, group: 'ฝึกออกเสียงค้าง', name: 'ฝึกออกเสียงค้าง', detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที', minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo' },
+  { id: 2, group: 'ประโยคในชีวิตประจำวัน', name: 'สวัสดีครับ วันนี้อากาศดี', detail: 'พูดทักทายด้วยเสียงดังและชัด', minutes: 3, phrase: 'สวัสดีครับ วันนี้อากาศดี', mode: 'word', status: 'todo' },
+  { id: 3, group: 'ประโยคในชีวิตประจำวัน', name: 'หิวข้าว', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'หิวข้าว', mode: 'word', status: 'todo' },
+  { id: 4, group: 'ประโยคในชีวิตประจำวัน', name: 'ขอเมนูหน่อย', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'ขอเมนูหน่อย', mode: 'word', status: 'todo' },
+  { id: 5, group: 'ประโยคในชีวิตประจำวัน', name: 'ขอน้ำหน่อย', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'ขอน้ำหน่อย', mode: 'word', status: 'todo' },
 ]
+
+// Group LOUD steps by their `group` heading, preserving order.
+export function groupLoudSteps(steps = LOUD_STEPS) {
+  const groups = []
+  for (const s of steps) {
+    let g = groups.find((g) => g.title === s.group)
+    if (!g) { g = { title: s.group, steps: [] }; groups.push(g) }
+    g.steps.push(s)
+  }
+  return groups
+}
 
 export const RELATIONSHIPS = [
   { value: 'child', label: 'บุตร/ธิดา' },

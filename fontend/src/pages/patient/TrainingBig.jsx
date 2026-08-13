@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Badge, Button, SectionTitle } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
-import { BIG_EXERCISES, LOUD_STEPS } from '../../lib/mockData.js'
+import { BIG_EXERCISES, LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
 // Seated poses (ท่านั่ง) need a chair; they are shown with a muted "locked"
@@ -117,40 +117,45 @@ export default function TrainingBig() {
         LSVT LOUD — ฝึกความดังของเสียงพูด
       </h2>
 
-      <div className="space-y-3">
-        {LOUD_STEPS.map((s, i) => (
-          <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">
-            {s.status === 'done' ? (
-              <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
-                <Check size={15} />
+      {groupLoudSteps().map((group) => (
+        <div key={group.title} className="mb-6">
+          <SectionTitle>{group.title}</SectionTitle>
+          <div className="space-y-3">
+            {group.steps.map((s, i) => (
+              <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">
+                {s.status === 'done' ? (
+                  <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
+                    <Check size={15} />
+                  </div>
+                ) : (
+                  <div className="w-[26px] h-[26px] rounded-full bg-bg border border-line flex items-center justify-center text-[12px] font-semibold text-ink-secondary flex-shrink-0">
+                    {i + 1}
+                  </div>
+                )}
+                <div className="w-11 h-11 rounded-[10px] bg-coral-100 text-coral-700 flex-shrink-0 flex items-center justify-center font-heading font-semibold text-[15px]">
+                  {i + 1}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-heading text-[14.5px] font-semibold">{s.name}</h4>
+                  <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
+                </div>
+                <div className="flex items-center gap-2 ml-auto flex-shrink-0">
+                  <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap">
+                    <Clock size={14} /> {s.minutes} นาที
+                  </span>
+                  {s.status === 'done' ? (
+                    <Badge tone="done">เสร็จแล้ว</Badge>
+                  ) : (
+                    <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
+                      เริ่มฝึก
+                    </Button>
+                  )}
+                </div>
               </div>
-            ) : (
-              <div className="w-[26px] h-[26px] rounded-full bg-bg border border-line flex items-center justify-center text-[12px] font-semibold text-ink-secondary flex-shrink-0">
-                {i + 1}
-              </div>
-            )}
-            <div className="w-11 h-11 rounded-[10px] bg-coral-100 text-coral-700 flex-shrink-0 flex items-center justify-center font-heading font-semibold text-[15px]">
-              {i + 1}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-heading text-[14.5px] font-semibold">{s.name}</h4>
-              <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
-            </div>
-            <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-              <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap">
-                <Clock size={14} /> {s.minutes} นาที
-              </span>
-              {s.status === 'done' ? (
-                <Badge tone="done">เสร็จแล้ว</Badge>
-              ) : (
-                <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
-                  เริ่มฝึก
-                </Button>
-              )}
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }
