@@ -10,6 +10,7 @@ import SOSButton from '../../components/SOSButton.jsx'
 import { ProgressBar } from '../../components/ui.jsx'
 import { Camera, Check } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
+import { sessionHistory } from '../../lib/services.js'
 
 function useSessionClock() {
   const [t, setT] = useState(0)
@@ -51,6 +52,22 @@ export default function SessionBig() {
   const complete = repCount >= ex.target
   const good = lastScore ? lastScore.verdict === 'correct' : true
   const accuracy = avgConf(repScores)
+
+  // Persist the real session result once the target is reached (score = average
+  // pose-quality confidence from the model; null when the exercise has no model).
+  const recordedRef = useRef(false)
+  useEffect(() => {
+    if (!complete || recordedRef.current) return
+    recordedRef.current = true
+    sessionHistory.add({
+      type: 'big',
+      score: accuracy != null ? accuracy * 100 : null,
+      reps: repCount,
+      goal: ex.target,
+      duration: clock,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [complete])
 
   // Bottom bar message
   let barMsg = ex.how.split(' ').slice(0, 8).join(' ') + '…'

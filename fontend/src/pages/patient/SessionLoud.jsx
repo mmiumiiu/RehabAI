@@ -5,7 +5,7 @@ import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import { Mic, Check } from '../../components/icons.jsx'
 import { LOUD_STEPS } from '../../lib/mockData.js'
-import { loudSettings } from '../../lib/services.js'
+import { loudSettings, sessionHistory } from '../../lib/services.js'
 import { sessionService } from '../../lib/sessionService.js'
 
 // Demo: patient is always mapped to patient ID "p1"
@@ -51,6 +51,8 @@ export default function SessionLoud() {
   const [pulse, setPulse] = useState(false)
   const [sessionDone, setSessionDone] = useState(false)
   const publishedRef = useRef(false)
+  const scoreSumRef = useRef(0)   // sum of per-attempt quality for counted reps
+  const scoreCountRef = useRef(0)
 
   // A rep only counts when EVERY scored part (loudness + word and/or duration)
   // is above 80% — the backend decides this via `passed`. Attempts that fall
@@ -60,12 +62,27 @@ export default function SessionLoud() {
     setPulse(true)
     setTimeout(() => setPulse(false), 200)
     if (!data?.passed) return
+
+    // Accumulate this attempt's quality (mean of whichever parts were scored).
+    const parts = [data.db?.score, data.word?.score, data.hold?.score].filter((v) => v != null)
+    if (parts.length) {
+      scoreSumRef.current += parts.reduce((a, b) => a + b, 0) / parts.length
+      scoreCountRef.current += 1
+    }
+
     setReps((r) => {
       const next = r + 1
       if (next >= repGoal && !publishedRef.current) {
         publishedRef.current = true
         setSessionDone(true)
         sessionService.publish(PATIENT_ID, { reps: next, goal: repGoal, duration: clock, complete: true })
+        sessionHistory.add({
+          type: 'loud',
+          score: scoreCountRef.current ? scoreSumRef.current / scoreCountRef.current : null,
+          reps: next,
+          goal: repGoal,
+          duration: clock,
+        })
       }
       return Math.min(next, repGoal)
     })

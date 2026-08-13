@@ -113,6 +113,44 @@ export const loudSettings = {
   },
 }
 
+// Recorded training sessions — the real results a patient completes in BIG/LOUD
+// sessions. Stands in for a Firestore subcollection users/{uid}/sessions. Kept
+// newest-first. The dashboard reads this and recomputes its summary live.
+const HISTORY_KEY = 'rehabai_session_history'
+const THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+
+function thaiDate(ts) {
+  const d = new Date(ts)
+  return `${d.getDate()} ${THAI_MONTHS[d.getMonth()]} ${d.getFullYear() + 543}`
+}
+
+export const sessionHistory = {
+  getAll() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') } catch { return [] }
+  },
+  // record: { type:'big'|'loud', score:0-100|null, reps, goal, duration:'mm:ss' }
+  add(record) {
+    const ts = Date.now()
+    const entry = {
+      ...record,
+      id: String(ts),
+      ts,
+      date: thaiDate(ts),
+      score: record.score == null ? null : Math.round(record.score),
+    }
+    const all = [entry, ...this.getAll()].slice(0, 200)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(all))
+    // 'storage' only fires in OTHER tabs, so emit a same-tab event too for live
+    // dashboard updates.
+    window.dispatchEvent(new CustomEvent('rehabai:session-added', { detail: entry }))
+    return entry
+  },
+  clear() {
+    localStorage.removeItem(HISTORY_KEY)
+    window.dispatchEvent(new CustomEvent('rehabai:session-added'))
+  },
+}
+
 // Therapist link (spec §3.3 / §6.1). Patients tap-select a verified therapist
 // and are auto-linked immediately — there is no connection code and no pending
 // approval state anymore. Stands in for users/{uid}/therapistLinks/{therapistId}.

@@ -3,11 +3,16 @@ import { Card, SectionTitle, Button } from '../../components/ui.jsx'
 import { Flame, Activity, Mic, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES, LOUD_STEPS } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useSessionHistory, trainingStreak } from '../../lib/useSessionHistory.js'
 
 export default function Home() {
   const { user } = useAuth()
   const bigLeft = BIG_EXERCISES.filter((e) => e.status !== 'done').length
   const loudLeft = LOUD_STEPS.filter((e) => e.status !== 'done').length
+
+  const rows = useSessionHistory()
+  const streak = trainingStreak(rows)
+  const lastScore = rows.find((r) => r.score != null)?.score
 
   return (
     <div className="max-w-[900px]">
@@ -21,13 +26,15 @@ export default function Home() {
             <Flame size={18} /> ฝึกต่อเนื่อง
           </div>
           <div className="font-heading text-[30px] font-semibold leading-none">
-            5 <span className="text-[16px] font-normal opacity-70">วันติดต่อกัน</span>
+            {streak} <span className="text-[16px] font-normal opacity-70">วันติดต่อกัน</span>
           </div>
-          <p className="text-[12.5px] text-white/60 mt-2">ทำได้ดีมาก! ฝึกวันนี้เพื่อรักษาสถิติต่อเนื่องไว้</p>
+          <p className="text-[12.5px] text-white/60 mt-2">
+            {streak > 0 ? 'ทำได้ดีมาก! ฝึกวันนี้เพื่อรักษาสถิติต่อเนื่องไว้' : 'เริ่มฝึกวันนี้เพื่อสร้างสถิติต่อเนื่อง'}
+          </p>
         </div>
         <div className="text-right">
           <div className="text-white/60 text-[12px] mb-1">คะแนนล่าสุด</div>
-          <div className="font-heading text-[28px] font-semibold text-teal-100">86</div>
+          <div className="font-heading text-[28px] font-semibold text-teal-100">{lastScore != null ? lastScore : '—'}</div>
         </div>
       </div>
 
