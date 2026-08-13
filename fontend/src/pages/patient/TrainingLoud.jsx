@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Badge, Button, SectionTitle } from '../../components/ui.jsx'
+import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
 import { LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
 
@@ -22,7 +22,7 @@ export default function TrainingLoud() {
 
       {groups.map((group) => (
         <div key={group.title} className="mb-7">
-          <SectionTitle>{group.title}</SectionTitle>
+          <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">{group.title}</h2>
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex items-center gap-4 card px-5 py-4">

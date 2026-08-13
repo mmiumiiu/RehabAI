@@ -119,7 +119,7 @@ export default function TrainingBig() {
 
       {groupLoudSteps().map((group) => (
         <div key={group.title} className="mb-6">
-          <SectionTitle>{group.title}</SectionTitle>
+          <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">{group.title}</h3>
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">
