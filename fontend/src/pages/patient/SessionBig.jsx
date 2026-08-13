@@ -28,12 +28,6 @@ function avgConf(repScores) {
   return repScores.reduce((s, r) => s + r.conf, 0) / repScores.length
 }
 
-function stars(conf) {
-  if (conf >= 0.75) return { s: '★★★', label: 'ดีมาก' }
-  if (conf >= 0.50) return { s: '★★☆', label: 'ดี' }
-  return { s: '★☆☆', label: 'ต้องฝึกเพิ่ม' }
-}
-
 export default function SessionBig() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -73,8 +67,8 @@ export default function SessionBig() {
   let barMsg = ex.how.split(' ').slice(0, 8).join(' ') + '…'
   if (complete) barMsg = 'เยี่ยมมาก! ทำครบตามเป้าหมายแล้ว'
   else if (recording) barMsg = 'กำลังวิเคราะห์ท่า…'
-  else if (lastScore?.verdict === 'correct') barMsg = `ท่าถูกต้อง — ${stars(lastScore.conf).s} ${stars(lastScore.conf).label}`
-  else if (lastScore?.verdict === 'needs_work') barMsg = `ปรับท่าให้ดีขึ้น — ${stars(lastScore.conf).s} ${stars(lastScore.conf).label}`
+  else if (lastScore?.verdict === 'correct') barMsg = 'ท่าถูกต้อง'
+  else if (lastScore?.verdict === 'needs_work') barMsg = 'ลองปรับท่าให้ดีขึ้น'
   else if (status === 'live' && !poseReady) barMsg = 'กำลังโหลด AI…'
   else if (status === 'live' && poseReady && !landmarks) barMsg = 'ไม่พบผู้ใช้งานในกล้อง'
 
@@ -142,16 +136,6 @@ export default function SessionBig() {
               : <><span className="w-[7px] h-[7px] rounded-full bg-[#4E9484]" />วิเคราะห์ท่าทางแบบเรียลไทม์</>}
           </div>
 
-          {/* Per-rep score badge — shown briefly after each scored rep */}
-          {lastScore && !recording && lastScore.verdict !== 'too_short' && (
-            <div
-              className="absolute top-14 right-4 px-3 py-2 rounded-lg text-white text-[13px] font-semibold"
-              style={{ background: lastScore.verdict === 'correct' ? 'rgba(78,148,132,0.92)' : 'rgba(185,84,42,0.92)' }}
-            >
-              {lastScore.verdict === 'correct' ? '✓' : '⚠'} {stars(lastScore.conf).s} {stars(lastScore.conf).label}
-            </div>
-          )}
-
           <div
             className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
             style={{ background: complete ? 'rgba(78,148,132,0.92)' : good ? 'rgba(78,148,132,0.80)' : 'rgba(185,84,42,0.80)' }}
@@ -183,11 +167,10 @@ export default function SessionBig() {
             <span>เป้าหมาย {ex.target}</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { k: 'ความแม่นยำท่าทาง', v: accuracy != null ? `${stars(accuracy).s} ${stars(accuracy).label}` : modelExercise ? '—' : 'ไม่รองรับ' },
+              { k: 'ครั้งที่ทำแล้ว', v: `${repCount} / ${ex.target}` },
               { k: 'เวลาในเซสชันนี้', v: clock },
-              { k: 'ครั้งที่ประเมินแล้ว', v: `${repScores.length}` },
             ].map((s) => (
               <div key={s.k} className="rounded-xl bg-bg px-4 py-3 flex flex-col gap-0.5">
                 <span className="text-[11.5px] text-ink-secondary">{s.k}</span>
@@ -205,36 +188,9 @@ export default function SessionBig() {
           <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
             <div className="text-[46px] leading-none mb-2">🎉</div>
             <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
-            <p className="text-[14px] text-ink-secondary mb-4">
+            <p className="text-[14px] text-ink-secondary mb-5">
               ยินดีด้วย! คุณทำท่า “{ex.name}” ครบ {ex.target} ครั้งแล้ว
             </p>
-
-            {accuracy != null && (
-              <div className="rounded-xl bg-bg px-4 py-3 mb-4">
-                <div className="text-[11.5px] text-ink-secondary mb-0.5">ความแม่นยำท่าทาง</div>
-                <div className="font-heading text-[20px] font-semibold text-teal-800">
-                  {stars(accuracy).s} {stars(accuracy).label}
-                </div>
-              </div>
-            )}
-
-            {repScores.length > 0 && (
-              <div className="grid grid-cols-4 gap-2 mb-5">
-                {repScores.map((r, i) => (
-                  <div
-                    key={i}
-                    className="rounded-lg py-2 text-center"
-                    style={{
-                      background: r.verdict === 'correct' ? '#E6F0E1' : '#FDF3D9',
-                      color: r.verdict === 'correct' ? '#3B6D11' : '#9A6B0A',
-                    }}
-                  >
-                    <div className="text-[10px]">ครั้งที่ {i + 1}</div>
-                    <div className="text-[14px] font-bold">{stars(r.conf).s}</div>
-                  </div>
-                ))}
-              </div>
-            )}
 
             <button
               onClick={() => navigate('/home')}
