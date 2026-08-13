@@ -107,12 +107,31 @@ export const BIG_EXERCISES = [
 //   'word'    → ความดัง + ความถูกต้องของคำ
 // `scoreWord: false` ปิดการให้คะแนนคำ (step "อา" วัดแค่ความดัง + ระยะเวลา)
 // `group` ใช้จัดหัวข้อในหน้ารายการฝึก
+const DAILY_PHRASES = [
+  'สวัสดี',
+  'ขอโทษ',
+  'ขอบคุณ',
+  'ไม่เป็นไร',
+  'สบายดีไหม',
+  'ไปห้องน้ำ',
+  'หิวข้าว',
+  'ช่วยพาไปที่เตียงนอนหน่อย',
+  'วันนี้ต้องไปที่ไหนบ้าง',
+  'ขอดูเมนูหน่อย',
+]
+
 export const LOUD_STEPS = [
   { id: 1, group: 'ฝึกออกเสียงค้าง', name: 'ฝึกออกเสียงค้าง', detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที', minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo' },
-  { id: 2, group: 'ประโยคในชีวิตประจำวัน', name: 'สวัสดีครับ วันนี้อากาศดี', detail: 'พูดทักทายด้วยเสียงดังและชัด', minutes: 3, phrase: 'สวัสดีครับ วันนี้อากาศดี', mode: 'word', status: 'todo' },
-  { id: 3, group: 'ประโยคในชีวิตประจำวัน', name: 'หิวข้าว', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'หิวข้าว', mode: 'word', status: 'todo' },
-  { id: 4, group: 'ประโยคในชีวิตประจำวัน', name: 'ขอเมนูหน่อย', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'ขอเมนูหน่อย', mode: 'word', status: 'todo' },
-  { id: 5, group: 'ประโยคในชีวิตประจำวัน', name: 'ขอน้ำหน่อย', detail: 'พูดให้ดังและชัด', minutes: 2, phrase: 'ขอน้ำหน่อย', mode: 'word', status: 'todo' },
+  ...DAILY_PHRASES.map((phrase, i) => ({
+    id: i + 2,
+    group: 'ประโยคในชีวิตประจำวัน',
+    name: phrase,
+    detail: 'พูดให้ดังและชัด',
+    minutes: 2,
+    phrase,
+    mode: 'word',
+    status: 'todo',
+  })),
 ]
 
 // Group LOUD steps by their `group` heading, preserving order.
