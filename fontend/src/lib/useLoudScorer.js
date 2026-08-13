@@ -53,30 +53,39 @@ export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTa
   holdTargetRef.current = holdTarget
   onResultRef.current = onResult
 
-  // While recording, track the peak loudness and accumulate the time spent at or
-  // above the band floor (that's the phonation duration for sustain steps).
-  useEffect(() => {
-    dbRef.current = db
-    if (!recording) return
-    if (db > peakRef.current) peakRef.current = db
-    const now = performance.now()
-    const dt = (now - lastTsRef.current) / 1000
-    lastTsRef.current = now
+  // Keep the latest dB in a ref so the timer loop below can read it. We can't do
+  // the accumulation in a [db]-effect: when the patient goes silent the reading
+  // settles to a constant value, React skips the re-render (state unchanged), the
+  // effect stops firing, and the silence timer would never advance.
+  useEffect(() => { dbRef.current = db }, [db])
 
-    const loud = db >= (bandRef.current?.min ?? 65)
-    if (loud) {
-      holdRef.current += dt
-      setHoldSec(Math.round(holdRef.current * 10) / 10)
-      phonatedRef.current = true
-      silenceRef.current = 0
-    } else if (phonatedRef.current && !recRef.current) {
-      // Mic-only attempt (no speech recogniser): once the patient has phonated,
-      // stop automatically after a short stretch of silence. In word mode the
-      // recogniser handles the end itself, so recRef is set and we skip this.
-      silenceRef.current += dt
-      if (silenceRef.current >= SILENCE_STOP_SEC) stop()
-    }
-  }, [db, recording])
+  // While recording, an independent timer tracks peak loudness, accumulates the
+  // phonation time (seconds at or above the band floor), and — for mic-only
+  // attempts like the "อา" hold — auto-stops after a short stretch of silence
+  // once the patient has actually phonated. In word mode the speech recogniser
+  // ends the attempt itself (recRef is set), so we skip the silence stop there.
+  useEffect(() => {
+    if (!recording) return
+    lastTsRef.current = performance.now()
+    const id = setInterval(() => {
+      const d = dbRef.current
+      if (d > peakRef.current) peakRef.current = d
+      const now = performance.now()
+      const dt = (now - lastTsRef.current) / 1000
+      lastTsRef.current = now
+
+      if (d >= (bandRef.current?.min ?? 65)) {
+        holdRef.current += dt
+        setHoldSec(Math.round(holdRef.current * 10) / 10)
+        phonatedRef.current = true
+        silenceRef.current = 0
+      } else if (phonatedRef.current && !recRef.current) {
+        silenceRef.current += dt
+        if (silenceRef.current >= SILENCE_STOP_SEC) stop()
+      }
+    }, 50)
+    return () => clearInterval(id)
+  }, [recording])
 
   function start() {
     // Speech recognition is only needed when a word is being scored. Steps that
