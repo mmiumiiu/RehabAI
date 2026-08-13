@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useLoudScorer, LOUD_BAND } from '../../lib/useLoudScorer.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
+import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { Mic, Check } from '../../components/icons.jsx'
 import { LOUD_STEPS } from '../../lib/mockData.js'
 import { loudSettings, sessionHistory } from '../../lib/services.js'
@@ -135,7 +136,8 @@ export default function SessionLoud() {
           {/* Phrase */}
           <div className="bg-white/[0.08] rounded-xl px-6 py-4 text-center">
             <p className="text-[11px] text-white/55 uppercase tracking-wide mb-1.5">พูดตามนี้</p>
-            <p className="font-heading text-[22px] font-semibold text-white">{step.phrase}</p>
+            <p className="font-heading text-[22px] font-semibold text-white mb-3">{step.phrase}</p>
+            <PlayPhraseButton text={step.phrase} dark />
           </div>
 
           {/* Rep counter */}

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
+import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { BIG_EXERCISES, LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
@@ -143,6 +144,7 @@ export default function TrainingBig() {
                   <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap">
                     <Clock size={14} /> {s.minutes} นาที
                   </span>
+                  <PlayPhraseButton text={s.phrase} />
                   {s.status === 'done' ? (
                     <Badge tone="done">เสร็จแล้ว</Badge>
                   ) : (

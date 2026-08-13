@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
+import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
 
 export default function TrainingLoud() {
@@ -45,6 +46,7 @@ export default function TrainingLoud() {
                 <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap mr-1">
                   <Clock size={14} /> {s.minutes} นาที
                 </span>
+                <PlayPhraseButton text={s.phrase} />
                 {s.status === 'done' ? (
                   <Badge tone="done">เสร็จแล้ว</Badge>
                 ) : (
