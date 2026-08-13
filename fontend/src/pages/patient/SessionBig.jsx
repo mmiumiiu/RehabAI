@@ -8,7 +8,7 @@ import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import { ProgressBar } from '../../components/ui.jsx'
-import { Camera, Check } from '../../components/icons.jsx'
+import { Camera, Check, Home } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { sessionHistory } from '../../lib/services.js'
 
@@ -198,33 +198,55 @@ export default function SessionBig() {
         </div>
       </div>
 
+      {/* Completion popup — celebrates finishing the exercise and sends the
+          patient back to Home to pick the next one. */}
       {complete && (
-        <div className="max-w-[1100px] mx-auto mt-4">
-          {/* Session summary */}
-          {repScores.length > 0 && (
-            <div className="bg-surface rounded-2xl p-5 mb-4 border border-line">
-              <h3 className="font-heading text-[15px] font-semibold text-teal-900 mb-3">สรุปผลการฝึก</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
+            <div className="text-[46px] leading-none mb-2">🎉</div>
+            <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
+            <p className="text-[14px] text-ink-secondary mb-4">
+              ยินดีด้วย! คุณทำท่า “{ex.name}” ครบ {ex.target} ครั้งแล้ว
+            </p>
+
+            {accuracy != null && (
+              <div className="rounded-xl bg-bg px-4 py-3 mb-4">
+                <div className="text-[11.5px] text-ink-secondary mb-0.5">ความแม่นยำท่าทาง</div>
+                <div className="font-heading text-[20px] font-semibold text-teal-800">
+                  {stars(accuracy).s} {stars(accuracy).label}
+                </div>
+              </div>
+            )}
+
+            {repScores.length > 0 && (
+              <div className="grid grid-cols-4 gap-2 mb-5">
                 {repScores.map((r, i) => (
                   <div
                     key={i}
-                    className="rounded-xl p-3 text-center text-[13px]"
+                    className="rounded-lg py-2 text-center"
                     style={{
                       background: r.verdict === 'correct' ? '#E6F0E1' : '#FDF3D9',
                       color: r.verdict === 'correct' ? '#3B6D11' : '#9A6B0A',
                     }}
                   >
-                    <div className="font-semibold">ครั้งที่ {i + 1}</div>
-                    <div className="text-[18px] font-bold">{stars(r.conf).s}</div>
-                    <div className="text-[11px]">{stars(r.conf).label}</div>
+                    <div className="text-[10px]">ครั้งที่ {i + 1}</div>
+                    <div className="text-[14px] font-bold">{stars(r.conf).s}</div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-          <div className="flex justify-end">
-            <button onClick={() => navigate('/training/big')} className="btn-primary max-w-[220px]">
-              เสร็จสิ้น — กลับไปรายการท่าฝึก
+            )}
+
+            <button
+              onClick={() => navigate('/home')}
+              className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
+            >
+              <Home size={18} /> ไปหน้าหลัก — ทำท่าต่อไป
+            </button>
+            <button
+              onClick={() => navigate('/training/big')}
+              className="w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors"
+            >
+              กลับไปรายการท่าฝึก
             </button>
           </div>
         </div>
