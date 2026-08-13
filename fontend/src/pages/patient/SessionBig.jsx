@@ -8,7 +8,7 @@ import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import { ProgressBar } from '../../components/ui.jsx'
-import { Camera, Check, Home } from '../../components/icons.jsx'
+import { Camera, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { sessionHistory } from '../../lib/services.js'
 
@@ -46,6 +46,13 @@ export default function SessionBig() {
   const complete = repCount >= ex.target
   const good = lastScore ? lastScore.verdict === 'correct' : true
   const accuracy = avgConf(repScores)
+
+  // Next exercise in the list (null if this is the last one).
+  const nextEx = BIG_EXERCISES[BIG_EXERCISES.findIndex((e) => e.id === ex.id) + 1] || null
+  function goNext() {
+    if (!nextEx) return navigate('/home')
+    navigate(nextEx.weightShift ? '/training/big/session-weightshift' : `/training/big/session?exercise=${nextEx.id}`)
+  }
 
   // Persist the real session result once the target is reached (score = average
   // pose-quality confidence from the model; null when the exercise has no model).
@@ -193,10 +200,14 @@ export default function SessionBig() {
             </p>
 
             <button
-              onClick={() => navigate('/home')}
+              onClick={goNext}
               className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
             >
-              <Home size={18} /> ไปหน้าหลัก — ทำท่าต่อไป
+              {nextEx ? (
+                <>ไปท่าถัดไป — {nextEx.name} <ChevronRight size={18} /></>
+              ) : (
+                <><Home size={18} /> เสร็จสิ้น — ไปหน้าหลัก</>
+              )}
             </button>
             <button
               onClick={() => navigate('/training/big')}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuth } from './context/AuthContext.jsx'
 
 import PatientLayout from './components/PatientLayout.jsx'
@@ -31,6 +31,13 @@ import TherapistRegister from './pages/therapist/TherapistRegister.jsx'
 import Patients from './pages/therapist/Patients.jsx'
 import PatientDetail from './pages/therapist/PatientDetail.jsx'
 import Messages from './pages/therapist/Messages.jsx'
+
+// Key the BIG session by the exercise id so moving to the next exercise (same
+// route, different ?exercise=) fully remounts it — resetting reps/pose state.
+function KeyedBigSession() {
+  const [sp] = useSearchParams()
+  return <SessionBig key={sp.get('exercise') || '1'} />
+}
 
 function RequireAuth({ role, children }) {
   const { user } = useAuth()
@@ -81,7 +88,7 @@ export default function App() {
       </Route>
 
       {/* Live sessions — full-screen, still auth-guarded */}
-      <Route path="/training/big/session" element={<RequireAuth role="patient"><SessionBig /></RequireAuth>} />
+      <Route path="/training/big/session" element={<RequireAuth role="patient"><KeyedBigSession /></RequireAuth>} />
       <Route path="/training/big/session-weightshift" element={<RequireAuth role="patient"><SessionWeightShift /></RequireAuth>} />
       <Route path="/training/loud/session" element={<RequireAuth role="patient"><SessionLoud /></RequireAuth>} />
       <Route path="/emergency-alert" element={<RequireAuth role="patient"><EmergencyAlert /></RequireAuth>} />
