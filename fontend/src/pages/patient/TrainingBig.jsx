@@ -36,7 +36,7 @@ function ExerciseRow({ ex, locked = false, onStart }) {
           </h4>
           {ex.highRisk && <Badge tone="balance">เสี่ยงสูง</Badge>}
         </div>
-        <p className={`text-[12.5px] truncate ${locked ? '' : 'text-ink-secondary'}`} style={locked ? { color: '#8C8368' } : undefined}>
+        <p className={`text-[15px] leading-snug mt-0.5 ${locked ? '' : 'text-ink-secondary'}`} style={locked ? { color: '#8C8368' } : undefined}>
           {ex.how}
         </p>
       </div>
