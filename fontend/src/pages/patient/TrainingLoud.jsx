@@ -39,7 +39,7 @@ export default function TrainingLoud() {
                   {i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-heading text-[14.5px] font-semibold">{s.name}</h4>
+                  <h4 className="font-heading text-[20px] font-semibold">{s.name}</h4>
                   <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
                 </div>
                 <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap mr-1">
