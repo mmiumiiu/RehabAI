@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Badge, Button, SectionTitle } from '../../components/ui.jsx'
+import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
 import { BIG_EXERCISES, LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
 
@@ -75,7 +75,7 @@ export default function TrainingBig() {
     <div className="max-w-[820px]">
       {/* ── LSVT BIG ── */}
       <div className="flex items-center justify-between mb-1">
-        <p className="text-[13px] text-teal-700 font-semibold uppercase tracking-wide">
+        <p className="text-[16px] text-teal-700 font-semibold uppercase tracking-wide">
           ฝึกกายภาพบำบัด · ท่ามาตรฐาน LSVT BIG (7 Maximal Daily Exercises)
         </p>
         <span className="text-[12px] text-teal-700 font-semibold bg-teal-100 px-3 py-1.5 rounded-full">
@@ -88,7 +88,7 @@ export default function TrainingBig() {
 
       {seated.length > 0 && (
         <div className="mb-7">
-          <SectionTitle>ท่านั่ง</SectionTitle>
+          <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่านั่ง</h3>
           <div className="space-y-3">
             {seated.map((ex) => (
               <ExerciseRow key={ex.id} ex={ex} locked onStart={start} />
@@ -97,7 +97,7 @@ export default function TrainingBig() {
         </div>
       )}
 
-      <SectionTitle>ท่ายืน</SectionTitle>
+      <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่ายืน</h3>
       <div className="space-y-3 mb-10">
         {standing.map((ex) => (
           <ExerciseRow key={ex.id} ex={ex} onStart={start} />
@@ -106,7 +106,7 @@ export default function TrainingBig() {
 
       {/* ── LSVT LOUD ── */}
       <div className="flex items-center justify-between mb-1">
-        <p className="text-[13px] text-coral-700 font-semibold uppercase tracking-wide">
+        <p className="text-[16px] text-coral-700 font-semibold uppercase tracking-wide">
           ฝึกเสียงพูด · LSVT LOUD
         </p>
         <span className="text-[12px] text-coral-700 font-semibold bg-coral-100 px-3 py-1.5 rounded-full">
@@ -137,7 +137,7 @@ export default function TrainingBig() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-heading text-[30px] font-semibold">{s.name}</h4>
-                  <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
+                  <p className="text-[15px] leading-snug mt-0.5 text-ink-secondary">{s.detail}</p>
                 </div>
                 <div className="flex items-center gap-2 ml-auto flex-shrink-0">
                   <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap">

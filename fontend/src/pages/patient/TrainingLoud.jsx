@@ -40,7 +40,7 @@ export default function TrainingLoud() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-heading text-[30px] font-semibold">{s.name}</h4>
-                  <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
+                  <p className="text-[15px] leading-snug mt-0.5 text-ink-secondary">{s.detail}</p>
                 </div>
                 <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap mr-1">
                   <Clock size={14} /> {s.minutes} นาที
