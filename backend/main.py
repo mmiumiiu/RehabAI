@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi import FastAPI, Request, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel
@@ -241,3 +241,54 @@ def score(req: ScoreRequest):
         "duration": rep["duration"],
         "rom": {n: float(rep["summ"][i * 5 + 2]) for i, n in enumerate(ANGLE_NAMES)},
     }
+
+
+# ── Real-time chat relay (patient ⇄ therapist) ─────────────────────────────────
+# Each thread (= patient id) is a room. Clients send {type:'join', threadId} to
+# subscribe (and receive recent history), then {type:'message', ...} to post;
+# every message is broadcast to everyone in the room, including the sender.
+chat_rooms: dict[str, set[WebSocket]] = {}
+chat_history: dict[str, list[dict]] = {}
+
+
+@app.websocket("/ws/chat")
+async def ws_chat(ws: WebSocket):
+    await ws.accept()
+    thread = None
+    try:
+        while True:
+            data = await ws.receive_json()
+            kind = data.get("type")
+
+            if kind == "join":
+                thread = data.get("threadId")
+                chat_rooms.setdefault(thread, set()).add(ws)
+                await ws.send_json({"type": "history", "messages": chat_history.get(thread, [])})
+
+            elif kind == "message":
+                thread = data.get("threadId", thread)
+                if not thread:
+                    continue
+                message = {
+                    "id": data.get("id"),
+                    "from": data.get("from"),
+                    "text": data.get("text"),
+                    "at": data.get("at"),
+                    "threadId": thread,
+                }
+                history = chat_history.setdefault(thread, [])
+                history.append(message)
+                del history[:-200]  # keep the last 200
+                dead = []
+                for peer in list(chat_rooms.get(thread, set())):
+                    try:
+                        await peer.send_json({"type": "message", "message": message})
+                    except Exception:
+                        dead.append(peer)
+                for d in dead:
+                    chat_rooms.get(thread, set()).discard(d)
+    except WebSocketDisconnect:
+        pass
+    finally:
+        for room in chat_rooms.values():
+            room.discard(ws)

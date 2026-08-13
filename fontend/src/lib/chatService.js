@@ -1,7 +1,9 @@
 // WebSocket chat client — singleton connection shared across both portals.
-// For cross-device demo set VITE_WS_URL=ws://192.168.x.x:3001 in .env.local
+// Connects to the FastAPI backend's /ws/chat relay (same host as the API), so it
+// works in production over wss:// without a separate chat server.
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3001'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const WS_URL = API_URL.replace(/^http/, 'ws') + '/ws/chat'
 
 let socket = null
 let currentThread = null
