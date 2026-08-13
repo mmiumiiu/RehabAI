@@ -31,7 +31,7 @@ function ExerciseRow({ ex, locked = false, onStart }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h4 className="font-heading text-[14.5px] font-semibold" style={locked ? { color: '#6B6350' } : undefined}>
+          <h4 className="font-heading text-[22px] font-semibold" style={locked ? { color: '#6B6350' } : undefined}>
             {ex.name}
           </h4>
           {ex.highRisk && <Badge tone="balance">เสี่ยงสูง</Badge>}
@@ -136,7 +136,7 @@ export default function TrainingBig() {
                   {i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-heading text-[20px] font-semibold">{s.name}</h4>
+                  <h4 className="font-heading text-[30px] font-semibold">{s.name}</h4>
                   <p className="text-[12.5px] text-ink-secondary truncate">{s.detail}</p>
                 </div>
                 <div className="flex items-center gap-2 ml-auto flex-shrink-0">
