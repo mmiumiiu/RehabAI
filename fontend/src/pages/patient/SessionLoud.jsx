@@ -134,7 +134,7 @@ export default function SessionLoud() {
           <SOSButton reason="sos" />
 
           {/* Phrase */}
-          <div className="bg-white/[0.08] rounded-xl px-6 py-4 text-center">
+          <div className="w-full max-w-[300px] bg-white/[0.08] rounded-xl px-6 py-4 text-center">
             <p className="text-[11px] text-white/55 uppercase tracking-wide mb-1.5">พูดตามนี้</p>
             <p className="font-heading text-[22px] font-semibold text-white mb-3">{step.phrase}</p>
             <PlayPhraseButton text={step.phrase} dark />
