@@ -136,7 +136,7 @@ export default function TrainingBig() {
                   {i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-heading text-[30px] font-semibold">{s.name}</h4>
+                  <h4 className="font-heading text-[22px] font-semibold">{s.name}</h4>
                   <p className="text-[15px] leading-snug mt-0.5 text-ink-secondary">{s.detail}</p>
                 </div>
                 <div className="flex items-center gap-2 ml-auto flex-shrink-0">
