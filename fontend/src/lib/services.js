@@ -116,6 +116,9 @@ export const loudSettings = {
 // Recorded training sessions — the real results a patient completes in BIG/LOUD
 // sessions. Stands in for a Firestore subcollection users/{uid}/sessions. Kept
 // newest-first. The dashboard reads this and recomputes its summary live.
+//
+// Stored PER ACCOUNT: the key is namespaced by the signed-in user's email (the
+// stub's per-account identifier) so each account only ever sees its own history.
 const HISTORY_KEY = 'rehabai_session_history'
 const THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
 
@@ -124,9 +127,15 @@ function thaiDate(ts) {
   return `${d.getDate()} ${THAI_MONTHS[d.getMonth()]} ${d.getFullYear() + 543}`
 }
 
+// Key scoped to the current account. Falls back to 'guest' when signed out.
+function historyKey() {
+  const u = readSession()
+  return `${HISTORY_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+
 export const sessionHistory = {
   getAll() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') } catch { return [] }
+    try { return JSON.parse(localStorage.getItem(historyKey()) || '[]') } catch { return [] }
   },
   // record: { type:'big'|'loud', score:0-100|null, reps, goal, duration:'mm:ss' }
   add(record) {
@@ -139,14 +148,14 @@ export const sessionHistory = {
       score: record.score == null ? null : Math.round(record.score),
     }
     const all = [entry, ...this.getAll()].slice(0, 200)
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(all))
+    localStorage.setItem(historyKey(), JSON.stringify(all))
     // 'storage' only fires in OTHER tabs, so emit a same-tab event too for live
     // dashboard updates.
     window.dispatchEvent(new CustomEvent('rehabai:session-added', { detail: entry }))
     return entry
   },
   clear() {
-    localStorage.removeItem(HISTORY_KEY)
+    localStorage.removeItem(historyKey())
     window.dispatchEvent(new CustomEvent('rehabai:session-added'))
   },
 }
