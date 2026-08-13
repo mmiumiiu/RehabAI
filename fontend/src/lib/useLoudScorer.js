@@ -8,6 +8,12 @@ const SR = typeof window !== 'undefined' && (window.SpeechRecognition || window.
 // continuous silence, once the patient has actually started phonating.
 const SILENCE_STOP_SEC = 1.0
 
+// "Voice present" threshold on the 40–90 display scale (40 ≈ silence after
+// calibration). Used only to arm / trigger the silence auto-stop, so recording
+// ends whenever the patient stops speaking — independent of how loud they are.
+// Loudness *scoring* still uses the therapist's band floor.
+const VOICE_FLOOR = 47
+
 // Records one LSVT LOUD attempt and scores it.
 //
 // While recording it captures the PEAK loudness (dB) from the mic and lets the
@@ -74,9 +80,15 @@ export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTa
       const dt = (now - lastTsRef.current) / 1000
       lastTsRef.current = now
 
+      // Loud enough to count toward the phonation-duration score.
       if (d >= (bandRef.current?.min ?? 65)) {
         holdRef.current += dt
         setHoldSec(Math.round(holdRef.current * 10) / 10)
+      }
+      // Voice-present vs silence drives the auto-stop (armed on any voice, not
+      // just the loud band). Mic-only attempts end after SILENCE_STOP_SEC of
+      // silence once the patient has spoken; word mode lets the recogniser end.
+      if (d >= VOICE_FLOOR) {
         phonatedRef.current = true
         silenceRef.current = 0
       } else if (phonatedRef.current && !recRef.current) {
