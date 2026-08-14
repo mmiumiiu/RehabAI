@@ -204,6 +204,29 @@ async def line_send(payload: dict):
 def health():
     return {"status": "ok", "exercises": list(EX_MAP.keys())}
 
+# ── LSVT LOUD daily-life phrases (therapist-curated, shared to the patient) ─────
+# Kept in memory; the therapist POSTs the list, the patient GETs/polls it so
+# edits show up on the patient side without a reload — across devices too.
+loud_phrases_store: list[str] = [
+    "สวัสดี", "ขอโทษ", "ขอบคุณ", "ไม่เป็นไร", "สบายดีไหม",
+    "ไปห้องน้ำ", "หิวข้าว", "ช่วยพาไปที่เตียงนอนหน่อย",
+    "วันนี้ต้องไปที่ไหนบ้าง", "ขอดูเมนูหน่อย",
+]
+
+
+@app.get("/loud-phrases")
+def get_loud_phrases():
+    return {"phrases": loud_phrases_store}
+
+
+@app.post("/loud-phrases")
+def set_loud_phrases(payload: dict):
+    global loud_phrases_store
+    items = payload.get("phrases")
+    if isinstance(items, list):
+        loud_phrases_store = [str(x).strip() for x in items if str(x).strip()][:100]
+    return {"phrases": loud_phrases_store}
+
 @app.get("/tts")
 def tts(text: str = Query(..., min_length=1, max_length=500)):
     """Thai text-to-speech via gTTS. Returns an mp3 so the voice is identical on

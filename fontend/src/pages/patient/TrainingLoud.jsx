@@ -2,11 +2,12 @@ import { useNavigate } from 'react-router-dom'
 import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
-import { getLoudSteps, groupLoudSteps } from '../../lib/mockData.js'
+import { groupLoudSteps } from '../../lib/mockData.js'
+import { useLoudSteps } from '../../lib/useLoudSteps.js'
 
 export default function TrainingLoud() {
   const navigate = useNavigate()
-  const steps = getLoudSteps()
+  const steps = useLoudSteps()
   const done = steps.filter((s) => s.status === 'done').length
   const groups = groupLoudSteps(steps)
 

@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
-import { BIG_EXERCISES, getLoudSteps, groupLoudSteps } from '../../lib/mockData.js'
+import { BIG_EXERCISES, groupLoudSteps } from '../../lib/mockData.js'
+import { useLoudSteps } from '../../lib/useLoudSteps.js'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
 // Seated poses (ท่านั่ง) need a chair; they are shown with a muted "locked"
@@ -65,7 +66,7 @@ export default function TrainingBig() {
   const seated = BIG_EXERCISES.filter((e) => e.posture === 'seated')
   const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
   const bigDone = standing.filter((e) => e.status === 'done').length
-  const loudSteps = getLoudSteps()
+  const loudSteps = useLoudSteps()
   const loudDone = loudSteps.filter((s) => s.status === 'done').length
 
   function start(ex) {
@@ -119,7 +120,7 @@ export default function TrainingBig() {
         LSVT LOUD — ฝึกความดังของเสียงพูด
       </h2>
 
-      {groupLoudSteps().map((group) => (
+      {groupLoudSteps(loudSteps).map((group) => (
         <div key={group.title} className="mb-6">
           <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">{group.title}</h3>
           <div className="space-y-3">

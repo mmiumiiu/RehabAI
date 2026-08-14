@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, Button } from './ui.jsx'
 import { loudPhrases } from '../lib/services.js'
 
@@ -9,6 +9,13 @@ export default function LoudPhraseSettings() {
   const [phrases, setPhrases] = useState(() => loudPhrases.get())
   const [text, setText] = useState('')
   const [isSaved, setIsSaved] = useState(false)
+
+  // Load the current list from the backend so the manager reflects saved state.
+  useEffect(() => {
+    let alive = true
+    loudPhrases.pull().then((list) => { if (alive) setPhrases(list) })
+    return () => { alive = false }
+  }, [])
 
   function add() {
     const v = text.trim()

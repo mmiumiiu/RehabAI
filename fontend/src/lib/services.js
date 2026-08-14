@@ -124,6 +124,7 @@ const DEFAULT_LOUD_PHRASES = [
 ]
 export const loudPhrases = {
   defaults: DEFAULT_LOUD_PHRASES,
+  // Synchronous read from the local cache (used to build steps during render).
   get() {
     try {
       const v = JSON.parse(localStorage.getItem(PHRASES_KEY) || 'null')
@@ -132,9 +133,35 @@ export const loudPhrases = {
       return DEFAULT_LOUD_PHRASES
     }
   },
-  save(list) {
-    localStorage.setItem(PHRASES_KEY, JSON.stringify(list))
+  // Update the cache and notify listeners — only when the list actually changed,
+  // so polling doesn't cause needless re-renders.
+  _cache(list) {
+    const next = JSON.stringify(list)
+    if (localStorage.getItem(PHRASES_KEY) === next) return
+    localStorage.setItem(PHRASES_KEY, next)
     window.dispatchEvent(new CustomEvent('rehabai:loud-phrases'))
+  },
+  // Patient side: pull the therapist's current list from the backend.
+  async pull() {
+    try {
+      const res = await fetch(`${API_URL}/loud-phrases`)
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data.phrases)) { this._cache(data.phrases); return data.phrases }
+      }
+    } catch { /* offline — keep cached */ }
+    return this.get()
+  },
+  // Therapist side: push the list to the backend (and cache locally).
+  async save(list) {
+    this._cache(list)
+    try {
+      await fetch(`${API_URL}/loud-phrases`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phrases: list }),
+      })
+    } catch { /* offline — cached locally, will re-sync on next save */ }
   },
 }
 
