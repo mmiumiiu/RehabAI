@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
 import { Card, SectionTitle, Button } from '../../components/ui.jsx'
 import { Flame, Activity, Mic, ChevronRight } from '../../components/icons.jsx'
-import { BIG_EXERCISES, LOUD_STEPS } from '../../lib/mockData.js'
+import { BIG_EXERCISES, getLoudSteps } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useSessionHistory, trainingStreak } from '../../lib/useSessionHistory.js'
 
 export default function Home() {
   const { user } = useAuth()
   const bigLeft = BIG_EXERCISES.filter((e) => e.status !== 'done').length
-  const loudLeft = LOUD_STEPS.filter((e) => e.status !== 'done').length
+  const loudLeft = getLoudSteps().filter((e) => e.status !== 'done').length
 
   const rows = useSessionHistory()
   const streak = trainingStreak(rows)

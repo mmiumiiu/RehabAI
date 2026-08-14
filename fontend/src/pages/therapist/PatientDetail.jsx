@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import MetricRow from '../../components/MetricRow.jsx'
 import FrequencyChart from '../../components/FrequencyChart.jsx'
 import LoudTargetSettings from '../../components/LoudTargetSettings.jsx'
+import LoudPhraseSettings from '../../components/LoudPhraseSettings.jsx'
 import { Card, Button, Badge, ProgressBar, SectionTitle } from '../../components/ui.jsx'
 import { ArrowLeft, Chat, Mic } from '../../components/icons.jsx'
 import { PATIENTS, BIG_EXERCISES, HISTORY, PARKINSON_STAGES } from '../../lib/mockData.js'
@@ -107,6 +108,7 @@ export default function PatientDetail() {
 
         <SectionTitle>ตั้งค่า LSVT LOUD สำหรับผู้ป่วยคนนี้</SectionTitle>
         <LoudTargetSettings />
+        <LoudPhraseSettings />
 
         <SectionTitle>ประวัติการฝึกล่าสุด</SectionTitle>
         <div className="overflow-x-auto mb-7">

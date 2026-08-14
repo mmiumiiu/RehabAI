@@ -1,5 +1,6 @@
 // Mock data + domain constants derived directly from RehabAI_Build_Spec.md.
 // This stands in for Firestore; the service layer (lib/services.js) reads from here.
+import { loudPhrases } from './services.js'
 
 export const PARKINSON_STAGES = [
   {
@@ -107,35 +108,33 @@ export const BIG_EXERCISES = [
 //   'word'    → ความดัง + ความถูกต้องของคำ
 // `scoreWord: false` ปิดการให้คะแนนคำ (step "อา" วัดแค่ความดัง + ระยะเวลา)
 // `group` ใช้จัดหัวข้อในหน้ารายการฝึก
-const DAILY_PHRASES = [
-  { text: 'สวัสดี', detail: 'คำทักทายเมื่อพบกัน' },
-  { text: 'ขอโทษ', detail: 'ใช้เมื่อทำผิดหรือขอทาง' },
-  { text: 'ขอบคุณ', detail: 'แสดงความขอบคุณเมื่อได้รับความช่วยเหลือ' },
-  { text: 'ไม่เป็นไร', detail: 'ตอบเมื่อมีคนขอโทษ หรือปฏิเสธอย่างสุภาพ' },
-  { text: 'สบายดีไหม', detail: 'ถามทุกข์สุขของผู้อื่น' },
-  { text: 'ไปห้องน้ำ', detail: 'บอกความต้องการเข้าห้องน้ำ' },
-  { text: 'หิวข้าว', detail: 'บอกว่าอยากรับประทานอาหาร' },
-  { text: 'ช่วยพาไปที่เตียงนอนหน่อย', detail: 'ขอความช่วยเหลือให้พาไปที่เตียง' },
-  { text: 'วันนี้ต้องไปที่ไหนบ้าง', detail: 'ถามกำหนดการหรือนัดหมายของวันนี้' },
-  { text: 'ขอดูเมนูหน่อย', detail: 'ขอเมนูอาหารเพื่อเลือกสั่ง' },
-]
+// The sustained-phonation "อา" step is fixed; the daily-life phrase steps are
+// built from the therapist-curated list (loudPhrases) so editing them on the
+// therapist side changes what the patient practises.
+const SUSTAIN_STEP = {
+  id: 1, group: 'ฝึกออกเสียงค้าง', name: 'ฝึกออกเสียงค้าง',
+  detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที',
+  minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo',
+}
 
-export const LOUD_STEPS = [
-  { id: 1, group: 'ฝึกออกเสียงค้าง', name: 'ฝึกออกเสียงค้าง', detail: 'เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที', minutes: 5, phrase: 'อา', mode: 'sustain', scoreWord: false, holdMin: 5, holdTarget: 7, status: 'todo' },
-  ...DAILY_PHRASES.map((p, i) => ({
-    id: i + 2,
-    group: 'ประโยคในชีวิตประจำวัน',
-    name: p.text,
-    detail: p.detail,
-    minutes: 2,
-    phrase: p.text,
-    mode: 'word',
-    status: 'todo',
-  })),
-]
+export function getLoudSteps() {
+  return [
+    SUSTAIN_STEP,
+    ...loudPhrases.get().map((text, i) => ({
+      id: i + 2,
+      group: 'ประโยคในชีวิตประจำวัน',
+      name: text,
+      detail: 'พูดให้ดังและชัด',
+      minutes: 2,
+      phrase: text,
+      mode: 'word',
+      status: 'todo',
+    })),
+  ]
+}
 
 // Group LOUD steps by their `group` heading, preserving order.
-export function groupLoudSteps(steps = LOUD_STEPS) {
+export function groupLoudSteps(steps = getLoudSteps()) {
   const groups = []
   for (const s of steps) {
     let g = groups.find((g) => g.title === s.group)

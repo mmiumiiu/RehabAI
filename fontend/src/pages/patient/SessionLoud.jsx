@@ -5,7 +5,7 @@ import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { Mic, Check } from '../../components/icons.jsx'
-import { LOUD_STEPS } from '../../lib/mockData.js'
+import { getLoudSteps } from '../../lib/mockData.js'
 import { loudSettings, sessionHistory } from '../../lib/services.js'
 import { sessionService } from '../../lib/sessionService.js'
 
@@ -35,7 +35,8 @@ export default function SessionLoud() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const stepId = Number(params.get('step')) || 1
-  const step = LOUD_STEPS.find((s) => s.id === stepId) || LOUD_STEPS[0]
+  const loudSteps = getLoudSteps()
+  const step = loudSteps.find((s) => s.id === stepId) || loudSteps[0]
 
   const settings = loudSettings.get()
   const repGoal = settings?.reps ?? 10

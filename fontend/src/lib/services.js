@@ -113,6 +113,31 @@ export const loudSettings = {
   },
 }
 
+// Daily-life phrases the therapist curates for the patient (LSVT LOUD "ประโยคใน
+// ชีวิตประจำวัน" group). Stored as a plain string list; the patient's training
+// list/session build their word steps from this.
+const PHRASES_KEY = 'rehabai_loud_phrases'
+const DEFAULT_LOUD_PHRASES = [
+  'สวัสดี', 'ขอโทษ', 'ขอบคุณ', 'ไม่เป็นไร', 'สบายดีไหม',
+  'ไปห้องน้ำ', 'หิวข้าว', 'ช่วยพาไปที่เตียงนอนหน่อย',
+  'วันนี้ต้องไปที่ไหนบ้าง', 'ขอดูเมนูหน่อย',
+]
+export const loudPhrases = {
+  defaults: DEFAULT_LOUD_PHRASES,
+  get() {
+    try {
+      const v = JSON.parse(localStorage.getItem(PHRASES_KEY) || 'null')
+      return Array.isArray(v) ? v : DEFAULT_LOUD_PHRASES
+    } catch {
+      return DEFAULT_LOUD_PHRASES
+    }
+  },
+  save(list) {
+    localStorage.setItem(PHRASES_KEY, JSON.stringify(list))
+    window.dispatchEvent(new CustomEvent('rehabai:loud-phrases'))
+  },
+}
+
 // Recorded training sessions — the real results a patient completes in BIG/LOUD
 // sessions. Stands in for a Firestore subcollection users/{uid}/sessions. Kept
 // newest-first. The dashboard reads this and recomputes its summary live.

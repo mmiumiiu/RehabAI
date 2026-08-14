@@ -2,19 +2,20 @@ import { useNavigate } from 'react-router-dom'
 import { Badge, Button } from '../../components/ui.jsx'
 import { Check, Clock } from '../../components/icons.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
-import { LOUD_STEPS, groupLoudSteps } from '../../lib/mockData.js'
+import { getLoudSteps, groupLoudSteps } from '../../lib/mockData.js'
 
 export default function TrainingLoud() {
   const navigate = useNavigate()
-  const done = LOUD_STEPS.filter((s) => s.status === 'done').length
-  const groups = groupLoudSteps()
+  const steps = getLoudSteps()
+  const done = steps.filter((s) => s.status === 'done').length
+  const groups = groupLoudSteps(steps)
 
   return (
     <div className="max-w-[820px]">
       <div className="flex items-center justify-between mb-1">
         <p className="text-[13px] text-coral-700 font-semibold uppercase tracking-wide">ฝึกกายภาพบำบัด</p>
         <span className="text-[12px] text-coral-700 font-semibold bg-coral-100 px-3 py-1.5 rounded-full">
-          {done}/{LOUD_STEPS.length} ขั้นตอนเสร็จแล้ว
+          {done}/{steps.length} ขั้นตอนเสร็จแล้ว
         </span>
       </div>
       <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-6">
