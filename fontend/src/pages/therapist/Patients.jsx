@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, Button, Avatar, Badge } from '../../components/ui.jsx'
-import { Search, Check, Chat, Flame, Award } from '../../components/icons.jsx'
+import { Search, Check, Chat } from '../../components/icons.jsx'
 import { PATIENTS, PARKINSON_STAGES } from '../../lib/mockData.js'
 
 const stageShort = (s) => PARKINSON_STAGES.find((x) => x.value === s)?.short || s
@@ -48,12 +48,7 @@ export default function Patients() {
                 </div>
                 <div className="text-[12px] text-ink-muted">ฝึกล่าสุด {p.lastActive}</div>
               </div>
-              <div className="hidden md:flex items-center gap-5 ml-auto text-[12.5px] text-ink-secondary">
-                <span className="flex items-center gap-1.5"><Flame size={15} className="text-coral-700" /> {p.streak} วัน</span>
-                <span className="flex items-center gap-1.5"><Award size={15} className="text-teal-700" /> {p.lastScore}</span>
-                <span>{p.weekCount}/7 สัปดาห์นี้</span>
-              </div>
-              <div className="flex gap-2 ml-4">
+              <div className="flex gap-2 ml-auto">
                 <Button variant="outline" className="w-auto py-2" onClick={() => navigate(`/therapist/patients/${p.id}`)}>ดูรายละเอียด</Button>
                 <Button variant="ghost" className="w-auto py-2" onClick={() => navigate('/therapist/messages')}><Chat size={16} /></Button>
               </div>
