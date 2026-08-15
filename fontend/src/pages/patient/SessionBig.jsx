@@ -7,6 +7,8 @@ import { useSpeak } from '../../lib/useSpeak.js'
 import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
+import FallAlert from '../../components/FallAlert.jsx'
+import { useFallDetector } from '../../lib/useFallDetector.js'
 import { ProgressBar } from '../../components/ui.jsx'
 import { Camera, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
@@ -44,6 +46,10 @@ export default function SessionBig() {
   useSpeak(`${ex.name} ${ex.how}`, { delayMs: 2000 })
 
   const complete = repCount >= ex.target
+
+  // Fall detection from the live pose — surfaces the SOS/emergency flow.
+  const { fallen, dismiss } = useFallDetector(landmarks, status === 'live' && !complete)
+
   const good = lastScore ? lastScore.verdict === 'correct' : true
   const accuracy = avgConf(repScores)
 
@@ -217,6 +223,14 @@ export default function SessionBig() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Fall detected → offer/auto-trigger the emergency flow */}
+      {fallen && !complete && (
+        <FallAlert
+          onSafe={dismiss}
+          onCall={() => navigate('/emergency-alert?reason=fall')}
+        />
       )}
     </div>
   )
