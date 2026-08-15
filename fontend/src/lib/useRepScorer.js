@@ -22,15 +22,8 @@ export function useRepScorer(landmarks, exerciseId, enabled = true) {
   const bufferRef = useRef([])
   const stateRef = useRef('IDLE')  // IDLE | UP
   const smoothYRef = useRef(0.65)
-  const smoothSpanRef = useRef(null) // smoothed arm span (forward-step counting)
   const repStartRef = useRef(0)
   const scoringRef = useRef(false)
-
-  // ก้าวหน้า (Forward Step) is counted by arm spread instead of wrist height:
-  // spread the arms out (span ≥ SPAN_ENTER × shoulder width) then bring them
-  // back (span ≤ SPAN_EXIT) = one rep.
-  const SPAN_ENTER = 1.7
-  const SPAN_EXIT = 1.15
 
   const modelExercise = MODEL_EXERCISE[exerciseId] ?? null
 
@@ -72,45 +65,32 @@ export function useRepScorer(landmarks, exerciseId, enabled = true) {
     bufferRef.current.push([...landmarks])
     if (bufferRef.current.length > 200) bufferRef.current.shift()
 
+    // Smoothed average wrist Y (0 = top of frame, 1 = bottom)
+    const rawY = (landmarks[15].y + landmarks[16].y) / 2
+    smoothYRef.current = 0.25 * rawY + 0.75 * smoothYRef.current
+    const sY = smoothYRef.current
     const elapsed = (Date.now() - repStartRef.current) / 1000
 
-    const startRep = () => {
+    if (stateRef.current === 'IDLE' && sY < 0.42) {
+      // Wrists rose above midpoint → rep started
       stateRef.current = 'UP'
       repStartRef.current = Date.now()
       bufferRef.current = [[...landmarks]]
       setRecording(true)
-    }
-    const finishRep = () => {
+    } else if (stateRef.current === 'UP' && elapsed > 0.4 && sY > 0.58) {
+      // Wrists returned to resting position → rep done
+      stateRef.current = 'IDLE'
+      setRecording(false)
+      setRepCount(c => c + 1)
+      scoreBuffer()
+    } else if (stateRef.current === 'UP' && elapsed > 10) {
+      // Safety timeout — score whatever was captured
       stateRef.current = 'IDLE'
       setRecording(false)
       setRepCount(c => c + 1)
       scoreBuffer()
     }
-
-    // ── ก้าวหน้า (Forward Step): count by arm spread ────────────────────────
-    if (exerciseId === 3) {
-      const shoulderW = Math.abs(landmarks[11].x - landmarks[12].x) || 1e-3
-      const span = Math.abs(landmarks[15].x - landmarks[16].x) / shoulderW
-      smoothSpanRef.current = smoothSpanRef.current == null
-        ? span
-        : 0.25 * span + 0.75 * smoothSpanRef.current
-      const s = smoothSpanRef.current
-
-      if (stateRef.current === 'IDLE' && s > SPAN_ENTER) startRep()        // arms spread out
-      else if (stateRef.current === 'UP' && elapsed > 0.4 && s < SPAN_EXIT) finishRep() // arms back
-      else if (stateRef.current === 'UP' && elapsed > 10) finishRep()      // safety timeout
-      return
-    }
-
-    // ── Default (arm raises): count by wrist height ─────────────────────────
-    const rawY = (landmarks[15].y + landmarks[16].y) / 2
-    smoothYRef.current = 0.25 * rawY + 0.75 * smoothYRef.current
-    const sY = smoothYRef.current
-
-    if (stateRef.current === 'IDLE' && sY < 0.42) startRep()               // wrists rose above midpoint
-    else if (stateRef.current === 'UP' && elapsed > 0.4 && sY > 0.58) finishRep() // wrists returned down
-    else if (stateRef.current === 'UP' && elapsed > 10) finishRep()        // safety timeout
-  }, [landmarks, enabled, scoreBuffer, exerciseId])
+  }, [landmarks, enabled, scoreBuffer])
 
   return { repCount, repScores, lastScore, recording, modelExercise }
 }
