@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import MetricRow from '../../components/MetricRow.jsx'
-import FrequencyChart from '../../components/FrequencyChart.jsx'
+import TherapistProgress from '../../components/TherapistProgress.jsx'
 import LoudTargetSettings from '../../components/LoudTargetSettings.jsx'
 import LoudPhraseSettings from '../../components/LoudPhraseSettings.jsx'
-import { Card, Button, Badge, ProgressBar, SectionTitle } from '../../components/ui.jsx'
+import { Card, Button, Badge, SectionTitle } from '../../components/ui.jsx'
 import { ArrowLeft, Chat, Mic } from '../../components/icons.jsx'
-import { PATIENTS, BIG_EXERCISES, HISTORY, PARKINSON_STAGES } from '../../lib/mockData.js'
+import { PATIENTS, HISTORY, PARKINSON_STAGES } from '../../lib/mockData.js'
 import { sessionService } from '../../lib/sessionService.js'
 
 export default function PatientDetail() {
@@ -82,40 +81,18 @@ export default function PatientDetail() {
           </div>
         )}
 
-        <MetricRow
-          items={[
-            { value: '1,284', label: 'คะแนนสะสม' },
-            { value: '46', label: 'จำนวนครั้งที่ฝึก' },
-            { value: `${patient.streak}`, label: 'ฝึกต่อเนื่อง (วัน)' },
-            { value: `${patient.weekCount}/7`, label: 'วันที่ฝึกสัปดาห์นี้' },
-          ]}
-        />
-
-        <div className="mb-7"><FrequencyChart /></div>
-
-        <SectionTitle>ความแม่นยำแยกตามท่าฝึก (LSVT BIG)</SectionTitle>
-        <Card className="p-6 mb-7 space-y-3.5">
-          {BIG_EXERCISES.map((ex) => (
-            <div key={ex.id}>
-              <div className="flex justify-between text-[12.5px] mb-1.5">
-                <span className="text-ink-secondary">{ex.id}. {ex.name}</span>
-                <span className={`font-semibold font-mono ${ex.accuracy < 70 ? 'text-coral-700' : 'text-teal-900'}`}>{ex.accuracy}%</span>
-              </div>
-              <ProgressBar value={ex.accuracy} tone={ex.accuracy < 70 ? 'loud' : 'big'} />
-            </div>
-          ))}
-        </Card>
+        <TherapistProgress />
 
         <SectionTitle>ตั้งค่า LSVT LOUD สำหรับผู้ป่วยคนนี้</SectionTitle>
         <LoudTargetSettings />
         <LoudPhraseSettings />
 
-        <SectionTitle>ประวัติการฝึกล่าสุด</SectionTitle>
+        <SectionTitle>ประวัติล่าสุด</SectionTitle>
         <div className="overflow-x-auto mb-7">
           <table className="w-full border-collapse card overflow-hidden min-w-[420px]">
             <thead>
               <tr className="bg-[#F5F2EA]">
-                {['วันที่', 'ประเภท', 'ระยะเวลา', 'คะแนน'].map((h) => (
+                {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา'].map((h) => (
                   <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">{h}</th>
                 ))}
               </tr>
@@ -126,14 +103,13 @@ export default function PatientDetail() {
                   <td className="px-5 py-3 text-[13.5px]">{r.date}</td>
                   <td className="px-5 py-3"><Badge tone={r.type}>{r.type === 'big' ? 'LSVT BIG' : 'LSVT LOUD'}</Badge></td>
                   <td className="px-5 py-3 text-[13.5px]">{r.duration}</td>
-                  <td className="px-5 py-3 text-[13.5px] font-semibold font-mono">{r.score}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <SectionTitle>บันทึกของฉัน (เห็นเฉพาะคุณ)</SectionTitle>
+        <SectionTitle>บันทึกของฉัน (เห็นเฉพาะนักกายภาพบำบัด ไม่กระทบโปรแกรมฝึกของผู้ป่วย)</SectionTitle>
         <Card className="p-5">
           <textarea
             value={note}
