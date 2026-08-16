@@ -54,7 +54,7 @@ export default function Dashboard() {
           <table className="w-full border-collapse card overflow-hidden min-w-[480px]">
             <thead>
               <tr className="bg-[#F5F2EA]">
-                {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา', 'คะแนน'].map((h) => (
+                {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา'].map((h) => (
                   <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">
                     {h}
                   </th>
@@ -69,9 +69,6 @@ export default function Dashboard() {
                     <Badge tone={r.type}>{r.type === 'big' ? 'LSVT BIG' : 'LSVT LOUD'}</Badge>
                   </td>
                   <td className="px-5 py-3 text-[13.5px]">{r.duration}</td>
-                  <td className="px-5 py-3 text-[13.5px] font-semibold font-mono">
-                    {r.score != null ? r.score : '—'}
-                  </td>
                 </tr>
               ))}
             </tbody>
