@@ -39,6 +39,12 @@ function KeyedBigSession() {
   return <SessionBig key={sp.get('exercise') || '1'} />
 }
 
+// Same for the LOUD session, keyed by step so "ฝึกต่อ" starts fresh.
+function KeyedLoudSession() {
+  const [sp] = useSearchParams()
+  return <SessionLoud key={sp.get('step') || '1'} />
+}
+
 function RequireAuth({ role, children }) {
   const { user } = useAuth()
   if (!user) return <Navigate to={role === 'therapist' ? '/therapist/login' : '/login'} replace />
@@ -90,7 +96,7 @@ export default function App() {
       {/* Live sessions — full-screen, still auth-guarded */}
       <Route path="/training/big/session" element={<RequireAuth role="patient"><KeyedBigSession /></RequireAuth>} />
       <Route path="/training/big/session-weightshift" element={<RequireAuth role="patient"><SessionWeightShift /></RequireAuth>} />
-      <Route path="/training/loud/session" element={<RequireAuth role="patient"><SessionLoud /></RequireAuth>} />
+      <Route path="/training/loud/session" element={<RequireAuth role="patient"><KeyedLoudSession /></RequireAuth>} />
       <Route path="/emergency-alert" element={<RequireAuth role="patient"><EmergencyAlert /></RequireAuth>} />
 
       {/* Therapist portal */}

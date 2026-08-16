@@ -4,7 +4,7 @@ import { useLoudScorer, LOUD_BAND } from '../../lib/useLoudScorer.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
-import { Mic, Check } from '../../components/icons.jsx'
+import { Mic, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { loudSettings, sessionHistory } from '../../lib/services.js'
 import { sessionService } from '../../lib/sessionService.js'
@@ -37,6 +37,11 @@ export default function SessionLoud() {
   const stepId = Number(params.get('step')) || 1
   const loudSteps = useLoudSteps()
   const step = loudSteps.find((s) => s.id === stepId) || loudSteps[0]
+  const nextStep = loudSteps[loudSteps.findIndex((s) => s.id === step.id) + 1] || null
+  function goNextStep() {
+    if (!nextStep) return navigate('/home')
+    navigate(`/training/loud/session?step=${nextStep.id}`)
+  }
 
   const settings = loudSettings.get()
   const repGoal = settings?.reps ?? 10
@@ -267,11 +272,40 @@ export default function SessionLoud() {
         />
       </div>
 
+      {/* Completion popup — celebrate and go to the next step or home */}
       {sessionDone && (
-        <div className="max-w-[1100px] mx-auto mt-4 flex justify-end">
-          <button onClick={() => navigate('/training/loud')} className="btn-primary max-w-[240px]">
-            เสร็จสิ้น — กลับไปรายการแบบฝึกหัด
-          </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
+            <div className="text-[46px] leading-none mb-2">🎉</div>
+            <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
+            <p className="text-[14px] text-ink-secondary mb-5">
+              ยินดีด้วย! คุณฝึก “{step.name}” ครบ {repGoal} ครั้งแล้ว
+            </p>
+
+            {nextStep ? (
+              <>
+                <button
+                  onClick={goNextStep}
+                  className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
+                >
+                  ฝึกต่อ — {nextStep.name} <ChevronRight size={18} />
+                </button>
+                <button
+                  onClick={() => navigate('/home')}
+                  className="w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors inline-flex items-center justify-center gap-1.5"
+                >
+                  <Home size={16} /> กลับสู่หน้าหลัก
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate('/home')}
+                className="btn-primary w-full flex items-center justify-center gap-2"
+              >
+                <Home size={18} /> กลับสู่หน้าหลัก
+              </button>
+            )}
+          </div>
         </div>
       )}
 
