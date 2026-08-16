@@ -9,10 +9,6 @@ const DAY_MS = 86400000
 export default function Dashboard() {
   const rows = useSessionHistory()
 
-  const scored = rows.filter((r) => r.score != null)
-  const totalScore = scored.reduce((s, r) => s + r.score, 0)
-  const latest = rows[0]
-
   // Distinct days trained within the last 7 days.
   const today0 = startOfDay(Date.now())
   const weekStart0 = today0 - 6 * DAY_MS
@@ -39,10 +35,8 @@ export default function Dashboard() {
 
       <MetricRow
         items={[
-          { value: totalScore.toLocaleString(), label: 'คะแนนสะสม' },
           { value: String(rows.length), label: 'จำนวนครั้งที่ฝึก' },
           { value: `${daysThisWeek}/7`, label: 'วันที่ฝึกสัปดาห์นี้' },
-          { value: latest?.score != null ? String(latest.score) : '—', label: 'คะแนนล่าสุด' },
         ]}
       />
 
