@@ -47,7 +47,7 @@ export const BIG_EXERCISES = [
     name: 'ก้าวหน้า (Forward Step)',
     nameEn: 'Forward Step',
     how: 'ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น',
-    video: '/pose-1.mp4',
+    video: '/forward-step.mp4',
     target: 8,
     targetLabel: '8 ครั้ง/ข้าง',
     status: 'todo',
