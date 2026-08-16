@@ -50,9 +50,9 @@ export default function App() {
   const { user } = useAuth()
   const { pathname } = useLocation()
 
-  // Therapist portal renders at 1x; patient portal is scaled up to 1.25x.
+  // Therapist portal is scaled up to 1.15x; patient portal to 1.25x.
   useEffect(() => {
-    document.body.style.zoom = pathname.startsWith('/therapist') ? '1' : '1.25'
+    document.body.style.zoom = pathname.startsWith('/therapist') ? '1.15' : '1.25'
   }, [pathname])
 
   return (
