@@ -48,7 +48,10 @@ function ExerciseRow({ ex, locked = false, onStart, done = false }) {
           {ex.targetLabel}
         </span>
         {done ? (
-          <Badge tone="done">เสร็จแล้ว</Badge>
+          <>
+            <Badge tone="done">เสร็จแล้ว</Badge>
+            <Button variant="outline" onClick={() => onStart(ex)}>ทำซ้ำ</Button>
+          </>
         ) : (
           <>
             <Badge tone="todo" className="hidden sm:inline-flex">ยังไม่เริ่ม</Badge>
@@ -149,7 +152,12 @@ export default function TrainingBig() {
                   </span>
                   <PlayPhraseButton text={s.phrase} />
                   {prog.loud.includes(s.id) ? (
-                    <Badge tone="done">เสร็จแล้ว</Badge>
+                    <>
+                      <Badge tone="done">เสร็จแล้ว</Badge>
+                      <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
+                        ทำซ้ำ
+                      </Button>
+                    </>
                   ) : (
                     <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
                       เริ่มฝึก
