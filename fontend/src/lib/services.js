@@ -212,6 +212,37 @@ export const sessionHistory = {
   },
 }
 
+// Today's completed exercises per account — which BIG exercises / LOUD steps the
+// patient has finished today. Drives the "เหลืออีกกี่ท่า" counters and "เสร็จแล้ว"
+// badges, live. Resets each day.
+const PROGRESS_KEY = 'rehabai_progress'
+function progressKey() {
+  const u = readSession()
+  return `${PROGRESS_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+function todayStr() {
+  const d = new Date()
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`
+}
+export const exerciseProgress = {
+  get() {
+    try {
+      const v = JSON.parse(localStorage.getItem(progressKey()) || 'null')
+      if (v && v.date === todayStr()) return { date: v.date, big: v.big || [], loud: v.loud || [] }
+    } catch { /* ignore */ }
+    return { date: todayStr(), big: [], loud: [] }
+  },
+  // kind: 'big' | 'loud'
+  mark(kind, id) {
+    const p = this.get()
+    if (!p[kind].includes(id)) {
+      p[kind] = [...p[kind], id]
+      localStorage.setItem(progressKey(), JSON.stringify(p))
+      window.dispatchEvent(new CustomEvent('rehabai:progress'))
+    }
+  },
+}
+
 // Therapist link (spec §3.3 / §6.1). Patients tap-select a verified therapist
 // and are auto-linked immediately — there is no connection code and no pending
 // approval state anymore. Stands in for users/{uid}/therapistLinks/{therapistId}.

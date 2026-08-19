@@ -3,17 +3,23 @@ import { Card, SectionTitle, Button } from '../../components/ui.jsx'
 import { Flame, Activity, Mic, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
+import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useSessionHistory, trainingStreak } from '../../lib/useSessionHistory.js'
 
 export default function Home() {
   const { user } = useAuth()
-  const bigLeft = BIG_EXERCISES.filter((e) => e.status !== 'done').length
-  const loudLeft = useLoudSteps().filter((e) => e.status !== 'done').length
+  const loudSteps = useLoudSteps()
+  const prog = useExerciseProgress()
+
+  // Remaining (not-yet-done-today) counts — update live as the patient finishes.
+  const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
+  const bigLeft = standing.filter((e) => !prog.big.includes(e.id)).length
+  const loudLeft = loudSteps.filter((s) => !prog.loud.includes(s.id)).length
+  const doneToday = prog.big.length + prog.loud.length
 
   const rows = useSessionHistory()
   const streak = trainingStreak(rows)
-  const lastScore = rows.find((r) => r.score != null)?.score
 
   return (
     <div className="max-w-[900px]">
@@ -34,8 +40,8 @@ export default function Home() {
           </p>
         </div>
         <div className="text-right">
-          <div className="text-white/60 text-[12px] mb-1">คะแนนล่าสุด</div>
-          <div className="font-heading text-[28px] font-semibold text-teal-100">{lastScore != null ? lastScore : '—'}</div>
+          <div className="text-white/60 text-[12px] mb-1">ท่าที่ทำวันนี้</div>
+          <div className="font-heading text-[28px] font-semibold text-teal-100">{doneToday}</div>
         </div>
       </div>
 

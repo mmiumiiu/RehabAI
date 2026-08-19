@@ -4,6 +4,7 @@ import { Check, Clock } from '../../components/icons.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { BIG_EXERCISES, groupLoudSteps } from '../../lib/mockData.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
+import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
 // Seated poses (ท่านั่ง) need a chair; they are shown with a muted "locked"
@@ -14,8 +15,7 @@ import { useLoudSteps } from '../../lib/useLoudSteps.js'
 const lockedRow = { background: '#EAE6D9', borderColor: '#D8D0BC' }
 const lockedNum = { background: '#D8D0BC', borderColor: '#C7BDA3', color: '#6B6350' }
 
-function ExerciseRow({ ex, locked = false, onStart }) {
-  const done = ex.status === 'done'
+function ExerciseRow({ ex, locked = false, onStart, done = false }) {
   return (
     <div className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5" style={locked ? lockedRow : undefined}>
       {done ? (
@@ -63,11 +63,12 @@ function ExerciseRow({ ex, locked = false, onStart }) {
 export default function TrainingBig() {
   const navigate = useNavigate()
 
+  const prog = useExerciseProgress()
   const seated = BIG_EXERCISES.filter((e) => e.posture === 'seated')
   const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
-  const bigDone = standing.filter((e) => e.status === 'done').length
+  const bigDone = standing.filter((e) => prog.big.includes(e.id)).length
   const loudSteps = useLoudSteps()
-  const loudDone = loudSteps.filter((s) => s.status === 'done').length
+  const loudDone = loudSteps.filter((s) => prog.loud.includes(s.id)).length
 
   function start(ex) {
     if (ex.weightShift) navigate('/training/big/session-weightshift')
@@ -94,7 +95,7 @@ export default function TrainingBig() {
           <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่านั่ง</h3>
           <div className="space-y-3">
             {seated.map((ex) => (
-              <ExerciseRow key={ex.id} ex={ex} locked onStart={start} />
+              <ExerciseRow key={ex.id} ex={ex} locked onStart={start} done={prog.big.includes(ex.id)} />
             ))}
           </div>
         </div>
@@ -103,7 +104,7 @@ export default function TrainingBig() {
       <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่ายืน</h3>
       <div className="space-y-3 mb-10">
         {standing.map((ex) => (
-          <ExerciseRow key={ex.id} ex={ex} onStart={start} />
+          <ExerciseRow key={ex.id} ex={ex} onStart={start} done={prog.big.includes(ex.id)} />
         ))}
       </div>
 
@@ -126,7 +127,7 @@ export default function TrainingBig() {
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">
-                {s.status === 'done' ? (
+                {prog.loud.includes(s.id) ? (
                   <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
                     <Check size={15} />
                   </div>
@@ -147,7 +148,7 @@ export default function TrainingBig() {
                     <Clock size={14} /> {s.minutes} นาที
                   </span>
                   <PlayPhraseButton text={s.phrase} />
-                  {s.status === 'done' ? (
+                  {prog.loud.includes(s.id) ? (
                     <Badge tone="done">เสร็จแล้ว</Badge>
                   ) : (
                     <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>

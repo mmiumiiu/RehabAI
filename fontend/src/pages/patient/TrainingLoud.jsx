@@ -4,11 +4,13 @@ import { Check, Clock } from '../../components/icons.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { groupLoudSteps } from '../../lib/mockData.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
+import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 
 export default function TrainingLoud() {
   const navigate = useNavigate()
   const steps = useLoudSteps()
-  const done = steps.filter((s) => s.status === 'done').length
+  const prog = useExerciseProgress()
+  const done = steps.filter((s) => prog.loud.includes(s.id)).length
   const groups = groupLoudSteps(steps)
 
   return (
@@ -29,7 +31,7 @@ export default function TrainingLoud() {
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex items-center gap-4 card px-5 py-4">
-                {s.status === 'done' ? (
+                {prog.loud.includes(s.id) ? (
                   <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
                     <Check size={15} />
                   </div>
@@ -49,7 +51,7 @@ export default function TrainingLoud() {
                   <Clock size={14} /> {s.minutes} นาที
                 </span>
                 <PlayPhraseButton text={s.phrase} />
-                {s.status === 'done' ? (
+                {prog.loud.includes(s.id) ? (
                   <Badge tone="done">เสร็จแล้ว</Badge>
                 ) : (
                   <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>

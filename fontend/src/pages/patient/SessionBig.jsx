@@ -12,7 +12,7 @@ import { useFallDetector } from '../../lib/useFallDetector.js'
 import { ProgressBar } from '../../components/ui.jsx'
 import { Camera, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
-import { sessionHistory } from '../../lib/services.js'
+import { sessionHistory, exerciseProgress } from '../../lib/services.js'
 
 function useSessionClock() {
   const [t, setT] = useState(0)
@@ -25,11 +25,6 @@ function useSessionClock() {
   return `${mm}:${ss}`
 }
 
-function avgConf(repScores) {
-  if (!repScores.length) return null
-  return repScores.reduce((s, r) => s + r.conf, 0) / repScores.length
-}
-
 export default function SessionBig() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
@@ -39,8 +34,7 @@ export default function SessionBig() {
 
   const { videoRef, status } = useCamera(true)
   const { landmarks, ready: poseReady } = usePoseLandmarker(videoRef, status === 'live')
-  const { repCount, repScores, lastScore, recording, modelExercise } =
-    useRepScorer(landmarks, exId, status === 'live')
+  const { repCount, recording } = useRepScorer(landmarks, exId, status === 'live')
 
   // Read the exercise instruction aloud 2s after the session opens.
   useSpeak(`${ex.name} ${ex.how}`, { delayMs: 2000 })
@@ -50,9 +44,6 @@ export default function SessionBig() {
   // Fall detection from the live pose — surfaces the SOS/emergency flow.
   const { fallen, dismiss } = useFallDetector(landmarks, status === 'live' && !complete)
 
-  const good = lastScore ? lastScore.verdict === 'correct' : true
-  const accuracy = avgConf(repScores)
-
   // Next exercise in the list (null if this is the last one).
   const nextEx = BIG_EXERCISES[BIG_EXERCISES.findIndex((e) => e.id === ex.id) + 1] || null
   function goNext() {
@@ -60,28 +51,21 @@ export default function SessionBig() {
     navigate(nextEx.weightShift ? '/training/big/session-weightshift' : `/training/big/session?exercise=${nextEx.id}`)
   }
 
-  // Persist the real session result once the target is reached (score = average
-  // pose-quality confidence from the model; null when the exercise has no model).
+  // Record the session + mark this exercise done for today once the target is
+  // reached (no score/accuracy is computed).
   const recordedRef = useRef(false)
   useEffect(() => {
     if (!complete || recordedRef.current) return
     recordedRef.current = true
-    sessionHistory.add({
-      type: 'big',
-      score: accuracy != null ? accuracy * 100 : null,
-      reps: repCount,
-      goal: ex.target,
-      duration: clock,
-    })
+    sessionHistory.add({ type: 'big', score: null, reps: repCount, goal: ex.target, duration: clock })
+    exerciseProgress.mark('big', exId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [complete])
 
   // Bottom bar message
   let barMsg = ex.how.split(' ').slice(0, 8).join(' ') + '…'
   if (complete) barMsg = 'เยี่ยมมาก! ทำครบตามเป้าหมายแล้ว'
-  else if (recording) barMsg = 'กำลังวิเคราะห์ท่า…'
-  else if (lastScore?.verdict === 'correct') barMsg = 'ท่าถูกต้อง'
-  else if (lastScore?.verdict === 'needs_work') barMsg = 'ลองปรับท่าให้ดีขึ้น'
+  else if (recording) barMsg = 'กำลังนับ…'
   else if (status === 'live' && !poseReady) barMsg = 'กำลังโหลด AI…'
   else if (status === 'live' && poseReady && !landmarks) barMsg = 'ไม่พบผู้ใช้งานในกล้อง'
 
@@ -120,7 +104,7 @@ export default function SessionBig() {
           {/* Real skeleton when pose is ready, simulated skeleton as fallback */}
           {status === 'live' && (
             poseReady
-              ? <PoseCanvas landmarks={landmarks} good={good} />
+              ? <PoseCanvas landmarks={landmarks} good={true} />
               : (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <PoseSkeleton phase={0} good={true} />
@@ -145,15 +129,15 @@ export default function SessionBig() {
 
           <div className="absolute top-4 right-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5">
             {recording
-              ? <><span className="w-[7px] h-[7px] rounded-full bg-[#E4746A] rec-pulse" />บันทึก</>
-              : <><span className="w-[7px] h-[7px] rounded-full bg-[#4E9484]" />วิเคราะห์ท่าทางแบบเรียลไทม์</>}
+              ? <><span className="w-[7px] h-[7px] rounded-full bg-[#E4746A] rec-pulse" />กำลังนับ</>
+              : <><span className="w-[7px] h-[7px] rounded-full bg-[#4E9484]" />ตรวจจับท่าทาง</>}
           </div>
 
           <div
             className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
-            style={{ background: complete ? 'rgba(78,148,132,0.92)' : good ? 'rgba(78,148,132,0.80)' : 'rgba(185,84,42,0.80)' }}
+            style={{ background: complete ? 'rgba(78,148,132,0.92)' : 'rgba(78,148,132,0.80)' }}
           >
-            {(complete || good) && <Check size={18} />}
+            <Check size={18} />
             {barMsg}
           </div>
         </div>
