@@ -2,12 +2,14 @@ import MetricRow from '../../components/MetricRow.jsx'
 import FrequencyChart from '../../components/FrequencyChart.jsx'
 import { Badge, SectionTitle } from '../../components/ui.jsx'
 import { useSessionHistory, startOfDay } from '../../lib/useSessionHistory.js'
+import { useLoudResults } from '../../lib/useLoudResults.js'
 
 const THAI_DOW = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส']
 const DAY_MS = 86400000
 
 export default function Dashboard() {
   const rows = useSessionHistory()
+  const loud = useLoudResults().slice(0, 15)
 
   // Distinct days trained within the last 7 days.
   const today0 = startOfDay(Date.now())
@@ -71,6 +73,45 @@ export default function Dashboard() {
                   <td className="px-5 py-3 text-[13.5px]">{r.duration}</td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <SectionTitle className="mt-8">ผลฝึกออกเสียง (LSVT LOUD) แต่ละครั้ง</SectionTitle>
+      {loud.length === 0 ? (
+        <div className="card px-5 py-8 text-center text-[13.5px] text-ink-secondary">
+          ยังไม่มีผลฝึกออกเสียง — ฝึก LSVT LOUD ให้ครบเป้าเพื่อบันทึกความดังและความถูกต้องที่นี่
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse card overflow-hidden min-w-[480px]">
+            <thead>
+              <tr className="bg-[#F5F2EA]">
+                {['วันที่', 'แบบฝึกหัด', 'ความดัง', 'ความถูกต้อง'].map((h) => (
+                  <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {loud.map((r) => {
+                // Sustain step ("อา") has no word %; show its hold % as the accuracy column.
+                const acc = r.word != null ? r.word : r.hold
+                return (
+                  <tr key={r.id} className="border-t border-line">
+                    <td className="px-5 py-3 text-[13.5px]">{r.date}</td>
+                    <td className="px-5 py-3 text-[13.5px]">{r.stepName}</td>
+                    <td className="px-5 py-3 text-[13.5px] font-semibold font-mono text-teal-800">
+                      {r.loud != null ? `${r.loud}%` : '—'}
+                    </td>
+                    <td className="px-5 py-3 text-[13.5px] font-semibold font-mono text-teal-800">
+                      {acc != null ? `${acc}%` : '—'}
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
