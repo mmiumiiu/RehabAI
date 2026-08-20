@@ -4,39 +4,41 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#F6F6FB',
+        // "RehabAI Colorful" palette
+        bg: '#F7F6FD',
         surface: '#FFFFFF',
-        // primary green (kept under the `teal` name so existing usages reskin)
+        // BIG / primary green (kept under the `teal` name so existing usages reskin)
         teal: {
-          900: '#0A4023',
-          800: '#0F5C2E',
-          700: '#147A3D',
-          600: '#1B9C4C',
-          500: '#29B85E',
+          900: '#14522B',
+          800: '#1E7A40',
+          700: '#1E7A40',
+          600: '#2FA65A',
+          500: '#2FA65A',
           200: '#BDEFCF',
-          100: '#E1FAEA',
+          100: '#E3F6E9',
         },
+        // LOUD / red
         coral: {
-          700: '#D94A1D',
-          600: '#F15A29',
-          500: '#FF8452',
-          200: '#FFD3BC',
-          100: '#FFEEE4',
+          700: '#B33630',
+          600: '#E8554D',
+          500: '#E8554D',
+          200: '#FBC0BA',
+          100: '#FDE8E4',
         },
-        sun: { 500: '#F7C600', 200: '#FCE988', 100: '#FFF7D6' },
-        sky: { 600: '#2740B8', 500: '#2F4FDE', 200: '#C9D2FA', 100: '#ECEFFD' },
-        aqua: { 700: '#0E8577', 600: '#1BB39E', 100: '#E1F7F3' },
-        pink: { 700: '#C24A78', 600: '#F0729A', 200: '#FFD3E2', 100: '#FDEAF0' },
+        indigo: { 700: '#473CC7', 600: '#5B50E0', 100: '#EFEBFE' },
+        sun: { 700: '#B8860B', 600: '#D9A616', 500: '#F7C132', 200: '#FCE988', 100: '#FFF4D6', text: '#3A2C00' },
+        sky: { 600: '#1D5FBF', 500: '#3D87E8', 200: '#C9D2FA', 100: '#E7F0FE' },
+        pink: { 700: '#B03A76', 600: '#D9538F', 200: '#FFD3E2', 100: '#FBE7F1' },
         ink: {
-          primary: '#2A2740',
-          secondary: '#69637C',
-          muted: '#9E97AF',
+          primary: '#2B2650',
+          secondary: '#6B6590',
+          muted: '#9B95BD',
         },
-        line: '#EBE8F5',
+        line: '#E9E6F7',
         cam: '#231E36',
         danger: '#E5234F',
-        warn: { bg: '#FFF7D6', fg: '#8A6400' },
-        ok: { bg: '#E4F6E9', fg: '#147A3D' },
+        warn: { bg: '#FFF4D6', fg: '#B8860B' },
+        ok: { bg: '#E3F6E9', fg: '#1E7A40' },
       },
       fontFamily: {
         heading: ['Mitr', 'Poppins', 'Sarabun', 'sans-serif'],
@@ -44,8 +46,8 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
-        card: '18px',
-        btn: '12px',
+        card: '22px',
+        btn: '16px',
         pill: '999px',
       },
       boxShadow: {

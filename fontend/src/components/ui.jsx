@@ -57,15 +57,16 @@ export function Select({ icon: Icon, children, error, ...props }) {
 }
 
 export function Button({ variant = 'primary', as, to, className = '', children, ...props }) {
+  // 3D "pushable" buttons — the Colorful signature (border + solid bottom shadow)
   const styles = {
-    primary: 'text-white bg-[linear-gradient(135deg,#1B9C4C,#0F5C2E)] shadow-[0_6px_16px_rgba(20,100,60,0.28)] hover:brightness-105',
-    coral: 'text-white bg-[linear-gradient(135deg,#FF8452,#D94A1D)] shadow-[0_6px_16px_rgba(230,90,35,0.28)] hover:brightness-105',
-    outline: 'bg-white border border-line text-ink-secondary hover:bg-bg',
-    outlineCoral: 'bg-white border border-coral-500 text-coral-700 hover:bg-coral-100',
-    danger: 'bg-white border border-danger text-danger hover:bg-[#FCE1E7]',
+    primary: 'text-white bg-teal-600 border-[2.5px] border-teal-800 shadow-[0_4px_0_#1E7A40] active:translate-y-[3px] active:shadow-none',
+    coral: 'text-white bg-coral-600 border-[2.5px] border-coral-700 shadow-[0_4px_0_#B33630] active:translate-y-[3px] active:shadow-none',
+    outline: 'bg-white border-2 border-line text-ink-secondary hover:bg-bg',
+    outlineCoral: 'bg-white border-2 border-coral-600 text-coral-700 hover:bg-coral-100',
+    danger: 'bg-white border-2 border-danger text-danger hover:bg-[#FCE1E7]',
     ghost: 'text-ink-secondary hover:bg-line/50',
   }
-  const cls = `inline-flex items-center justify-center gap-2 rounded-pill font-heading font-semibold text-[14px] px-5 py-2.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${styles[variant]} ${className}`
+  const cls = `inline-flex items-center justify-center gap-2 rounded-btn font-heading font-bold text-[14px] px-5 py-2.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${styles[variant]} ${className}`
   if (to) return <Link to={to} className={cls} {...props}>{children}</Link>
   const Tag = as || 'button'
   return <Tag className={cls} {...props}>{children}</Tag>
