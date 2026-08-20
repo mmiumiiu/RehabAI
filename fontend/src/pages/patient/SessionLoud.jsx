@@ -6,7 +6,7 @@ import SOSButton from '../../components/SOSButton.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { Mic, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
-import { loudSettings, sessionHistory, exerciseProgress } from '../../lib/services.js'
+import { loudSettings, sessionHistory, exerciseProgress, loudResults } from '../../lib/services.js'
 import { sessionService } from '../../lib/sessionService.js'
 
 // Demo: patient is always mapped to patient ID "p1"
@@ -60,22 +60,35 @@ export default function SessionLoud() {
   const [reps, setReps] = useState(0)
   const [pulse, setPulse] = useState(false)
   const [sessionDone, setSessionDone] = useState(false)
+  const [summary, setSummary] = useState(null) // { loud, word, hold, prev } for the popup
   const publishedRef = useRef(false)
+  // Sum + count of each part across counted (passed) reps → session averages.
+  const sums = useRef({ loud: 0, loudN: 0, word: 0, wordN: 0, hold: 0, holdN: 0 })
 
   // A rep only counts when EVERY required part (loudness + word and/or duration)
-  // is above 80% — the backend decides this via `passed`. Attempts that fall
-  // short still show feedback but don't advance the counter. No aggregate score
-  // is kept.
+  // is above 80% — the backend decides this via `passed`. We keep the per-part
+  // percentages of counted reps so the session can be compared to last time.
   function handleScore(data) {
     if (sessionDone) return
     setPulse(true)
     setTimeout(() => setPulse(false), 200)
     if (!data?.passed) return
 
+    const s = sums.current
+    if (data.db) { s.loud += data.db.score; s.loudN++ }
+    if (data.word) { s.word += data.word.score; s.wordN++ }
+    if (data.hold) { s.hold += data.hold.score; s.holdN++ }
+
     setReps((r) => {
       const next = r + 1
       if (next >= repGoal && !publishedRef.current) {
         publishedRef.current = true
+        const loud = s.loudN ? Math.round(s.loud / s.loudN) : null
+        const word = s.wordN ? Math.round(s.word / s.wordN) : null
+        const hold = s.holdN ? Math.round(s.hold / s.holdN) : null
+        const prev = loudResults.latestFor(step.id)   // before saving this one
+        loudResults.add({ stepId: step.id, stepName: step.name, loud, word, hold })
+        setSummary({ loud, word, hold, prev })
         setSessionDone(true)
         sessionService.publish(PATIENT_ID, { reps: next, goal: repGoal, duration: clock, complete: true })
         sessionHistory.add({ type: 'loud', score: null, reps: next, goal: repGoal, duration: clock })
@@ -120,6 +133,28 @@ export default function SessionLoud() {
         result.hold && { key: 'hold', label: 'ระยะเวลาออกเสียง', score: result.hold.score },
       ].filter(Boolean)
     : []
+
+  // Session result vs last time — for the bar chart + verdict in the popup.
+  const chartMetrics = summary
+    ? [
+        { key: 'loud', label: 'ความดัง', cur: summary.loud, prev: summary.prev?.loud ?? null },
+        summary.word != null ? { key: 'word', label: 'ความถูกต้องของคำ', cur: summary.word, prev: summary.prev?.word ?? null } : null,
+        summary.hold != null ? { key: 'hold', label: 'ระยะเวลาออกเสียง', cur: summary.hold, prev: summary.prev?.hold ?? null } : null,
+      ].filter(Boolean)
+    : []
+  let verdict = null
+  if (summary) {
+    const withPrev = chartMetrics.filter((m) => m.prev != null)
+    if (withPrev.length === 0) {
+      verdict = { text: 'นี่คือครั้งแรกของแบบฝึกหัดนี้ — เก็บไว้เทียบครั้งหน้า 👍', color: '#2F6F62' }
+    } else {
+      const cur = withPrev.reduce((a, m) => a + m.cur, 0) / withPrev.length
+      const prv = withPrev.reduce((a, m) => a + m.prev, 0) / withPrev.length
+      if (cur > prv + 1) verdict = { text: 'ทำได้ดีกว่าครั้งก่อน! 🎉', color: '#3B6D11' }
+      else if (cur >= prv - 1) verdict = { text: 'ทำได้พอ ๆ กับครั้งก่อน รักษาระดับไว้ 👍', color: '#2F6F62' }
+      else verdict = { text: 'ครั้งก่อนทำได้ดีกว่าเล็กน้อย — สู้ ๆ! 💪', color: '#B9542A' }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-bg p-3 md:p-6">
@@ -268,9 +303,46 @@ export default function SessionLoud() {
           <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
             <div className="text-[46px] leading-none mb-2">🎉</div>
             <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
-            <p className="text-[14px] text-ink-secondary mb-5">
+            <p className="text-[14px] text-ink-secondary mb-4">
               ยินดีด้วย! คุณฝึก “{step.name}” ครบ {repGoal} ครั้งแล้ว
             </p>
+
+            {summary && (
+              <div className="text-left mb-5">
+                {chartMetrics.map((m) => (
+                  <div key={m.key} className="mb-3">
+                    <div className="flex justify-between text-[12.5px] mb-1">
+                      <span className="text-ink-secondary">{m.label}</span>
+                      <span className="font-semibold text-teal-800">
+                        {m.cur}%
+                        {m.prev != null && (
+                          <span style={{ color: m.cur >= m.prev ? '#3B6D11' : '#B9542A' }}>
+                            {' '}{m.cur >= m.prev ? '▲' : '▼'} {Math.abs(m.cur - m.prev)}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="h-3 bg-line rounded-full overflow-hidden mb-1">
+                      <div className="h-full rounded-full" style={{ width: `${m.cur}%`, background: 'linear-gradient(90deg,#4E9484,#7FB88A)' }} />
+                    </div>
+                    {m.prev != null && (
+                      <div className="h-2 bg-line rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${m.prev}%`, background: 'rgba(78,148,132,0.4)' }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {chartMetrics.some((m) => m.prev != null) && (
+                  <div className="flex gap-4 text-[11px] text-ink-muted mt-1">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: '#4E9484' }} /> ครั้งนี้</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(78,148,132,0.4)' }} /> ครั้งก่อน</span>
+                  </div>
+                )}
+                {verdict && (
+                  <p className="text-[13.5px] font-semibold mt-3 text-center" style={{ color: verdict.color }}>{verdict.text}</p>
+                )}
+              </div>
+            )}
 
             {nextStep && (
               <button

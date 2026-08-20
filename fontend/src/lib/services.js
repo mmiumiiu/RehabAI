@@ -243,6 +243,32 @@ export const exerciseProgress = {
   },
 }
 
+// LSVT LOUD per-session results (loudness % + word/hold %) per account, so the
+// patient can be told whether they did better than last time. Newest-first.
+const LOUD_RESULTS_KEY = 'rehabai_loud_results'
+function loudResultsKey() {
+  const u = readSession()
+  return `${LOUD_RESULTS_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+export const loudResults = {
+  getAll() {
+    try { return JSON.parse(localStorage.getItem(loudResultsKey()) || '[]') } catch { return [] }
+  },
+  // Most recent prior result for the same step (for the "better than last time?" compare).
+  latestFor(stepId) {
+    return this.getAll().find((r) => r.stepId === stepId) || null
+  },
+  // rec: { stepId, stepName, loud, word|null, hold|null }
+  add(rec) {
+    const ts = Date.now()
+    const entry = { ...rec, id: String(ts), ts, date: thaiDate(ts) }
+    const all = [entry, ...this.getAll()].slice(0, 200)
+    localStorage.setItem(loudResultsKey(), JSON.stringify(all))
+    window.dispatchEvent(new CustomEvent('rehabai:loud-results'))
+    return entry
+  },
+}
+
 // Therapist link (spec §3.3 / §6.1). Patients tap-select a verified therapist
 // and are auto-linked immediately — there is no connection code and no pending
 // approval state anymore. Stands in for users/{uid}/therapistLinks/{therapistId}.
