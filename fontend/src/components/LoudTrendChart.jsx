@@ -2,8 +2,8 @@ const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.'
 function dayKey(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime() }
 function dayLabel(ts) { const d = new Date(ts); return `${d.getDate()} ${MONTHS[d.getMonth()]}` }
 
-// Per-day LSVT LOUD progress: average loudness % vs correctness % (word, or hold
-// for the "อา" step), one group of bars per day so days can be compared over time.
+// LSVT LOUD progress as a line chart: Y = percent, X = day. Two lines — average
+// loudness % and correctness % (word, or hold for the "อา" step) per day.
 export default function LoudTrendChart({ rows, days = 8 }) {
   const byDay = new Map()
   for (const r of rows) {
@@ -14,7 +14,7 @@ export default function LoudTrendChart({ rows, days = 8 }) {
     if (acc != null) { e.accSum += acc; e.accN++ }
     byDay.set(k, e)
   }
-  const bars = [...byDay.keys()].sort((a, b) => a - b).slice(-days).map((k) => {
+  const pts = [...byDay.keys()].sort((a, b) => a - b).slice(-days).map((k) => {
     const e = byDay.get(k)
     return {
       label: dayLabel(k),
@@ -23,7 +23,7 @@ export default function LoudTrendChart({ rows, days = 8 }) {
     }
   })
 
-  if (bars.length === 0) {
+  if (pts.length === 0) {
     return (
       <div className="card px-5 py-8 text-center text-[13.5px] text-ink-secondary">
         ยังไม่มีผลฝึกออกเสียง — ฝึก LSVT LOUD ให้ครบเป้าเพื่อบันทึกความดังและความถูกต้องที่นี่
@@ -31,44 +31,49 @@ export default function LoudTrendChart({ rows, days = 8 }) {
     )
   }
 
-  const W = 640, H = 240, mL = 40, mT = 14, mR = 14, mB = 34
+  const W = 640, H = 240, mL = 40, mT = 16, mR = 16, mB = 34
   const plotW = W - mL - mR, plotH = H - mT - mB
-  const groupW = plotW / bars.length
-  const barW = Math.min(18, groupW * 0.3), gap = 5
+  const x = (i) => (pts.length === 1 ? mL + plotW / 2 : mL + (i / (pts.length - 1)) * plotW)
+  const y = (v) => mT + plotH - (v / 100) * plotH
+  const line = (key) => pts.map((p, i) => `${x(i)},${y(p[key])}`).join(' ')
+
+  const series = [
+    { key: 'loud', color: '#4E9484', label: 'ความดัง' },
+    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง' },
+  ]
 
   return (
     <div className="card p-6">
-      <p className="text-[13px] font-semibold text-ink-secondary mb-4">ความดัง vs ความถูกต้อง — เทียบแต่ละวัน (%)</p>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
-        <rect x={mL} y={mT} width={plotW} height={plotH} fill="none" stroke="#E6E0D4" strokeWidth="1.2" />
-        {[0, 25, 50, 75, 100].map((v) => {
-          const y = mT + plotH - (v / 100) * plotH
-          return (
-            <g key={v}>
-              {v > 0 && <line x1={mL} y1={y} x2={mL + plotW} y2={y} stroke="#E6E0D4" strokeWidth="1" strokeDasharray="3 3" />}
-              <text x={mL - 6} y={y + 3} fontSize="10" fill="#8E9B96" textAnchor="end">{v}</text>
-            </g>
-          )
-        })}
-        {bars.map((b, i) => {
-          const gx = mL + i * groupW + groupW / 2
-          const loudH = (b.loud / 100) * plotH, accH = (b.acc / 100) * plotH
-          const loudX = gx - barW - gap / 2, accX = gx + gap / 2
-          const loudY = mT + plotH - loudH, accY = mT + plotH - accH
-          return (
-            <g key={i}>
-              <rect x={loudX} y={loudY} width={barW} height={loudH} fill="#4E9484" rx="2" />
-              <rect x={accX} y={accY} width={barW} height={accH} fill="#B9542A" rx="2" />
-              <text x={loudX + barW / 2} y={loudY - 4} fontSize="9" fill="#2F6F62" textAnchor="middle" fontWeight="600">{b.loud}</text>
-              <text x={accX + barW / 2} y={accY - 4} fontSize="9" fill="#B9542A" textAnchor="middle" fontWeight="600">{b.acc}</text>
-              <text x={gx} y={mT + plotH + 16} fontSize="10" fill="#5B6B66" textAnchor="middle">{b.label}</text>
-            </g>
-          )
-        })}
+        {[0, 25, 50, 75, 100].map((v) => (
+          <g key={v}>
+            <line x1={mL} y1={y(v)} x2={mL + plotW} y2={y(v)} stroke="#E6E0D4" strokeWidth="1" strokeDasharray={v === 0 ? '0' : '3 3'} />
+            <text x={mL - 6} y={y(v) + 3} fontSize="10" fill="#8E9B96" textAnchor="end">{v}</text>
+          </g>
+        ))}
+        {series.map((s) => (
+          <g key={s.key}>
+            {pts.length > 1 && (
+              <polyline points={line(s.key)} fill="none" stroke={s.color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
+            )}
+            {pts.map((p, i) => (
+              <g key={i}>
+                <circle cx={x(i)} cy={y(p[s.key])} r="3.5" fill="#fff" stroke={s.color} strokeWidth="2" />
+                <text x={x(i)} y={y(p[s.key]) - 8} fontSize="9.5" fill={s.color} textAnchor="middle" fontWeight="600">{p[s.key]}</text>
+              </g>
+            ))}
+          </g>
+        ))}
+        {pts.map((p, i) => (
+          <text key={i} x={x(i)} y={mT + plotH + 16} fontSize="10" fill="#5B6B66" textAnchor="middle">{p.label}</text>
+        ))}
       </svg>
       <div className="flex gap-5 mt-3.5">
-        <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary"><span className="w-2.5 h-2.5 rounded-full bg-teal-500" /> ความดัง</span>
-        <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary"><span className="w-2.5 h-2.5 rounded-full bg-coral-700" /> ความถูกต้อง</span>
+        {series.map((s) => (
+          <span key={s.key} className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
+            <span className="w-3 h-1 rounded-full" style={{ background: s.color }} /> {s.label}
+          </span>
+        ))}
       </div>
     </div>
   )

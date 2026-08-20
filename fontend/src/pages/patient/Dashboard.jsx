@@ -79,7 +79,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <SectionTitle className="mt-8">ผลฝึกออกเสียง (LSVT LOUD) — เทียบรายวัน</SectionTitle>
+      <SectionTitle className="mt-8">ประวัติการทำ LSVT LOUD</SectionTitle>
       <LoudTrendChart rows={loud} />
     </div>
   )
