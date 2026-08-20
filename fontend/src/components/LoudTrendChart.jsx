@@ -38,10 +38,9 @@ export default function LoudTrendChart({ rows, days = 8 }) {
   const y = (v) => mT + plotH - (v / 100) * plotH
   const line = (key) => pts.map((p, i) => `${x(i)},${y(p[key])}`).join(' ')
 
-  // dy separates the two value labels so they don't overlap when lines are close.
   const series = [
-    { key: 'loud', color: '#4E9484', label: 'ความดัง', dy: -14 },
-    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง', dy: 25 },
+    { key: 'loud', color: '#4E9484', label: 'ความดัง' },
+    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง' },
   ]
 
   return (
@@ -58,12 +57,16 @@ export default function LoudTrendChart({ rows, days = 8 }) {
             {pts.length > 1 && (
               <polyline points={line(s.key)} fill="none" stroke={s.color} strokeWidth="3.4" strokeLinejoin="round" strokeLinecap="round" />
             )}
-            {pts.map((p, i) => (
-              <g key={i}>
-                <circle cx={x(i)} cy={y(p[s.key])} r="5.5" fill="#fff" stroke={s.color} strokeWidth="2.6" />
-                <text x={x(i)} y={y(p[s.key]) + s.dy} fontSize="13" fill={s.color} textAnchor="middle" fontWeight="700">{p[s.key]}</text>
-              </g>
-            ))}
+            {pts.map((p, i) => {
+              // Higher value → label above its point; lower → below (ties: loud above).
+              const above = s.key === 'loud' ? p.loud >= p.acc : p.acc > p.loud
+              return (
+                <g key={i}>
+                  <circle cx={x(i)} cy={y(p[s.key])} r="5.5" fill="#fff" stroke={s.color} strokeWidth="2.6" />
+                  <text x={x(i)} y={y(p[s.key]) + (above ? -13 : 25)} fontSize="13" fill={s.color} textAnchor="middle" fontWeight="700">{p[s.key]}</text>
+                </g>
+              )
+            })}
           </g>
         ))}
         {pts.map((p, i) => (
