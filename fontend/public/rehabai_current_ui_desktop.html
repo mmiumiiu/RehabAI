@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabAI — UI Desktop ทั้งหมด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F4; --surface:#FFF; --teal-900:#1F4A40; --teal-800:#28584C; --teal-700:#2F6F62;
+    --teal-500:#4E9484; --teal-100:#DCEEE8; --coral-700:#B9542A; --coral-100:#FBE7D9;
+    --ink:#22302C; --ink2:#5B6B66; --muted:#8E9B96; --border:#E6E0D4; --danger:#D9483E; --ok:#3B6D11; --cam:#26312E;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:#E4E1D8; font-family:'Inter','Sarabun',sans-serif; color:var(--ink); }
+  h1,h2,h3,h4{ font-family:'Poppins','Sarabun',sans-serif; }
+  .page-head{ text-align:center; padding:30px 16px 6px; }
+  .page-head h1{ color:var(--teal-900); margin:0 0 4px; font-size:26px; }
+  .page-head p{ color:var(--ink2); font-size:14px; margin:0; }
+  .stack{ max-width:1240px; margin:0 auto; padding:24px 20px 40px; display:flex; flex-direction:column; gap:28px; }
+
+  /* browser window */
+  .win{ background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.10); break-inside:avoid; }
+  .win .bar{ background:#EDEAE3; border-bottom:1px solid var(--border); padding:9px 14px; display:flex; align-items:center; gap:8px; }
+  .win .dot{ width:11px;height:11px;border-radius:50%; }
+  .win .url{ flex:1; background:#fff; border:1px solid var(--border); border-radius:7px; padding:5px 12px; font-size:12px; color:var(--ink2); margin-left:6px; }
+  .win .label{ font-size:11.5px; font-weight:600; color:var(--teal-700); }
+
+  .app{ display:flex; min-height:520px; background:var(--bg); }
+  .side{ width:210px; flex-shrink:0; background:var(--teal-900); color:#fff; padding:18px 12px; display:flex; flex-direction:column; }
+  .brand{ display:flex; align-items:center; gap:9px; padding:0 6px; margin-bottom:22px; }
+  .brand .m{ width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-weight:700; }
+  .brand b{ font-family:'Poppins';font-size:15px; }
+  .tbadge{ font-size:9px;background:rgba(255,255,255,.14);padding:2px 7px;border-radius:9px;display:inline-block;margin-top:2px; }
+  .nav a{ display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:8px; font-size:13px; color:rgba(255,255,255,.7); margin-bottom:3px; text-decoration:none; }
+  .nav a.on{ background:rgba(255,255,255,.12); color:#fff; font-weight:500; }
+  .side .foot{ margin-top:auto; display:flex; gap:9px; align-items:center; padding-top:12px; border-top:1px solid rgba(255,255,255,.12); }
+  .side .foot .av{ width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600; }
+  .side .foot small{ opacity:.6; font-size:10px; display:block; }
+
+  .main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+  .top{ display:flex; justify-content:space-between; align-items:center; padding:14px 26px; border-bottom:1px solid var(--border); background:#fff; }
+  .top .greet{ font-size:11.5px; color:var(--ink2); }
+  .top .nm{ font-family:'Poppins'; font-size:16px; font-weight:600; color:var(--teal-900); }
+  .top .r{ display:flex; gap:10px; align-items:center; }
+  .top .ic{ width:34px;height:34px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center; }
+  .content{ padding:24px 26px; overflow:auto; }
+  .wrap960{ max-width:900px; }
+
+  .card{ background:#fff; border:1px solid var(--border); border-radius:14px; }
+  .p16{padding:16px;} .p20{padding:20px;} .p24{padding:24px;}
+  .muted{color:var(--muted);} .ink2{color:var(--ink2);}
+  .btn{ display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:9px;font-weight:600;font-size:13px;padding:9px 16px;border:1px solid transparent;font-family:inherit; }
+  .btn.primary{background:var(--teal-700);color:#fff;} .btn.coral{background:var(--coral-700);color:#fff;}
+  .btn.o{background:transparent;border-color:var(--teal-700);color:var(--teal-700);} .btn.oc{background:transparent;border-color:var(--coral-700);color:var(--coral-700);}
+  .btn.block{width:100%;}
+  .badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px;}
+  .badge.big{background:var(--teal-100);color:var(--teal-900);} .badge.loud{background:var(--coral-100);color:var(--coral-700);}
+  .badge.done{background:#E6F0E1;color:var(--ok);} .badge.risk{background:#FDECEA;color:var(--danger);}
+  .section-title{font-size:12px;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em;margin:16px 0 10px;}
+  .row{display:flex;align-items:center;gap:12px;} .grow{flex:1;min-width:0;}
+  .exrow{background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .stepnum{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--ink2);background:var(--bg);flex-shrink:0;}
+  .stepnum.ok{background:#E6F0E1;color:var(--ok);border-color:#CDE6C3;}
+  .thumb{width:96px;height:60px;border-radius:10px;background:var(--cam);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:10px;}
+  .h4{font-size:18px;font-weight:600;margin:0;} .desc{font-size:14px;color:var(--ink2);margin:3px 0 0;line-height:1.45;}
+  .metric{background:#fff;border:1px solid var(--border);border-radius:12px;padding:15px 18px;}
+  .metric .v{font-family:'Poppins';font-size:22px;font-weight:600;color:var(--teal-900);} .metric .l{font-size:12px;color:var(--ink2);margin-top:3px;}
+  .cam{background:var(--cam);border-radius:14px;position:relative;overflow:hidden;}
+  input.f,textarea.f,select.f{width:100%;border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;}
+  .divider{height:1px;background:var(--border);margin:12px 0;}
+  table.hist{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  table.hist th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);background:#F5F2EA;padding:10px 16px;font-weight:600;}
+  table.hist td{padding:11px 16px;font-size:13.5px;border-top:1px solid var(--border);}
+  .legend{display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--ink2);}
+  .dot2{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;}
+  .pill{font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;}
+  .modal-wrap{position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;}
+  .modal{background:#fff;border-radius:16px;padding:24px;text-align:center;width:380px;}
+  @media print{ body{background:#fff;} .win{box-shadow:none;} }
+  @page{ size:A3 landscape; margin:8mm; }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>RehabAI — UI เวอร์ชันคอมพิวเตอร์ (Desktop)</h1>
+  <p>หน้าจอจริงบนจอใหญ่ · sidebar + topbar เหมือนแอป · ทั้งฝั่งผู้ป่วยและนักกายภาพ</p>
+</div>
+
+<div class="stack">
+
+  <!-- PATIENT: HOME -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/home</span><span class="label">ผู้ป่วย · หน้าแรก</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><div class="m">R</div><div><b>RehabAI</b></div></div>
+        <div class="nav"><a class="on">🏠 หน้าแรก</a><a>🏃 ฝึกกายภาพ</a><a>📊 สรุปผล</a><a>💬 แชท</a><a>👤 โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:500;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div>
+      </div>
+      <div class="main">
+        <div class="top"><div><div class="greet">สวัสดีตอนบ่าย</div><div class="nm">สมชาย ใจดี</div></div><div class="r"><div class="ic">🔔</div><div class="ic">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div style="background:var(--teal-900);border-radius:14px;padding:22px;color:#fff;display:flex;justify-content:space-between;margin-bottom:22px;">
+            <div><div style="opacity:.7;font-size:13px;margin-bottom:4px;">🔥 ฝึกต่อเนื่อง</div><div style="font-size:30px;font-weight:600;font-family:'Poppins';">3 <span style="font-size:15px;opacity:.7;">วันติดต่อกัน</span></div><div style="opacity:.6;font-size:12.5px;margin-top:6px;">ทำได้ดีมาก! ฝึกวันนี้เพื่อรักษาสถิติ</div></div>
+            <div style="text-align:right;"><div style="opacity:.6;font-size:12px;">ท่าที่ทำวันนี้</div><div style="font-size:28px;font-weight:600;color:var(--teal-100);font-family:'Poppins';">2</div></div>
+          </div>
+          <div class="section-title">เลือกโปรแกรมฝึกวันนี้</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+            <div class="card p20"><div style="width:48px;height:48px;border-radius:12px;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:22px;">🏃</div><h3 style="margin:0 0 4px;">LSVT BIG</h3><p class="ink2" style="font-size:13px;margin:0 0 3px;">ฝึกการเคลื่อนไหวผ่านกล้องเว็บแคม</p><p class="muted" style="font-size:12px;margin:0 0 14px;">20 นาที · เหลืออีก 3 ท่าวันนี้</p><div class="btn primary">เริ่มฝึก</div></div>
+            <div class="card p20"><div style="width:48px;height:48px;border-radius:12px;background:var(--coral-100);color:var(--coral-700);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:22px;">🎙️</div><h3 style="margin:0 0 4px;">LSVT LOUD</h3><p class="ink2" style="font-size:13px;margin:0 0 3px;">ฝึกความดังของเสียงพูดผ่านไมค์</p><p class="muted" style="font-size:12px;margin:0 0 14px;">10 นาที · เหลืออีก 9 แบบฝึกหัด</p><div class="btn coral">เริ่มฝึก</div></div>
+          </div>
+          <div class="card p16 row" style="justify-content:space-between;margin-top:18px;"><span class="ink2" style="font-size:13.5px;">ดูสรุปผลและความคืบหน้าของคุณ</span><span style="color:var(--teal-700);">›</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: TRAINING BIG -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/big</span><span class="label">ผู้ป่วย · ฝึกกายภาพ</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><b>RehabAI</b></div><div class="nav"><a>🏠 หน้าแรก</a><a class="on">🏃 ฝึกกายภาพ</a><a>📊 สรุปผล</a><a>💬 แชท</a><a>👤 โปรไฟล์</a></div><div class="foot"><div class="av">สช</div><div><div style="font-size:12px;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main">
+        <div class="top"><div><div class="greet">ฝึกกายภาพบำบัด</div><div class="nm">โปรแกรมฝึกวันนี้</div></div><div class="r"><div class="ic">🔔</div><div class="ic">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div class="row" style="justify-content:space-between;"><div style="font-size:16px;color:var(--teal-700);font-weight:600;text-transform:uppercase;">ฝึกกายภาพบำบัด · LSVT BIG (7 ท่า)</div><span class="pill" style="background:var(--teal-100);color:var(--teal-700);">1/5 เสร็จแล้ว</span></div>
+          <h1 style="color:var(--teal-900);font-size:24px;margin:8px 0 16px;">LSVT BIG — ฝึกการเคลื่อนไหว</h1>
+          <h3 style="font-size:22px;color:var(--teal-900);margin:0 0 12px;">ท่านั่ง</h3>
+          <div class="exrow" style="background:#EAE6D9;"><div class="stepnum">1</div><div class="grow"><h4 class="h4" style="color:#6B6350;">บนล่าง (Floor to Ceiling)</h4><p class="desc" style="color:#8C8368;">นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→เหนือศีรษะ→กางแขนค้าง 10 วิ</p></div><span class="ink2" style="font-size:12px;">8 ครั้ง</span><div class="btn o">เริ่มฝึก</div></div>
+          <h3 style="font-size:22px;color:var(--teal-900);margin:16px 0 12px;">ท่ายืน</h3>
+          <div class="exrow"><div class="stepnum ok">✓</div><div class="thumb">▶ คลิป</div><div class="grow"><h4 class="h4">ก้าวหน้า (Forward Step)</h4><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><span class="badge done">เสร็จแล้ว</span><div class="btn o">ทำซ้ำ</div></div>
+          <div class="exrow"><div class="stepnum">4</div><div class="thumb">▶ คลิป</div><div class="grow"><h4 class="h4">ก้าวข้าง (Sideways Step)</h4><p class="desc">ยืนตรง ก้าวขาไปด้านข้างพร้อมกางแขนสองข้างไปทางด้านข้างให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><div class="btn o">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">5</div><div class="thumb">▶ คลิป</div><div class="grow"><h4 class="h4">ก้าวหลัง (Backward Step) <span class="badge risk">เสี่ยงสูง</span></h4><p class="desc">ยืนตรง ยกมือระดับหัวไหล่ ก้าวขาไปด้านหลัง ก้มลำตัว กวาดมือไปด้านหลังให้สุด</p></div><div class="btn o">เริ่มฝึก</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: SESSION BIG -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/big/session?exercise=3</span><span class="label">ผู้ป่วย · ฝึกจริง BIG</span></div>
+    <div class="app"><div class="main" style="width:100%;"><div class="content" style="position:relative;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1050px;margin:0 auto;">
+        <div class="cam" style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);position:relative;"><span style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.12);color:#fff;padding:5px 10px;border-radius:8px;font-size:11px;">ท่าสาธิต</span>▶ อนิเมชั่นท่า (วนซ้ำ)</div>
+        <div class="cam" style="aspect-ratio:16/10;position:relative;color:#fff;"><span style="position:absolute;top:14px;left:50%;transform:translateX(-50%);background:var(--danger);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;">SOS ฉุกเฉิน</span><span style="position:absolute;top:48px;left:14px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;">ครั้งที่ 5 / 8</span><span style="position:absolute;top:48px;right:14px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:8px;font-size:10.5px;"><span class="dot2" style="background:var(--teal-500);"></span>ตรวจจับท่าทาง</span><div style="position:absolute;inset:auto 14px 14px;background:rgba(78,148,132,.85);padding:10px 14px;border-radius:10px;font-size:13px;">✓ กำลังนับ…</div></div>
+      </div>
+      <div class="card p20" style="max-width:1050px;margin:16px auto 0;">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;"><div class="grow"><h2 style="margin:0 0 4px;color:var(--teal-900);font-size:18px;">ก้าวหน้า (Forward Step)</h2><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><div class="btn" style="border:1px solid var(--danger);color:var(--danger);">หยุดฝึก</div></div>
+        <div style="height:8px;background:var(--bg);border-radius:20px;margin:14px 0 8px;overflow:hidden;"><div style="width:62%;height:100%;background:linear-gradient(90deg,#4E9484,#7FB88A);"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div class="metric"><div class="l">ครั้งที่ทำแล้ว</div><div class="v" style="font-size:17px;">5 / 8</div></div><div class="metric"><div class="l">เวลาในเซสชันนี้</div><div class="v" style="font-size:17px;">02:14</div></div></div>
+      </div>
+      <div class="modal-wrap"><div class="modal"><div style="font-size:42px;">🎉</div><h2 style="margin:4px 0 2px;color:var(--teal-900);">Congratulations!</h2><p class="ink2" style="font-size:13.5px;margin:0 0 16px;">ยินดีด้วย! คุณทำท่า “ก้าวหน้า” ครบ 8 ครั้งแล้ว</p><div class="btn primary block" style="margin-bottom:8px;">ไปท่าถัดไป — ก้าวข้าง ›</div><div class="ink2" style="font-size:13px;">🏠 กลับไปรายการท่าฝึก</div></div></div>
+    </div></div></div>
+  </div>
+
+  <!-- PATIENT: TRAINING LOUD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/loud</span><span class="label">ผู้ป่วย · LSVT LOUD</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><b>RehabAI</b></div><div class="nav"><a>🏠 หน้าแรก</a><a class="on">🏃 ฝึกกายภาพ</a><a>📊 สรุปผล</a><a>💬 แชท</a><a>👤 โปรไฟล์</a></div><div class="foot"><div class="av">สช</div><div><div style="font-size:12px;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">ฝึกเสียงพูด</div><div class="nm">LSVT LOUD</div></div><div class="r"><div class="ic">🔔</div><div class="ic">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <h1 style="color:var(--teal-900);font-size:23px;margin:2px 0 14px;">LSVT LOUD — ฝึกความดังของเสียงพูด</h1>
+          <h3 style="font-size:22px;color:var(--teal-900);margin:0 0 12px;">ฝึกออกเสียงค้าง</h3>
+          <div class="exrow"><div class="stepnum ok">✓</div><div class="grow"><h4 class="h4">ฝึกออกเสียงค้าง</h4><p class="desc">เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที</p></div><div class="btn oc">กดเพื่อฟัง</div><span class="badge done">เสร็จแล้ว</span><div class="btn oc">ทำซ้ำ</div></div>
+          <h3 style="font-size:22px;color:var(--teal-900);margin:18px 0 12px;">ประโยคในชีวิตประจำวัน</h3>
+          <div class="exrow"><div class="stepnum">1</div><div class="grow"><h4 class="h4">สวัสดี</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">2</div><div class="grow"><h4 class="h4">ขอบคุณ</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">3</div><div class="grow"><h4 class="h4">หิวข้าว</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: SESSION LOUD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/loud/session?step=7</span><span class="label">ผู้ป่วย · ฝึกจริง LOUD</span></div>
+    <div class="app"><div class="main" style="width:100%;"><div class="content">
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;max-width:1050px;margin:0 auto;">
+        <div class="cam" style="padding:26px;display:flex;flex-direction:column;align-items:center;gap:16px;color:#fff;">
+          <div style="width:300px;background:rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center;"><div style="font-size:11px;opacity:.55;text-transform:uppercase;">พูดตามนี้</div><div style="font-size:22px;font-weight:600;margin:6px 0 10px;">หิวข้าว</div><span style="background:rgba(255,255,255,.12);padding:8px 18px;border-radius:9px;font-size:14px;">กดเพื่อฟัง</span></div>
+          <div style="font-size:48px;font-weight:600;font-family:'Poppins';">3<span style="font-size:18px;opacity:.4;"> / 10</span></div>
+          <div style="width:120px;height:120px;border-radius:50%;background:rgba(78,148,132,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:600;">🎙️<br>กดแล้วพูด</div>
+          <div style="text-align:center;"><div style="display:flex;gap:24px;justify-content:center;"><div><div style="font-size:22px;font-weight:600;color:#7FB88A;">90%</div><div style="font-size:11px;opacity:.55;">ความดังเสียง</div></div><div><div style="font-size:22px;font-weight:600;color:#7FB88A;">100%</div><div style="font-size:11px;opacity:.55;">ความถูกต้องของคำ</div></div></div><div style="font-size:12px;color:#7FB88A;margin-top:6px;">ผ่าน — นับ 1 ครั้ง ✓</div></div>
+        </div>
+        <div class="card p20"><h3 style="margin:0 0 4px;color:var(--teal-900);">พูดในชีวิตประจำวัน</h3><p class="desc">พูดให้ดังและชัด</p><div class="divider"></div><div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:7px 0;"><span>ครั้งที่เสร็จแล้ว</span><b>3 / 10</b></div><div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--border);"><span>ช่วงเป้าหมาย dB</span><b>70–85</b></div><div class="btn" style="border:1px solid var(--danger);color:var(--danger);width:100%;margin-top:14px;">หยุดฝึก</div></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- PATIENT: DASHBOARD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/dashboard</span><span class="label">ผู้ป่วย · สรุปผล</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><b>RehabAI</b></div><div class="nav"><a>🏠 หน้าแรก</a><a>🏃 ฝึกกายภาพ</a><a class="on">📊 สรุปผล</a><a>💬 แชท</a><a>👤 โปรไฟล์</a></div><div class="foot"><div class="av">สช</div><div><div style="font-size:12px;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">สรุปผล</div><div class="nm">สรุปผลการฝึก</div></div><div class="r"><div class="ic">🔔</div><div class="ic">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;"><div class="metric"><div class="v">12</div><div class="l">จำนวนครั้งที่ฝึก</div></div><div class="metric"><div class="v">4/7</div><div class="l">วันที่ฝึกสัปดาห์นี้</div></div></div>
+          <div class="card p20" style="margin-bottom:18px;"><div style="font-size:12.5px;color:var(--ink2);margin-bottom:14px;">ความถี่การฝึกย้อนหลัง 7 วัน</div>
+            <div style="display:flex;align-items:flex-end;gap:26px;height:130px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:60%;background:var(--teal-500);border-radius:2px;"></div><div style="width:16px;height:40%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">จ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:82%;background:var(--teal-500);border-radius:2px;"></div><div style="width:16px;height:52%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">อ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:20%;background:var(--teal-500);border-radius:2px;"></div><div style="width:16px;height:10%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">พ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:100%;background:var(--teal-500);border-radius:2px;"></div><div style="width:16px;height:66%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">พฤ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:70%;background:var(--teal-500);border-radius:2px;"></div><div style="width:16px;height:44%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--muted);">ศ</span></div>
+            </div>
+            <div class="legend"><span><span class="dot2" style="background:var(--teal-500);"></span>LSVT BIG</span><span><span class="dot2" style="background:var(--coral-700);"></span>LSVT LOUD</span></div>
+          </div>
+          <div class="section-title">ประวัติล่าสุด</div>
+          <table class="hist"><tr><th>วันที่</th><th>ประเภทการฝึก</th><th>ระยะเวลา</th></tr><tr><td>19 ส.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>03:20</td></tr><tr><td>19 ส.ค. 2569</td><td><span class="badge loud">LSVT LOUD</span></td><td>02:10</td></tr><tr><td>18 ส.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>04:05</td></tr></table>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: CHAT -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/chat</span><span class="label">ผู้ป่วย · แชท (real-time)</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><b>RehabAI</b></div><div class="nav"><a>🏠 หน้าแรก</a><a>🏃 ฝึกกายภาพ</a><a>📊 สรุปผล</a><a class="on">💬 แชท</a><a>👤 โปรไฟล์</a></div><div class="foot"><div class="av">สช</div><div><div style="font-size:12px;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">แชท</div><div class="nm">กภ.ธนกร รักษาดี</div></div><div class="r"><div class="ic">🔔</div><div class="ic">สช</div></div></div>
+        <div class="content"><div style="max-width:720px;">
+          <div class="card" style="overflow:hidden;">
+            <div class="row" style="padding:13px 16px;border-bottom:1px solid var(--border);"><div style="width:36px;height:36px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">ธก</div><div class="grow"><div style="font-size:14px;font-weight:600;color:var(--teal-900);">กภ.ธนกร รักษาดี</div><div style="font-size:11.5px;color:var(--ok);">● ออนไลน์</div></div></div>
+            <div style="padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:10px;min-height:220px;"><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:16px;border-bottom-left-radius:4px;padding:9px 13px;font-size:13.5px;max-width:70%;">วันนี้ฝึกครบไหมครับ?</div><div style="align-self:flex-end;background:var(--teal-700);color:#fff;border-radius:16px;border-bottom-right-radius:4px;padding:9px 13px;font-size:13.5px;max-width:70%;">ครบแล้วครับ 💪 เสียงดังขึ้นด้วย</div><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:16px;border-bottom-left-radius:4px;padding:9px 13px;font-size:13.5px;max-width:70%;">เยี่ยมมากครับ พรุ่งนี้ลองเพิ่มท่าก้าวหลังนะ</div></div>
+            <div class="row" style="padding:12px 14px;border-top:1px solid var(--border);"><input class="f grow" placeholder="พิมพ์ข้อความ…"><div style="width:40px;height:40px;border-radius:50%;background:var(--teal-700);color:#fff;display:flex;align-items:center;justify-content:center;">➤</div></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: PATIENT LIST -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/patients</span><span class="label">นักกายภาพ · รายชื่อผู้ป่วย</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div><div class="nav"><a class="on">👥 รายชื่อผู้ป่วย</a><a>💬 ข้อความ</a></div><div class="foot"><div class="av">สน</div><div><div style="font-size:12px;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="nm">ผู้ป่วยของฉัน</div><div class="greet">ติดตามความคืบหน้าของผู้ป่วยที่เชื่อมต่อแล้ว</div></div></div>
+        <div class="content"><div style="max-width:900px;">
+          <div style="max-width:320px;margin-bottom:16px;"><input class="f" placeholder="🔍 ค้นหาชื่อผู้ป่วย"></div>
+          <div class="exrow"><div style="width:44px;height:44px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">สช</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">สมชาย ใจดี</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;">ฝึกล่าสุด 2 ชม. ที่แล้ว</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 12px;">💬</div></div>
+          <div class="exrow"><div style="width:44px;height:44px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">วภ</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">วิภา สุขสันต์</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;">ฝึกล่าสุด เมื่อวานนี้</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 12px;">💬</div></div>
+          <div class="exrow"><div style="width:44px;height:44px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">ปส</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">ประเสริฐ มั่นคง</b><span class="badge big">ระยะ 1</span></div><div class="muted" style="font-size:12px;">ฝึกล่าสุด 3 วันที่แล้ว</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 12px;">💬</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: PATIENT DASHBOARD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/patients/p1</span><span class="label">นักกายภาพ · Dashboard ผู้ป่วย</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div><div class="nav"><a class="on">👥 รายชื่อผู้ป่วย</a><a>💬 ข้อความ</a></div><div class="foot"><div class="av">สน</div><div><div style="font-size:12px;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">← รายชื่อผู้ป่วย</div><div class="nm">สมชาย ใจดี — ระยะ 2</div></div><div class="btn o">แชทกับผู้ป่วย</div></div>
+        <div class="content"><div style="max-width:900px;">
+          <div style="display:flex;gap:26px;border-bottom:1px solid var(--border);margin-bottom:16px;"><div style="padding:9px 0;font-weight:600;color:var(--teal-900);border-bottom:2.5px solid var(--teal-700);">รายเดือน</div><div style="padding:9px 0;font-weight:600;color:var(--ink2);">รายสัปดาห์</div></div>
+          <div style="display:flex;gap:14px;margin-bottom:18px;"><div class="metric grow"><div class="v">22 / 31</div><div class="l">วันที่ฝึกในเดือนนี้</div></div><div class="metric grow"><div class="v">402 นาที</div><div class="l">รวมเวลา LSVT BIG</div></div><div class="metric grow"><div class="v">208 นาที</div><div class="l">รวมเวลา LSVT LOUD</div></div></div>
+          <div class="card p24" style="margin-bottom:18px;"><div style="font-size:12.5px;color:var(--ink2);margin-bottom:14px;">ระยะเวลาฝึกรวมรายสัปดาห์ — ก.ค. 2569 (นาที)</div>
+            <div style="display:flex;align-items:flex-end;gap:40px;height:150px;padding-left:10px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:62%;background:var(--teal-500);border-radius:2px;"></div><div style="width:22px;height:34%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 1</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:82%;background:var(--teal-500);border-radius:2px;"></div><div style="width:22px;height:46%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 2</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:50%;background:var(--teal-500);border-radius:2px;"></div><div style="width:22px;height:26%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 3</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:100%;background:var(--teal-500);border-radius:2px;"></div><div style="width:22px;height:60%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 4</span></div>
+            </div>
+            <div class="legend"><span><span class="dot2" style="background:var(--teal-500);"></span>LSVT BIG</span><span><span class="dot2" style="background:var(--coral-700);"></span>LSVT LOUD</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div><div class="section-title" style="margin-top:0;">ตั้งค่า dB (Min/Goal/Max)</div><div class="card p16"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><select class="f"><option>Min 60</option></select><select class="f"><option>Goal 80</option></select><select class="f"><option>Max 95</option></select></div><div class="btn oc" style="margin-top:12px;">บันทึกค่าเดซิเบล</div></div></div>
+            <div><div class="section-title" style="margin-top:0;">คำพูดในชีวิตประจำวัน</div><div class="card p16"><div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:7px;font-size:13px;"><span>สวัสดี</span><span style="color:var(--danger);">✕</span></div><div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:13px;"><span>หิวข้าว</span><span style="color:var(--danger);">✕</span></div><div class="row" style="gap:8px;"><input class="f grow" placeholder="พิมพ์คำพูดใหม่…"><div class="btn oc">+ เพิ่ม</div></div></div></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: MESSAGES -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/messages</span><span class="label">นักกายภาพ · ข้อความ</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m">R</div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div><div class="nav"><a>👥 รายชื่อผู้ป่วย</a><a class="on">💬 ข้อความ</a></div><div class="foot"><div class="av">สน</div><div><div style="font-size:12px;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div class="nm">ข้อความ</div></div>
+        <div style="display:grid;grid-template-columns:260px 1fr;flex:1;">
+          <div style="border-right:1px solid var(--border);background:#fff;">
+            <div class="row" style="padding:13px 15px;background:var(--teal-100);"><div style="width:34px;height:34px;border-radius:50%;background:#fff;color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">สช</div><div class="grow"><b style="font-size:13px;">สมชาย ใจดี</b><div class="muted" style="font-size:11px;">ครบแล้วครับ 💪</div></div></div>
+            <div class="row" style="padding:13px 15px;border-top:1px solid var(--border);"><div style="width:34px;height:34px;border-radius:50%;background:var(--bg);color:var(--ink2);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">วภ</div><div class="grow"><b style="font-size:13px;">วิภา สุขสันต์</b><div class="muted" style="font-size:11px;">ยังไม่มีข้อความ</div></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;background:var(--bg);">
+            <div class="row" style="padding:13px 18px;background:#fff;border-bottom:1px solid var(--border);"><div style="width:34px;height:34px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;">สช</div><div class="grow"><b style="font-size:14px;">สมชาย ใจดี</b><div class="muted" style="font-size:11px;">ฝึกล่าสุด 2 ชม.</div></div><div class="btn o" style="padding:7px 12px;">📊 ดูความคืบหน้า</div></div>
+            <div style="flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;min-height:200px;"><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:16px;border-bottom-left-radius:4px;padding:9px 13px;font-size:13.5px;max-width:60%;">วันนี้ฝึกครบไหมครับ?</div><div style="align-self:flex-end;background:var(--teal-700);color:#fff;border-radius:16px;border-bottom-right-radius:4px;padding:9px 13px;font-size:13.5px;max-width:60%;">ครบแล้วครับ 💪</div></div>
+            <div class="row" style="padding:12px 16px;background:#fff;border-top:1px solid var(--border);"><input class="f grow" placeholder="พิมพ์ข้อความ…"><div style="width:40px;height:40px;border-radius:50%;background:var(--teal-700);color:#fff;display:flex;align-items:center;justify-content:center;">➤</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
