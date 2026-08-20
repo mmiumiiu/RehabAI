@@ -4,6 +4,7 @@ import { useLoudScorer, LOUD_BAND } from '../../lib/useLoudScorer.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
+import SessionMusic from '../../components/SessionMusic.jsx'
 import { Mic, Check, Home, ChevronRight } from '../../components/icons.jsx'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { loudSettings, sessionHistory, exerciseProgress } from '../../lib/services.js'
@@ -120,6 +121,7 @@ export default function SessionLoud() {
 
   return (
     <div className="min-h-screen bg-bg p-3 md:p-6">
+      <SessionMusic />
       <div className="max-w-[1100px] mx-auto grid lg:grid-cols-[1.6fr_1fr] gap-5">
 
         {/* Voice panel */}

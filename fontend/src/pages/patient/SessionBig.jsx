@@ -8,6 +8,7 @@ import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
 import FallAlert from '../../components/FallAlert.jsx'
+import SessionMusic from '../../components/SessionMusic.jsx'
 import { useFallDetector } from '../../lib/useFallDetector.js'
 import { ProgressBar } from '../../components/ui.jsx'
 import { Camera, Check, Home, ChevronRight } from '../../components/icons.jsx'
@@ -71,6 +72,7 @@ export default function SessionBig() {
 
   return (
     <div className="min-h-screen bg-bg p-3 md:p-6">
+      <SessionMusic />
       <div className="max-w-[1100px] mx-auto space-y-5">
 
         {/* Top: demo animation (left) + live camera (right) */}

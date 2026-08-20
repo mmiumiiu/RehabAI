@@ -4,6 +4,7 @@ import { useCamera } from '../../lib/useCamera.js'
 import { useSpeak } from '../../lib/useSpeak.js'
 import SessionInfoCard from '../../components/SessionInfoCard.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
+import SessionMusic from '../../components/SessionMusic.jsx'
 import { Camera, Check } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 
@@ -51,6 +52,7 @@ export default function SessionWeightShift() {
 
   return (
     <div className="min-h-screen bg-bg p-6">
+      <SessionMusic />
       <div className="max-w-[1100px] mx-auto grid lg:grid-cols-[1.6fr_1fr] gap-5">
         <div className="relative rounded-2xl overflow-hidden bg-cam aspect-[16/10] flex items-center justify-center">
           <video ref={videoRef} muted playsInline className="absolute inset-0 w-full h-full object-cover opacity-90" style={{ transform: 'scaleX(-1)' }} />
