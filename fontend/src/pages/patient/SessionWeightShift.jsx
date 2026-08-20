@@ -68,7 +68,7 @@ export default function SessionWeightShift() {
             ครั้งที่ {reps} / {EX.target}
           </div>
           <div className="absolute top-4 right-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5">
-            <span className="w-[7px] h-[7px] rounded-full bg-[#E4746A] rec-pulse" />
+            <span className="w-[7px] h-[7px] rounded-full bg-[#FF8452] rec-pulse" />
             วัดระยะก้าวแบบเรียลไทม์
           </div>
 
@@ -80,7 +80,7 @@ export default function SessionWeightShift() {
               <div className="absolute -top-1.5 right-0 w-3.5 h-3.5 rounded-full border-2 border-teal-500 bg-teal-500/25" />
               <div
                 className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[11px] text-white px-3 py-1 rounded-md"
-                style={{ background: inRange ? 'rgba(78,148,132,0.9)' : 'rgba(185,84,42,0.9)' }}
+                style={{ background: inRange ? 'rgba(27,156,76,0.9)' : 'rgba(217,74,29,0.9)' }}
               >
                 ระยะก้าว {distance} ซม. {inRange ? '✓ อยู่ในเกณฑ์ (30-35 ซม.)' : 'ปรับระยะให้อยู่ 30-35 ซม.'}
               </div>
@@ -89,7 +89,7 @@ export default function SessionWeightShift() {
 
           <div
             className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
-            style={{ background: inRange ? 'rgba(78,148,132,0.92)' : 'rgba(185,84,42,0.92)' }}
+            style={{ background: inRange ? 'rgba(27,156,76,0.92)' : 'rgba(217,74,29,0.92)' }}
           >
             {inRange ? <Check size={18} /> : null}
             {inRange ? 'ระยะก้าวกำลังดี ถ่ายน้ำหนักไปเท้าหน้าให้มั่นคง' : 'ก้าวให้ปลายเท้าห่างกัน 30-35 ซม.'}

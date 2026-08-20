@@ -10,17 +10,17 @@ export function Logo({ light = false, size = 36 }) {
         style={{
           width: size,
           height: size,
-          background: light ? 'rgba(255,255,255,0.14)' : '#DCEEE8',
+          background: light ? 'rgba(255,255,255,0.14)' : '#E1FAEA',
         }}
       >
         <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none">
-          <path d="M4 15c4-8 12-8 16 0" stroke={light ? '#fff' : '#1F4A40'} strokeWidth="2" strokeLinecap="round" />
-          <circle cx="12" cy="8" r="2.4" fill={light ? '#DCEEE8' : '#2F6F62'} />
+          <path d="M4 15c4-8 12-8 16 0" stroke={light ? '#fff' : '#0A4023'} strokeWidth="2" strokeLinecap="round" />
+          <circle cx="12" cy="8" r="2.4" fill={light ? '#E1FAEA' : '#147A3D'} />
         </svg>
       </div>
       <span
         className="font-heading font-semibold text-[17px]"
-        style={{ color: light ? '#fff' : '#1F4A40' }}
+        style={{ color: light ? '#fff' : '#0A4023' }}
       >
         RehabAI
       </span>
@@ -74,11 +74,11 @@ export function Button({ variant = 'primary', as, to, className = '', children, 
 const groupBadge = {
   stretch: 'bg-teal-100 text-teal-900',
   balance: 'bg-coral-100 text-coral-700',
-  strength: 'bg-[#EFEBE2] text-ink-secondary',
+  strength: 'bg-[#F1EFF9] text-ink-secondary',
   big: 'bg-teal-100 text-teal-900',
   loud: 'bg-coral-100 text-coral-700',
   done: 'bg-ok-bg text-ok-fg',
-  todo: 'bg-[#F0EEE6] text-ink-muted',
+  todo: 'bg-[#F1EFF9] text-ink-muted',
   active: 'bg-warn-bg text-warn-fg',
 }
 
@@ -138,8 +138,8 @@ export function Avatar({ text, size = 32, tone = 'dark' }) {
         width: size,
         height: size,
         fontSize: size * 0.38,
-        background: tone === 'light' ? 'rgba(255,255,255,0.16)' : '#DCEEE8',
-        color: tone === 'light' ? '#fff' : '#1F4A40',
+        background: tone === 'light' ? 'rgba(255,255,255,0.16)' : '#E1FAEA',
+        color: tone === 'light' ? '#fff' : '#0A4023',
       }}
     >
       {text}

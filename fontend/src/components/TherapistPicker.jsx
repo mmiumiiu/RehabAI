@@ -87,9 +87,9 @@ export default function TherapistPicker({ onSelect }) {
       )}
 
       {selected && (
-        <div className="flex items-start gap-2.5 rounded-btn p-4 mt-1" style={{ background: '#E6F0E1' }}>
+        <div className="flex items-start gap-2.5 rounded-btn p-4 mt-1" style={{ background: '#E4F6E9' }}>
           <span className="text-ok-fg flex-shrink-0 mt-0.5"><Check size={16} /></span>
-          <p className="text-[12.5px] leading-relaxed" style={{ color: '#3B6D11' }}>
+          <p className="text-[12.5px] leading-relaxed" style={{ color: '#147A3D' }}>
             <strong>เชื่อมต่อกับ {selected.name} เรียบร้อยแล้ว</strong> — เนื่องจากคุณเลือกนักกายภาพบำบัดที่มีตัวตนยืนยันแล้วในระบบ
             (สังกัด{hospital}) ระบบจึงเชื่อมต่อบัญชีให้ทันที ไม่ต้องรออนุมัติ
           </p>

@@ -43,12 +43,12 @@ export default function Chat() {
           <div className="flex-1">
             <div className="text-[14px] font-semibold text-teal-900">{therapist.name}</div>
             <div className="text-[11.5px] text-ok-fg flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#3B6D11]" /> ออนไลน์
+              <span className="w-2 h-2 rounded-full bg-[#147A3D]" /> ออนไลน์
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-2 px-5 py-2.5 text-[12px]" style={{ background: '#FDF3D9', color: '#9A6B0A' }}>
+        <div className="flex items-start gap-2 px-5 py-2.5 text-[12px]" style={{ background: '#FFF7D6', color: '#8A6400' }}>
           <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
           <p>ช่องทางนี้ไม่ใช่สำหรับเหตุฉุกเฉิน นักกายภาพบำบัดจะตอบภายใน 1-2 วันทำการ หากมีเหตุฉุกเฉินให้ใช้ปุ่ม SOS หรือโทร 1669</p>
         </div>

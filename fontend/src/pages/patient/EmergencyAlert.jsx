@@ -42,7 +42,7 @@ export default function EmergencyAlert() {
 
   if (called) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-white p-6" style={{ background: '#D9483E' }}>
+      <div className="min-h-screen flex flex-col items-center justify-center text-white p-6" style={{ background: '#E5234F' }}>
         <Phone size={48} className="mb-4" />
         <h1 className="font-heading text-[26px] font-semibold mb-2">กำลังโทร 1669…</h1>
         <p className="text-[14px] opacity-90 mb-8">สถาบันการแพทย์ฉุกเฉินแห่งชาติ</p>
@@ -56,7 +56,7 @@ export default function EmergencyAlert() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-cam text-white p-6">
       {/* step 1 confirmation */}
-      <div className="flex items-center gap-2 bg-[#2F6F62] px-4 py-3 rounded-btn mb-8 max-w-[440px]">
+      <div className="flex items-center gap-2 bg-[#147A3D] px-4 py-3 rounded-btn mb-8 max-w-[440px]">
         <Check size={20} className="flex-shrink-0" />
         <p className="text-[13.5px]">
           ส่งข้อความแจ้งเตือนไปยัง <strong>{contact.name}</strong> พร้อมตำแหน่งปัจจุบันแล้ว
@@ -69,7 +69,7 @@ export default function EmergencyAlert() {
         <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
           <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="8" />
           <circle
-            cx="60" cy="60" r={R} fill="none" stroke="#D9483E" strokeWidth="8" strokeLinecap="round"
+            cx="60" cy="60" r={R} fill="none" stroke="#E5234F" strokeWidth="8" strokeLinecap="round"
             strokeDasharray={C} strokeDashoffset={C - (C * pct) / 100}
             style={{ transition: 'stroke-dashoffset 1s linear' }}
           />

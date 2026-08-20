@@ -81,7 +81,7 @@ export default function LsvtLoudTest() {
             />
             <div
               className="h-full rounded-full relative"
-              style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#4E9484,#7FB88A)', transition: 'width 0.1s' }}
+              style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#1B9C4C,#29B85E)', transition: 'width 0.1s' }}
             />
           </div>
           <div className="flex justify-between text-[10px] text-ink-muted mt-1">
@@ -137,7 +137,7 @@ export default function LsvtLoudTest() {
               detail={`ตรงกับ “${target}” ${Math.round(result.word.similarity * 100)}% · ${result.word.verdict === 'correct' ? 'ถูกต้อง' : 'ยังไม่ตรง'}`}
             />
 
-            <p className="text-[12px] mt-4" style={{ color: result.passed ? '#4E9484' : '#B9542A' }}>
+            <p className="text-[12px] mt-4" style={{ color: result.passed ? '#1B9C4C' : '#D94A1D' }}>
               {result.passed
                 ? 'ผ่านทั้งสองส่วน (เกิน 80%) — นับ 1 ครั้ง 🎉'
                 : 'ยังไม่นับ — ต้องได้เกิน 80% ทั้งความดังเสียงและคำพูด'}
@@ -156,14 +156,14 @@ function ScoreRow({ label, percent, detail }) {
     <div className="py-2 border-t border-line first:border-t-0">
       <div className="flex items-center justify-between">
         <span className="text-[14px] text-ink-primary">{label}</span>
-        <span className="font-heading text-[20px] font-semibold" style={{ color: passed ? '#4E9484' : '#B9542A' }}>
+        <span className="font-heading text-[20px] font-semibold" style={{ color: passed ? '#1B9C4C' : '#D94A1D' }}>
           {percent}%
         </span>
       </div>
       <div className="h-2 bg-line rounded-full overflow-hidden mt-1.5">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${percent}%`, background: passed ? 'linear-gradient(90deg,#4E9484,#7FB88A)' : '#E39159' }}
+          style={{ width: `${percent}%`, background: passed ? 'linear-gradient(90deg,#1B9C4C,#29B85E)' : '#FF8452' }}
         />
       </div>
       <p className="text-[11.5px] text-ink-muted mt-1">{detail}</p>

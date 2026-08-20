@@ -40,13 +40,13 @@ function GroupedBars({ bars }) {
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
-      <rect x={mL} y={mT} width={plotW} height={plotH} fill="none" stroke="#E6E0D4" strokeWidth="1.2" />
+      <rect x={mL} y={mT} width={plotW} height={plotH} fill="none" stroke="#EBE8F5" strokeWidth="1.2" />
       {[0, 1, 2, 3, 4].map((i) => {
         const y = mT + plotH - (i / 4) * plotH
         return (
           <g key={`t${i}`}>
-            {i > 0 && <line x1={mL} y1={y} x2={mL + plotW} y2={y} stroke="#E6E0D4" strokeWidth="1" strokeDasharray="3 3" />}
-            <text x={mL - 8} y={y + 3} fontSize="10" fill="#8E9B96" textAnchor="end">{Math.round((maxVal * i) / 4)}</text>
+            {i > 0 && <line x1={mL} y1={y} x2={mL + plotW} y2={y} stroke="#EBE8F5" strokeWidth="1" strokeDasharray="3 3" />}
+            <text x={mL - 8} y={y + 3} fontSize="10" fill="#9E97AF" textAnchor="end">{Math.round((maxVal * i) / 4)}</text>
           </g>
         )
       })}
@@ -57,11 +57,11 @@ function GroupedBars({ bars }) {
         const bigY = mT + plotH - bigH, loudY = mT + plotH - loudH
         return (
           <g key={`b${i}`}>
-            <rect x={bigX} y={bigY} width={barW} height={bigH} fill="#4E9484" rx="2" />
-            <rect x={loudX} y={loudY} width={barW} height={loudH} fill="#B9542A" rx="2" />
-            {b.big > 0 && <text x={bigX + barW / 2} y={bigY - 4} fontSize="9.5" fill="#1F4A40" textAnchor="middle" fontWeight="600">{b.big}</text>}
-            {b.loud > 0 && <text x={loudX + barW / 2} y={loudY - 4} fontSize="9.5" fill="#B9542A" textAnchor="middle" fontWeight="600">{b.loud}</text>}
-            <text x={gx} y={mT + plotH + 16} fontSize="10.5" fill="#5B6B66" textAnchor="middle">{b.label}</text>
+            <rect x={bigX} y={bigY} width={barW} height={bigH} fill="#1B9C4C" rx="2" />
+            <rect x={loudX} y={loudY} width={barW} height={loudH} fill="#D94A1D" rx="2" />
+            {b.big > 0 && <text x={bigX + barW / 2} y={bigY - 4} fontSize="9.5" fill="#0A4023" textAnchor="middle" fontWeight="600">{b.big}</text>}
+            {b.loud > 0 && <text x={loudX + barW / 2} y={loudY - 4} fontSize="9.5" fill="#D94A1D" textAnchor="middle" fontWeight="600">{b.loud}</text>}
+            <text x={gx} y={mT + plotH + 16} fontSize="10.5" fill="#69637C" textAnchor="middle">{b.label}</text>
           </g>
         )
       })}

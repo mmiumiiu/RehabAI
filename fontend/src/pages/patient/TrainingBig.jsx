@@ -12,8 +12,8 @@ import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 // purely visual grouping — the "เริ่มฝึก" button and status badge stay active.
 
 // muted palette for the seated ("locked") rows — mirrors .ex-row.locked in the mockup
-const lockedRow = { background: '#EAE6D9', borderColor: '#D8D0BC' }
-const lockedNum = { background: '#D8D0BC', borderColor: '#C7BDA3', color: '#6B6350' }
+const lockedRow = { background: '#EDEBF6', borderColor: '#DDD8EC' }
+const lockedNum = { background: '#DDD8EC', borderColor: '#C9C3DC', color: '#69637C' }
 
 function ExerciseRow({ ex, locked = false, onStart, done = false }) {
   return (
@@ -33,18 +33,18 @@ function ExerciseRow({ ex, locked = false, onStart, done = false }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h4 className="font-heading text-[22px] font-semibold" style={locked ? { color: '#6B6350' } : undefined}>
+          <h4 className="font-heading text-[22px] font-semibold" style={locked ? { color: '#69637C' } : undefined}>
             {ex.name}
           </h4>
           {ex.highRisk && <Badge tone="balance">เสี่ยงสูง</Badge>}
         </div>
-        <p className={`text-[15px] leading-snug mt-0.5 ${locked ? '' : 'text-ink-secondary'}`} style={locked ? { color: '#8C8368' } : undefined}>
+        <p className={`text-[15px] leading-snug mt-0.5 ${locked ? '' : 'text-ink-secondary'}`} style={locked ? { color: '#9E97AF' } : undefined}>
           {ex.how}
         </p>
       </div>
 
       <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-        <span className={`text-[12px] whitespace-nowrap ${locked ? '' : 'text-ink-muted'}`} style={locked ? { color: '#8C8368' } : undefined}>
+        <span className={`text-[12px] whitespace-nowrap ${locked ? '' : 'text-ink-muted'}`} style={locked ? { color: '#9E97AF' } : undefined}>
           {ex.targetLabel}
         </span>
         {done ? (

@@ -131,13 +131,13 @@ export default function SessionBig() {
 
           <div className="absolute top-4 right-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5">
             {recording
-              ? <><span className="w-[7px] h-[7px] rounded-full bg-[#E4746A] rec-pulse" />กำลังนับ</>
-              : <><span className="w-[7px] h-[7px] rounded-full bg-[#4E9484]" />ตรวจจับท่าทาง</>}
+              ? <><span className="w-[7px] h-[7px] rounded-full bg-[#FF8452] rec-pulse" />กำลังนับ</>
+              : <><span className="w-[7px] h-[7px] rounded-full bg-[#1B9C4C]" />ตรวจจับท่าทาง</>}
           </div>
 
           <div
             className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
-            style={{ background: complete ? 'rgba(78,148,132,0.92)' : 'rgba(78,148,132,0.80)' }}
+            style={{ background: complete ? 'rgba(27,156,76,0.92)' : 'rgba(27,156,76,0.80)' }}
           >
             <Check size={18} />
             {barMsg}
@@ -154,7 +154,7 @@ export default function SessionBig() {
             </div>
             <button
               onClick={() => navigate('/training/big')}
-              className="flex-shrink-0 py-2.5 px-5 rounded-pill border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FBEAE8] transition-colors"
+              className="flex-shrink-0 py-2.5 px-5 rounded-pill border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FCE1E7] transition-colors"
             >
               หยุดฝึก
             </button>

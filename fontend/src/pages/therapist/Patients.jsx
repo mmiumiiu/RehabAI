@@ -23,9 +23,9 @@ export default function Patients() {
 
       <div className="px-4 md:px-8 py-5 md:py-7 max-w-[900px] mx-auto">
         {/* patients auto-appear when they select this therapist (spec §4.3) */}
-        <div className="flex items-start gap-2.5 rounded-btn p-4 mb-6 max-w-[520px] mx-auto" style={{ background: '#E6F0E1' }}>
-          <span className="flex-shrink-0 mt-0.5" style={{ color: '#3B6D11' }}><Check size={16} /></span>
-          <p className="text-[12.5px] leading-relaxed" style={{ color: '#3B6D11' }}>
+        <div className="flex items-start gap-2.5 rounded-btn p-4 mb-6 max-w-[520px] mx-auto" style={{ background: '#E4F6E9' }}>
+          <span className="flex-shrink-0 mt-0.5" style={{ color: '#147A3D' }}><Check size={16} /></span>
+          <p className="text-[12.5px] leading-relaxed" style={{ color: '#147A3D' }}>
             ผู้ป่วยที่เลือกคุณเป็นนักกายภาพบำบัดตอนสมัครใช้งานจะปรากฏในรายชื่อนี้โดยอัตโนมัติทันที ไม่ต้องเพิ่มเอง —
             การเชื่อมต่อเกิดจากฝั่งผู้ป่วยเลือกจากรายชื่อที่ยืนยันตัวตนแล้วเท่านั้น
           </p>

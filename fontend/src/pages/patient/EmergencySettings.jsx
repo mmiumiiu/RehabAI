@@ -55,7 +55,7 @@ export default function EmergencySettings() {
 
       <Button variant="outline" className="w-auto mb-6"><Plus size={16} /> เพิ่มผู้ติดต่อฉุกเฉิน</Button>
 
-      <Card className="p-5 flex items-center gap-4" style={{ background: '#FBEAE8', borderColor: '#EBC6C1' }}>
+      <Card className="p-5 flex items-center gap-4" style={{ background: '#FCE1E7', borderColor: '#EBC6C1' }}>
         <div className="w-11 h-11 rounded-xl bg-danger text-white flex items-center justify-center flex-shrink-0">
           <MapPin size={22} />
         </div>

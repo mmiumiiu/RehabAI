@@ -2,8 +2,8 @@
 // A stand-in for a real MediaPipe Pose overlay; `phase` (0..1) gently animates joints.
 export default function PoseSkeleton({ phase = 0, good = true }) {
   const lift = Math.sin(phase * Math.PI * 2) * 8 // arm swing
-  const color = good ? '#4E9484' : '#E39159'
-  const joint = (cx, cy) => <circle cx={cx} cy={cy} r="2.6" fill="#DCEEE8" />
+  const color = good ? '#1B9C4C' : '#FF8452'
+  const joint = (cx, cy) => <circle cx={cx} cy={cy} r="2.6" fill="#E1FAEA" />
 
   // normalized coords on a 200x250 viewbox, roughly centred
   const head = [100, 40]
@@ -27,7 +27,7 @@ export default function PoseSkeleton({ phase = 0, good = true }) {
   )
 
   return (
-    <svg viewBox="0 0 200 250" className="w-[46%] max-w-[280px] opacity-90" style={{ filter: 'drop-shadow(0 0 6px rgba(78,148,132,.4))' }}>
+    <svg viewBox="0 0 200 250" className="w-[46%] max-w-[280px] opacity-90" style={{ filter: 'drop-shadow(0 0 6px rgba(27,156,76,.4))' }}>
       <circle cx={head[0]} cy={head[1]} r="14" stroke={color} strokeWidth="2.4" fill="none" />
       {line(neck, hip)}
       {line(shoulderL, shoulderR)}

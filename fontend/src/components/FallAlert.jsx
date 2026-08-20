@@ -26,7 +26,7 @@ export default function FallAlert({ onSafe, onCall, seconds = 15 }) {
         <button
           onClick={onCall}
           className="w-full py-3 rounded-pill text-white font-semibold text-[15px] flex items-center justify-center gap-2 mb-2"
-          style={{ background: '#D9483E' }}
+          style={{ background: '#E5234F' }}
         >
           <Phone size={18} /> โทรฉุกเฉินเดี๋ยวนี้
         </button>

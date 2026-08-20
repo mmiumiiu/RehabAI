@@ -29,7 +29,7 @@ export default function PoseCanvas({ landmarks, good }) {
 
     // Video is mirrored (scaleX -1), so flip landmark X to match
     const px = (lm) => [(1 - lm.x) * w, lm.y * h]
-    const color = good ? '#4E9484' : '#E39159'
+    const color = good ? '#1B9C4C' : '#FF8452'
 
     ctx.strokeStyle = color
     ctx.lineWidth = 2.5
@@ -46,7 +46,7 @@ export default function PoseCanvas({ landmarks, good }) {
       ctx.stroke()
     }
 
-    ctx.fillStyle = '#DCEEE8'
+    ctx.fillStyle = '#E1FAEA'
     for (const i of JOINTS) {
       if (!landmarks[i]) continue
       const [x, y] = px(landmarks[i])
@@ -60,7 +60,7 @@ export default function PoseCanvas({ landmarks, good }) {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ filter: 'drop-shadow(0 0 6px rgba(78,148,132,.35))' }}
+      style={{ filter: 'drop-shadow(0 0 6px rgba(27,156,76,.35))' }}
     />
   )
 }

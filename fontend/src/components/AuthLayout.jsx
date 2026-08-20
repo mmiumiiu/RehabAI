@@ -6,7 +6,7 @@ export default function AuthLayout({ children, therapist = false }) {
     <div className="min-h-screen flex bg-surface">
       <aside
         className="hidden md:flex flex-col justify-between w-[38%] p-12 text-white"
-        style={{ background: '#1F4A40' }}
+        style={{ background: '#0A4023' }}
       >
         <Logo light />
         <div>

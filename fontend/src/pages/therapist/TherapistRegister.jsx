@@ -28,9 +28,9 @@ function domainCheck(hospital, email) {
 }
 
 const checkStyles = {
-  ok: { background: '#E6F0E1', color: '#3B6D11' },
-  warn: { background: '#FDF3D9', color: '#9A6B0A' },
-  neutral: { background: '#F0EEE6', color: '#5B6B66' },
+  ok: { background: '#E4F6E9', color: '#147A3D' },
+  warn: { background: '#FFF7D6', color: '#8A6400' },
+  neutral: { background: '#F1EFF9', color: '#69637C' },
 }
 
 export default function TherapistRegister() {
@@ -76,7 +76,7 @@ export default function TherapistRegister() {
           </div>
           <h2 className="font-heading text-[20px] font-semibold text-teal-900 mb-2">รอการตรวจสอบ</h2>
         </div>
-        <div className="rounded-btn p-4 text-[13px] leading-relaxed" style={{ background: '#FDF3D9', color: '#9A6B0A' }}>
+        <div className="rounded-btn p-4 text-[13px] leading-relaxed" style={{ background: '#FFF7D6', color: '#8A6400' }}>
           การเช็คโดเมนอีเมลเป็นเพียงสัญญาณเบื้องต้นเท่านั้น ทีมงานจะติดต่อแผนกกายภาพบำบัดของ
           {' '}<strong>{form.hospital}</strong> เพื่อยืนยันตัวตนอีกครั้งก่อนเปิดใช้งานบัญชีเสมอ
           ระบบจะแจ้งผลภายใน 1-2 วันทำการ ระหว่างนี้ยังไม่สามารถดูข้อมูลผู้ป่วยได้

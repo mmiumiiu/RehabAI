@@ -146,13 +146,13 @@ export default function SessionLoud() {
   if (summary) {
     const withPrev = chartMetrics.filter((m) => m.prev != null)
     if (withPrev.length === 0) {
-      verdict = { text: 'นี่คือครั้งแรกของแบบฝึกหัดนี้ — เก็บไว้เทียบครั้งหน้า 👍', color: '#2F6F62' }
+      verdict = { text: 'นี่คือครั้งแรกของแบบฝึกหัดนี้ — เก็บไว้เทียบครั้งหน้า 👍', color: '#147A3D' }
     } else {
       const cur = withPrev.reduce((a, m) => a + m.cur, 0) / withPrev.length
       const prv = withPrev.reduce((a, m) => a + m.prev, 0) / withPrev.length
-      if (cur > prv + 1) verdict = { text: 'ทำได้ดีกว่าครั้งก่อน! 🎉', color: '#3B6D11' }
-      else if (cur >= prv - 1) verdict = { text: 'ทำได้พอ ๆ กับครั้งก่อน รักษาระดับไว้ 👍', color: '#2F6F62' }
-      else verdict = { text: 'ครั้งก่อนทำได้ดีกว่าเล็กน้อย — สู้ ๆ! 💪', color: '#B9542A' }
+      if (cur > prv + 1) verdict = { text: 'ทำได้ดีกว่าครั้งก่อน! 🎉', color: '#147A3D' }
+      else if (cur >= prv - 1) verdict = { text: 'ทำได้พอ ๆ กับครั้งก่อน รักษาระดับไว้ 👍', color: '#147A3D' }
+      else verdict = { text: 'ครั้งก่อนทำได้ดีกว่าเล็กน้อย — สู้ ๆ! 💪', color: '#D94A1D' }
     }
   }
 
@@ -185,7 +185,7 @@ export default function SessionLoud() {
             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-300"
-                style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#4E9484,#7FB88A)' }}
+                style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#1B9C4C,#29B85E)' }}
               />
             </div>
           </div>
@@ -199,11 +199,11 @@ export default function SessionLoud() {
               }`}
               style={{
                 background: recording
-                  ? 'rgba(185,84,42,0.85)'
+                  ? 'rgba(217,74,29,0.85)'
                   : passed === false
-                    ? 'rgba(185,84,42,0.85)'
+                    ? 'rgba(217,74,29,0.85)'
                     : passed === true
-                      ? 'rgba(78,148,132,0.85)'
+                      ? 'rgba(27,156,76,0.85)'
                       : 'rgba(255,255,255,0.14)',
                 boxShadow: '0 0 0 6px rgba(255,255,255,0.06)',
               }}
@@ -214,7 +214,7 @@ export default function SessionLoud() {
                 : (isSustain ? 'กดเริ่มออกเสียง' : 'กดแล้วพูด')}
             </button>
           ) : (
-            <div className="w-28 h-28 rounded-full bg-[rgba(78,148,132,0.85)] flex flex-col items-center justify-center gap-1 text-white">
+            <div className="w-28 h-28 rounded-full bg-[rgba(27,156,76,0.85)] flex flex-col items-center justify-center gap-1 text-white">
               <Check size={32} />
               <span className="text-[12px] font-semibold">เสร็จแล้ว!</span>
             </div>
@@ -233,14 +233,14 @@ export default function SessionLoud() {
               <div className="flex items-center justify-center gap-5">
                 {parts.map((p) => (
                   <div key={p.key}>
-                    <p className="font-heading text-[22px] font-semibold leading-none" style={{ color: p.score >= 80 ? '#7FB88A' : '#E39159' }}>
+                    <p className="font-heading text-[22px] font-semibold leading-none" style={{ color: p.score >= 80 ? '#29B85E' : '#FF8452' }}>
                       {p.score}%
                     </p>
                     <p className="text-[11px] text-white/55 mt-0.5">{p.label}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-[12px] mt-1.5" style={{ color: passed ? '#7FB88A' : '#E39159' }}>
+              <p className="text-[12px] mt-1.5" style={{ color: passed ? '#29B85E' : '#FF8452' }}>
                 {passed
                   ? 'ผ่าน — นับ 1 ครั้ง ✓'
                   : `ยังไม่นับ — ต้องเกิน 80% ทุกส่วน (${VERDICT_TH[result.db.verdict] || result.db.verdict}${result.hold ? `, ค้างเสียง ${result.hold.hold_sec} วิ` : ''}${result.word && result.word.verdict !== 'correct' ? `, ได้ยิน “${transcript || '—'}”` : ''})`}
@@ -248,7 +248,7 @@ export default function SessionLoud() {
             </div>
           )}
           {error && !sessionDone && (
-            <p className="text-[12px] text-[#E39159] text-center max-w-[280px]">{error}</p>
+            <p className="text-[12px] text-[#FF8452] text-center max-w-[280px]">{error}</p>
           )}
 
           {/* Live dB meter with the good band highlighted */}
@@ -258,7 +258,7 @@ export default function SessionLoud() {
                 className="absolute top-0 bottom-0 bg-white/25"
                 style={{ left: `${bandLeft}%`, width: `${bandWidth}%` }}
               />
-              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#B9542A,#E39159)', transition: 'width 0.1s' }} />
+              <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#D94A1D,#FF8452)', transition: 'width 0.1s' }} />
             </div>
             <div className="flex justify-between text-[10px] text-white/35 mt-1">
               <span>เบา</span>
@@ -316,26 +316,26 @@ export default function SessionLoud() {
                       <span className="font-semibold text-teal-800">
                         {m.cur}%
                         {m.prev != null && (
-                          <span style={{ color: m.cur >= m.prev ? '#3B6D11' : '#B9542A' }}>
+                          <span style={{ color: m.cur >= m.prev ? '#147A3D' : '#D94A1D' }}>
                             {' '}{m.cur >= m.prev ? '▲' : '▼'} {Math.abs(m.cur - m.prev)}
                           </span>
                         )}
                       </span>
                     </div>
                     <div className="h-3 bg-line rounded-full overflow-hidden mb-1">
-                      <div className="h-full rounded-full" style={{ width: `${m.cur}%`, background: 'linear-gradient(90deg,#4E9484,#7FB88A)' }} />
+                      <div className="h-full rounded-full" style={{ width: `${m.cur}%`, background: 'linear-gradient(90deg,#1B9C4C,#29B85E)' }} />
                     </div>
                     {m.prev != null && (
                       <div className="h-2 bg-line rounded-full overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${m.prev}%`, background: 'rgba(78,148,132,0.4)' }} />
+                        <div className="h-full rounded-full" style={{ width: `${m.prev}%`, background: 'rgba(27,156,76,0.4)' }} />
                       </div>
                     )}
                   </div>
                 ))}
                 {chartMetrics.some((m) => m.prev != null) && (
                   <div className="flex gap-4 text-[11px] text-ink-muted mt-1">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: '#4E9484' }} /> ครั้งนี้</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(78,148,132,0.4)' }} /> ครั้งก่อน</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: '#1B9C4C' }} /> ครั้งนี้</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(27,156,76,0.4)' }} /> ครั้งก่อน</span>
                   </div>
                 )}
                 {verdict && (

@@ -56,7 +56,7 @@ export default function Dashboard() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse card overflow-hidden min-w-[480px]">
             <thead>
-              <tr className="bg-[#F5F2EA]">
+              <tr className="bg-[#F1EFF9]">
                 {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา'].map((h) => (
                   <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">
                     {h}

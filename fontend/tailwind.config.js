@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#F1EFF9',
+        bg: '#F6F6FB',
         surface: '#FFFFFF',
         // primary green (kept under the `teal` name so existing usages reskin)
         teal: {

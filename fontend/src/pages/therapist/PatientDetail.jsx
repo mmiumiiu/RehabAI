@@ -49,30 +49,30 @@ export default function PatientDetail() {
 
         {/* Live session card */}
         {liveSession && (
-          <div className="rounded-card p-4 mb-6 flex items-center gap-4" style={{ background: liveSession.complete ? '#E6F0E1' : '#EAF3F0' }}>
+          <div className="rounded-card p-4 mb-6 flex items-center gap-4" style={{ background: liveSession.complete ? '#E4F6E9' : '#EAF3F0' }}>
             <div
               className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 text-white"
-              style={{ background: liveSession.complete ? '#3B6D11' : '#2F6F62' }}
+              style={{ background: liveSession.complete ? '#147A3D' : '#147A3D' }}
             >
               {liveSession.complete ? '✓' : <Mic size={18} />}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[13.5px] font-semibold" style={{ color: liveSession.complete ? '#3B6D11' : '#1F4A40' }}>
+                <span className="text-[13.5px] font-semibold" style={{ color: liveSession.complete ? '#147A3D' : '#0A4023' }}>
                   {liveSession.complete ? 'เสร็จสิ้น LSVT LOUD แล้ว' : 'กำลังฝึก LSVT LOUD อยู่ขณะนี้'}
                 </span>
                 {!liveSession.complete && (
                   <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse flex-shrink-0" />
                 )}
               </div>
-              <div className="text-[12px] mt-0.5" style={{ color: liveSession.complete ? '#3B6D11' : '#2F6F62' }}>
+              <div className="text-[12px] mt-0.5" style={{ color: liveSession.complete ? '#147A3D' : '#147A3D' }}>
                 {liveSession.reps} / {liveSession.goal} ครั้ง · {liveSession.duration}
               </div>
             </div>
             <div className="text-right flex-shrink-0">
               <div
                 className="font-heading text-[24px] font-semibold"
-                style={{ color: liveSession.complete ? '#3B6D11' : '#1F4A40' }}
+                style={{ color: liveSession.complete ? '#147A3D' : '#0A4023' }}
               >
                 {Math.round((liveSession.reps / liveSession.goal) * 100)}%
               </div>
@@ -91,7 +91,7 @@ export default function PatientDetail() {
         <div className="overflow-x-auto mb-7">
           <table className="w-full border-collapse card overflow-hidden min-w-[420px]">
             <thead>
-              <tr className="bg-[#F5F2EA]">
+              <tr className="bg-[#F1EFF9]">
                 {['วันที่', 'ประเภทการฝึก', 'ระยะเวลา'].map((h) => (
                   <th key={h} className="text-left text-[11.5px] uppercase tracking-wide text-ink-muted px-5 py-3 font-semibold">{h}</th>
                 ))}

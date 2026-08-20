@@ -8,7 +8,7 @@ export default function SOSButton({ reason = 'sos' }) {
     <button
       onClick={() => navigate(`/emergency-alert?reason=${reason}`)}
       className="absolute top-4 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-[13px] font-heading font-semibold shadow-lg"
-      style={{ background: '#D9483E' }}
+      style={{ background: '#E5234F' }}
     >
       <Phone size={16} />
       SOS ฉุกเฉิน

@@ -39,8 +39,8 @@ export default function LoudTrendChart({ rows, days = 8 }) {
   const line = (key) => pts.map((p, i) => `${x(i)},${y(p[key])}`).join(' ')
 
   const series = [
-    { key: 'loud', color: '#4E9484', label: 'ความดัง' },
-    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง' },
+    { key: 'loud', color: '#1B9C4C', label: 'ความดัง' },
+    { key: 'acc', color: '#D94A1D', label: 'ความถูกต้อง' },
   ]
 
   return (
@@ -48,8 +48,8 @@ export default function LoudTrendChart({ rows, days = 8 }) {
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
         {yTicks.map((v) => (
           <g key={v}>
-            <line x1={mL} y1={y(v)} x2={mL + plotW} y2={y(v)} stroke="#E6E0D4" strokeWidth="1" strokeDasharray={v === 0 ? '0' : '3 3'} />
-            <text x={mL - 8} y={y(v) + 4} fontSize="12" fill="#8E9B96" textAnchor="end">{v}</text>
+            <line x1={mL} y1={y(v)} x2={mL + plotW} y2={y(v)} stroke="#EBE8F5" strokeWidth="1" strokeDasharray={v === 0 ? '0' : '3 3'} />
+            <text x={mL - 8} y={y(v) + 4} fontSize="12" fill="#9E97AF" textAnchor="end">{v}</text>
           </g>
         ))}
         {series.map((s) => (
@@ -70,7 +70,7 @@ export default function LoudTrendChart({ rows, days = 8 }) {
           </g>
         ))}
         {pts.map((p, i) => (
-          <text key={i} x={x(i)} y={mT + plotH + 26} fontSize="13.5" fill="#5B6B66" textAnchor="middle">{p.label}</text>
+          <text key={i} x={x(i)} y={mT + plotH + 26} fontSize="13.5" fill="#69637C" textAnchor="middle">{p.label}</text>
         ))}
       </svg>
       <div className="flex gap-6 mt-4 justify-center">

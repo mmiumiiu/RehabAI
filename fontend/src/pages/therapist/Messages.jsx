@@ -79,7 +79,7 @@ export default function Messages() {
             </Button>
           </div>
 
-          <div className="flex items-start gap-2 px-4 md:px-5 py-2.5 text-[12px] flex-shrink-0" style={{ background: '#FDF3D9', color: '#9A6B0A' }}>
+          <div className="flex items-start gap-2 px-4 md:px-5 py-2.5 text-[12px] flex-shrink-0" style={{ background: '#FFF7D6', color: '#8A6400' }}>
             <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
             <p>ช่องทางนี้ไม่ใช่สำหรับเหตุฉุกเฉิน ระบบจะแจ้งเตือนให้ตอบภายใน 1-2 วันทำการ</p>
           </div>
