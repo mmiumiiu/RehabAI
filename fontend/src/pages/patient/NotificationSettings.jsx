@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, Toggle, Button } from '../../components/ui.jsx'
@@ -121,7 +122,7 @@ export default function NotificationSettings() {
                   {linkCode}
                 </span>
                 <a href={LINE_OA_URL} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-[13px] px-4 py-2.5 rounded-btn transition-colors">
+                  className="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b34c] text-white font-semibold text-[13px] px-4 py-2.5 rounded-pill transition-colors">
                   <LineIcon /> เพิ่มเพื่อน
                 </a>
               </div>
@@ -140,7 +141,7 @@ export default function NotificationSettings() {
                 กดปุ่มด้านล่างเพื่อรับรหัสเชื่อมต่อ แล้วส่งรหัสนั้นในแชทของ Line OA RehabAI
               </p>
               <button onClick={handleStartLink} disabled={linkLoading}
-                className="inline-flex items-center gap-2 w-fit bg-[#06C755] hover:bg-[#05b34c] disabled:opacity-60 text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-btn transition-colors">
+                className="inline-flex items-center gap-2 w-fit bg-[#06C755] hover:bg-[#05b34c] disabled:opacity-60 text-white font-semibold text-[13.5px] px-5 py-2.5 rounded-pill transition-colors">
                 <LineIcon />
                 {linkLoading ? 'กำลังสร้างรหัส…' : 'เชื่อมต่อ Line'}
               </button>
@@ -215,7 +216,7 @@ export default function NotificationSettings() {
               setTestStatus(ok ? 'ok' : 'fail')
               setTimeout(() => setTestStatus(null), 3000)
             }}
-            className="inline-flex items-center gap-2 border border-[#06C755] text-[#06C755] hover:bg-green-50 disabled:opacity-60 font-semibold text-[13.5px] px-5 py-2.5 rounded-btn transition-colors"
+            className="inline-flex items-center gap-2 border border-[#06C755] text-[#06C755] hover:bg-green-50 disabled:opacity-60 font-semibold text-[13.5px] px-5 py-2.5 rounded-pill transition-colors"
           >
             <LineIcon />
             {testStatus === 'sending' ? 'กำลังส่ง…' : testStatus === 'ok' ? 'ส่งแล้ว ✓' : testStatus === 'fail' ? 'ส่งไม่สำเร็จ ✗' : 'ส่งข้อความทดสอบ'}

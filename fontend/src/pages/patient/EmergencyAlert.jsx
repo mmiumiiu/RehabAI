@@ -46,7 +46,7 @@ export default function EmergencyAlert() {
         <Phone size={48} className="mb-4" />
         <h1 className="font-heading text-[26px] font-semibold mb-2">กำลังโทร 1669…</h1>
         <p className="text-[14px] opacity-90 mb-8">สถาบันการแพทย์ฉุกเฉินแห่งชาติ</p>
-        <button onClick={() => navigate(-1)} className="bg-white text-danger font-heading font-semibold px-6 py-3 rounded-btn">
+        <button onClick={() => navigate(-1)} className="bg-white text-danger font-heading font-semibold px-6 py-3 rounded-pill">
           ฉันไม่เป็นไรแล้ว — กลับสู่แอป
         </button>
       </div>
@@ -80,13 +80,13 @@ export default function EmergencyAlert() {
       <div className="w-full max-w-[380px] space-y-3">
         <button
           onClick={() => navigate(-1)}
-          className="w-full bg-white text-teal-900 font-heading font-semibold py-3.5 rounded-btn text-[15px]"
+          className="w-full bg-white text-teal-900 font-heading font-semibold py-3.5 rounded-pill text-[15px]"
         >
           ยกเลิกการโทร 1669 — ฉันไม่เป็นไร
         </button>
         <button
           onClick={() => setCalled(true)}
-          className="w-full border border-white/40 text-white font-heading font-medium py-3 rounded-btn text-[14px] flex items-center justify-center gap-2"
+          className="w-full border border-white/40 text-white font-heading font-medium py-3 rounded-pill text-[14px] flex items-center justify-center gap-2"
         >
           <Phone size={17} /> โทร 1669 ทันทีตอนนี้เลย
         </button>

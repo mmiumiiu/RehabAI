@@ -354,7 +354,7 @@ export default function SessionLoud() {
             )}
             <button
               onClick={retryStep}
-              className="w-full py-2.5 rounded-btn border border-coral-700 text-coral-700 font-semibold text-[13.5px] hover:bg-coral-100 transition-colors mb-2"
+              className="w-full py-2.5 rounded-pill border border-coral-700 text-coral-700 font-semibold text-[13.5px] hover:bg-coral-100 transition-colors mb-2"
             >
               ทำแบบฝึกหัดนี้ซ้ำ
             </button>

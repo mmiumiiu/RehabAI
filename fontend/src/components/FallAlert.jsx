@@ -25,14 +25,14 @@ export default function FallAlert({ onSafe, onCall, seconds = 15 }) {
 
         <button
           onClick={onCall}
-          className="w-full py-3 rounded-btn text-white font-semibold text-[15px] flex items-center justify-center gap-2 mb-2"
+          className="w-full py-3 rounded-pill text-white font-semibold text-[15px] flex items-center justify-center gap-2 mb-2"
           style={{ background: '#D9483E' }}
         >
           <Phone size={18} /> โทรฉุกเฉินเดี๋ยวนี้
         </button>
         <button
           onClick={onSafe}
-          className="w-full py-2.5 rounded-btn border border-line text-ink-secondary font-semibold text-[14px] hover:bg-bg transition-colors"
+          className="w-full py-2.5 rounded-pill border border-line text-ink-secondary font-semibold text-[14px] hover:bg-bg transition-colors"
         >
           ฉันไม่เป็นไร
         </button>

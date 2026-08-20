@@ -24,7 +24,7 @@ export default function PlayPhraseButton({ text, label = 'กดเพื่อ�
     audio.play().catch(() => setPlaying(false))
   }
 
-  const base = 'inline-flex items-center px-5 py-2.5 rounded-btn text-[15px] font-heading font-semibold whitespace-nowrap transition-colors'
+  const base = 'inline-flex items-center px-5 py-2.5 rounded-pill text-[15px] font-heading font-semibold whitespace-nowrap transition-colors'
   const theme = dark
     ? 'bg-white/[0.12] text-white hover:bg-white/[0.2]'
     : 'border border-coral-700 text-coral-700 bg-surface hover:bg-coral-100'

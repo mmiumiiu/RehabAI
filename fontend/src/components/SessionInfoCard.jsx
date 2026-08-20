@@ -24,7 +24,7 @@ export default function SessionInfoCard({ name, desc, reps, target, stats, tone 
 
       <button
         onClick={onStop}
-        className="w-full mt-4 py-3 rounded-btn border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FBEAE8] transition-colors"
+        className="w-full mt-4 py-3 rounded-pill border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FBEAE8] transition-colors"
       >
         หยุดฝึก
       </button>
