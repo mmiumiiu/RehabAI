@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabAI — UI ปัจจุบันทั้งหมด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F4; --surface:#FFF; --teal-900:#1F4A40; --teal-800:#28584C; --teal-700:#2F6F62;
+    --teal-500:#4E9484; --teal-100:#DCEEE8; --coral-700:#B9542A; --coral-100:#FBE7D9;
+    --ink:#22302C; --ink2:#5B6B66; --muted:#8E9B96; --border:#E6E0D4; --danger:#D9483E; --ok:#3B6D11; --cam:#26312E;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:#EDEAE2; font-family:'Inter','Sarabun',sans-serif; color:var(--ink); }
+  .page-head{ text-align:center; padding:32px 16px 8px; }
+  .page-head h1{ font-family:'Poppins','Sarabun',sans-serif; color:var(--teal-900); margin:0 0 4px; font-size:26px; }
+  .page-head p{ color:var(--ink2); font-size:14px; margin:0; }
+  .gallery{ display:flex; flex-wrap:wrap; gap:26px; padding:26px; align-items:flex-start; justify-content:center; }
+  .screen{ background:var(--bg); border:1px solid var(--border); border-radius:18px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,.07); }
+  .phone{ width:340px; }
+  .wide{ width:720px; }
+  .screen .cap{ background:var(--teal-900); color:#fff; font-size:12.5px; font-weight:600; padding:8px 14px; display:flex; gap:8px; align-items:center; }
+  .cap .n{ background:rgba(255,255,255,.16); width:20px;height:20px;border-radius:6px; display:inline-flex;align-items:center;justify-content:center; font-size:11px; }
+  .body{ padding:16px; }
+  h1,h2,h3,h4{ font-family:'Poppins','Sarabun',sans-serif; }
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:14px; }
+  .p16{ padding:16px; } .p20{ padding:20px; }
+  .muted{ color:var(--muted); } .ink2{ color:var(--ink2); }
+  .btn{ display:inline-flex;align-items:center;justify-content:center;gap:6px; border-radius:9px; font-weight:600; font-size:13px; padding:9px 16px; cursor:default; font-family:inherit; border:1px solid transparent; }
+  .btn.primary{ background:var(--teal-700); color:#fff; }
+  .btn.coral{ background:var(--coral-700); color:#fff; }
+  .btn.o{ background:transparent; border-color:var(--teal-700); color:var(--teal-700); }
+  .btn.oc{ background:transparent; border-color:var(--coral-700); color:var(--coral-700); }
+  .btn.block{ width:100%; }
+  .badge{ font-size:11px; font-weight:600; padding:3px 10px; border-radius:6px; }
+  .badge.big{ background:var(--teal-100); color:var(--teal-900); }
+  .badge.loud{ background:var(--coral-100); color:var(--coral-700); }
+  .badge.done{ background:#E6F0E1; color:var(--ok); }
+  .badge.todo{ background:#F1EEE6; color:var(--muted); }
+  .section-title{ font-size:12px; font-weight:600; color:var(--ink2); text-transform:uppercase; letter-spacing:.03em; margin:14px 0 8px; }
+  .row{ display:flex; align-items:center; gap:12px; }
+  .exrow{ background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .stepnum{ width:26px;height:26px;border-radius:50%; border:1px solid var(--border); display:flex;align-items:center;justify-content:center; font-size:12px; font-weight:600; color:var(--ink2); background:var(--bg); flex-shrink:0; }
+  .stepnum.ok{ background:#E6F0E1; color:var(--ok); border-color:#CDE6C3; }
+  .thumb{ width:74px;height:56px;border-radius:10px;background:var(--cam);flex-shrink:0; display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:10px; }
+  .grow{ flex:1; min-width:0; }
+  .h4{ font-size:15px; font-weight:600; margin:0; }
+  .h4.big{ font-size:18px; }
+  .h4.pose{ font-size:22px; }
+  .desc{ font-size:13px; color:var(--ink2); margin:3px 0 0; line-height:1.45; }
+  .pill{ font-size:11px; font-weight:600; padding:5px 12px; border-radius:20px; }
+  .metric{ background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px; }
+  .metric .v{ font-family:'Poppins','Sarabun',sans-serif; font-size:22px; font-weight:600; color:var(--teal-900); }
+  .metric .l{ font-size:12px; color:var(--ink2); margin-top:3px; }
+  .cam{ background:var(--cam); border-radius:14px; position:relative; overflow:hidden; }
+  input.f,textarea.f,select.f{ width:100%; border:1px solid var(--border); border-radius:9px; padding:10px 12px; font-size:14px; font-family:inherit; background:#fff; }
+  .modal-wrap{ background:rgba(0,0,0,.45); border-radius:14px; padding:22px; display:flex; align-items:center; justify-content:center; }
+  .modal{ background:#fff; border-radius:16px; padding:22px; text-align:center; width:100%; }
+  .divider{ height:1px; background:var(--border); margin:12px 0; }
+  table.hist{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  table.hist th{ text-align:left; font-size:11px; text-transform:uppercase; color:var(--muted); background:#F5F2EA; padding:9px 14px; font-weight:600; }
+  table.hist td{ padding:10px 14px; font-size:13px; border-top:1px solid var(--border); }
+  .legend{ display:flex; gap:16px; margin-top:10px; font-size:12px; color:var(--ink2); }
+  .dot{ width:8px;height:8px;border-radius:50%; display:inline-block; margin-right:5px; }
+  .tabbar{ display:flex; justify-content:space-around; border-top:1px solid var(--border); background:#fff; padding:8px 0; margin:0 -16px -16px; }
+  .tabbar .t{ font-size:10.5px; color:var(--muted); text-align:center; }
+  .tabbar .t.on{ color:var(--teal-700); font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>RehabAI — UI ปัจจุบันทั้งหมด</h1>
+  <p>ภาพรวมหน้าจอทั้งฝั่งผู้ป่วยและนักกายภาพ · อัปเดตล่าสุด (ไม่มีคะแนน/ความแม่นยำ, มีวิดีโอท่า, ปุ่มทำซ้ำ, congrats popup)</p>
+</div>
+
+<div class="gallery">
+
+  <!-- 1. LOGIN -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">1</span> เข้าสู่ระบบ (ผู้ป่วย)</div>
+    <div class="body">
+      <div style="text-align:center;margin:18px 0 22px;">
+        <div style="width:52px;height:52px;border-radius:14px;background:var(--teal-100);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:var(--teal-700);font-weight:700;">R</div>
+        <h2 style="margin:0;color:var(--teal-900);font-size:20px;">RehabAI</h2>
+        <p class="ink2" style="font-size:13px;margin:4px 0 0;">ฟื้นฟูการเคลื่อนไหวและการพูด</p>
+      </div>
+      <div style="margin-bottom:12px;"><input class="f" placeholder="อีเมล"></div>
+      <div style="margin-bottom:16px;"><input class="f" placeholder="รหัสผ่าน" type="password"></div>
+      <div class="btn primary block" style="margin-bottom:10px;">เข้าสู่ระบบ</div>
+      <p class="muted" style="text-align:center;font-size:12.5px;">ยังไม่มีบัญชี? <span style="color:var(--teal-700);font-weight:600;">สมัครสมาชิก</span></p>
+    </div>
+  </div>
+
+  <!-- 2. HOME -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">2</span> หน้าหลัก (ผู้ป่วย)</div>
+    <div class="body">
+      <div style="background:var(--teal-900);border-radius:14px;padding:18px;color:#fff;display:flex;justify-content:space-between;margin-bottom:18px;">
+        <div>
+          <div style="opacity:.7;font-size:12px;margin-bottom:4px;">🔥 ฝึกต่อเนื่อง</div>
+          <div style="font-size:28px;font-weight:600;font-family:'Poppins';">3 <span style="font-size:14px;opacity:.7;">วันติดต่อกัน</span></div>
+          <div style="opacity:.6;font-size:12px;margin-top:6px;">ทำได้ดีมาก! ฝึกวันนี้เพื่อรักษาสถิติ</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="opacity:.6;font-size:11px;">ท่าที่ทำวันนี้</div>
+          <div style="font-size:26px;font-weight:600;color:var(--teal-100);font-family:'Poppins';">2</div>
+        </div>
+      </div>
+      <div class="section-title">เลือกโปรแกรมฝึกวันนี้</div>
+      <div class="card p16" style="margin-bottom:12px;">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🏃</div>
+        <h3 style="margin:0 0 3px;font-size:15px;">LSVT BIG</h3>
+        <p class="ink2" style="font-size:12.5px;margin:0 0 3px;">ฝึกการเคลื่อนไหวผ่านกล้อง</p>
+        <p class="muted" style="font-size:11.5px;margin:0 0 10px;">20 นาที · เหลืออีก 3 ท่าวันนี้</p>
+        <div class="btn primary">เริ่มฝึก</div>
+      </div>
+      <div class="card p16">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--coral-100);color:var(--coral-700);display:flex;align-items:center;justify-content:center;margin-bottom:10px;">🎙️</div>
+        <h3 style="margin:0 0 3px;font-size:15px;">LSVT LOUD</h3>
+        <p class="ink2" style="font-size:12.5px;margin:0 0 3px;">ฝึกความดังเสียงผ่านไมค์</p>
+        <p class="muted" style="font-size:11.5px;margin:0 0 10px;">10 นาที · เหลืออีก 9 แบบฝึกหัด</p>
+        <div class="btn coral">เริ่มฝึก</div>
+      </div>
+      <div class="tabbar"><div class="t on">หน้าหลัก</div><div class="t">สรุปผล</div><div class="t">แชท</div><div class="t">โปรไฟล์</div></div>
+    </div>
+  </div>
+
+  <!-- 3. TRAINING BIG -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">3</span> รายการท่า LSVT BIG</div>
+    <div class="body">
+      <div class="row" style="justify-content:space-between;">
+        <div style="font-size:13px;color:var(--teal-700);font-weight:600;text-transform:uppercase;">LSVT BIG (7 ท่า)</div>
+        <span class="pill" style="background:var(--teal-100);color:var(--teal-700);">1/5 เสร็จแล้ว</span>
+      </div>
+      <h1 style="color:var(--teal-900);font-size:22px;margin:6px 0 14px;">ฝึกการเคลื่อนไหว</h1>
+      <div class="section-title">ท่านั่ง</div>
+      <div class="exrow" style="background:#EAE6D9;">
+        <div class="stepnum">1</div>
+        <div class="grow"><h4 class="h4 big" style="color:#6B6350;">บนล่าง (Floor to Ceiling)</h4><p class="desc" style="color:#8C8368;">นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→เหนือศีรษะ…</p></div>
+        <div class="btn o">เริ่มฝึก</div>
+      </div>
+      <div class="section-title">ท่ายืน</div>
+      <div class="exrow">
+        <div class="stepnum ok">✓</div>
+        <div class="grow"><h4 class="h4 big">ก้าวหน้า (Forward Step)</h4><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนออกให้สุด…</p></div>
+        <span class="badge done">เสร็จแล้ว</span><div class="btn o">ทำซ้ำ</div>
+      </div>
+      <div class="exrow">
+        <div class="stepnum">4</div>
+        <div class="grow"><h4 class="h4 big">ก้าวข้าง (Sideways Step)</h4><p class="desc">ยืนตรง ก้าวขาไปด้านข้างพร้อมกางแขนสองข้างไปทางด้านข้างให้สุด…</p></div>
+        <div class="btn o">เริ่มฝึก</div>
+      </div>
+      <div class="exrow">
+        <div class="stepnum">5</div>
+        <div class="grow"><h4 class="h4 big">ก้าวหลัง (Backward Step) <span class="badge" style="background:#FDECEA;color:var(--danger);">เสี่ยงสูง</span></h4><p class="desc">ยืนตรง ยกมือระดับหัวไหล่ ก้าวขาไปด้านหลัง ก้มลำตัว กวาดมือไปด้านหลัง…</p></div>
+        <div class="btn o">เริ่มฝึก</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SESSION BIG -->
+  <div class="screen wide">
+    <div class="cap"><span class="n">4</span> หน้าฝึกจริง LSVT BIG (อนิเมชั่น + กล้อง + congrats)</div>
+    <div class="body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="cam" style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:13px;position:relative;">
+          <span style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,.12);color:#fff;padding:5px 10px;border-radius:8px;font-size:11px;">ท่าสาธิต</span>
+          ▶ อนิเมชั่นท่า (วนซ้ำ)
+        </div>
+        <div class="cam" style="aspect-ratio:16/10;position:relative;color:#fff;">
+          <span style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--danger);color:#fff;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;">SOS ฉุกเฉิน</span>
+          <span style="position:absolute;top:44px;left:12px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;">ครั้งที่ 5 / 8</span>
+          <span style="position:absolute;top:44px;right:12px;background:rgba(255,255,255,.12);padding:5px 10px;border-radius:8px;font-size:10.5px;"><span class="dot" style="background:var(--teal-500);"></span>ตรวจจับท่าทาง</span>
+          <div style="position:absolute;inset:auto 12px 12px;background:rgba(78,148,132,.85);padding:9px 12px;border-radius:10px;font-size:13px;">✓ กำลังนับ…</div>
+        </div>
+      </div>
+      <div class="card p16" style="margin-top:14px;">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;">
+          <div class="grow"><h2 style="margin:0 0 4px;color:var(--teal-900);font-size:17px;">ก้าวหน้า (Forward Step)</h2><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div>
+          <div class="btn" style="border:1px solid var(--danger);color:var(--danger);">หยุดฝึก</div>
+        </div>
+        <div style="height:8px;background:var(--bg);border-radius:20px;margin:12px 0 8px;overflow:hidden;"><div style="width:62%;height:100%;background:linear-gradient(90deg,#4E9484,#7FB88A);"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="metric"><div class="l">ครั้งที่ทำแล้ว</div><div class="v" style="font-size:16px;">5 / 8</div></div>
+          <div class="metric"><div class="l">เวลาในเซสชันนี้</div><div class="v" style="font-size:16px;">02:14</div></div>
+        </div>
+      </div>
+      <!-- congrats popup -->
+      <div class="modal-wrap" style="margin-top:14px;">
+        <div class="modal" style="max-width:380px;">
+          <div style="font-size:40px;">🎉</div>
+          <h2 style="margin:4px 0 2px;color:var(--teal-900);">Congratulations!</h2>
+          <p class="ink2" style="font-size:13.5px;margin:0 0 16px;">ยินดีด้วย! คุณทำท่า “ก้าวหน้า” ครบ 8 ครั้งแล้ว</p>
+          <div class="btn primary block" style="margin-bottom:8px;">ไปท่าถัดไป — ก้าวข้าง ›</div>
+          <div style="font-size:13px;color:var(--ink2);">🏠 กลับไปรายการท่าฝึก</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TRAINING LOUD -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">5</span> รายการ LSVT LOUD (จัดกลุ่ม + กดเพื่อฟัง)</div>
+    <div class="body">
+      <h1 style="color:var(--teal-900);font-size:21px;margin:2px 0 12px;">LSVT LOUD — ฝึกความดังเสียง</h1>
+      <h3 style="font-size:22px;color:var(--teal-900);margin:0 0 10px;">ฝึกออกเสียงค้าง</h3>
+      <div class="exrow">
+        <div class="stepnum ok">✓</div>
+        <div class="grow"><h4 class="h4 big">ฝึกออกเสียงค้าง</h4><p class="desc">เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมาย 5–7 วินาที</p></div>
+        <div class="btn oc">กดเพื่อฟัง</div><span class="badge done">เสร็จแล้ว</span><div class="btn oc">ทำซ้ำ</div>
+      </div>
+      <h3 style="font-size:22px;color:var(--teal-900);margin:14px 0 10px;">ประโยคในชีวิตประจำวัน</h3>
+      <div class="exrow"><div class="stepnum">1</div><div class="grow"><h4 class="h4 big">สวัสดี</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+      <div class="exrow"><div class="stepnum">2</div><div class="grow"><h4 class="h4 big">ขอบคุณ</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+      <div class="exrow"><div class="stepnum">3</div><div class="grow"><h4 class="h4 big">หิวข้าว</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc">กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+    </div>
+  </div>
+
+  <!-- 6. SESSION LOUD -->
+  <div class="screen wide">
+    <div class="cap"><span class="n">6</span> หน้าฝึกจริง LSVT LOUD (ไมค์ + คะแนนดัง/คำ/เวลา)</div>
+    <div class="body">
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px;">
+        <div class="cam" style="padding:22px;display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff;">
+          <div style="width:300px;max-width:100%;background:rgba(255,255,255,.08);border-radius:12px;padding:14px;text-align:center;">
+            <div style="font-size:11px;opacity:.55;text-transform:uppercase;">พูดตามนี้</div>
+            <div style="font-size:22px;font-weight:600;margin:6px 0 10px;">หิวข้าว</div>
+            <span style="background:rgba(255,255,255,.12);padding:8px 18px;border-radius:9px;font-size:14px;">กดเพื่อฟัง</span>
+          </div>
+          <div style="font-size:46px;font-weight:600;font-family:'Poppins';">3<span style="font-size:18px;opacity:.4;"> / 10</span></div>
+          <div style="width:120px;height:120px;border-radius:50%;background:rgba(78,148,132,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:600;">🎙️<br>กดแล้วพูด</div>
+          <div style="text-align:center;">
+            <div style="display:flex;gap:20px;justify-content:center;">
+              <div><div style="font-size:22px;font-weight:600;color:#7FB88A;">90%</div><div style="font-size:11px;opacity:.55;">ความดังเสียง</div></div>
+              <div><div style="font-size:22px;font-weight:600;color:#7FB88A;">100%</div><div style="font-size:11px;opacity:.55;">ความถูกต้องของคำ</div></div>
+            </div>
+            <div style="font-size:12px;color:#7FB88A;margin-top:6px;">ผ่าน — นับ 1 ครั้ง ✓</div>
+          </div>
+          <div style="width:260px;max-width:100%;"><div style="height:8px;background:rgba(255,255,255,.1);border-radius:20px;position:relative;overflow:hidden;"><div style="position:absolute;left:60%;width:20%;top:0;bottom:0;background:rgba(255,255,255,.25);"></div><div style="width:74%;height:100%;background:linear-gradient(90deg,#B9542A,#E39159);"></div></div><div style="display:flex;justify-content:space-between;font-size:10px;opacity:.4;margin-top:4px;"><span>เบา</span><span>ช่วงดี 70–85</span><span>ดัง</span></div></div>
+        </div>
+        <div class="card p16">
+          <h3 style="margin:0 0 4px;color:var(--teal-900);">พูดในชีวิตประจำวัน</h3>
+          <p class="desc">พูดให้ดังและชัด</p>
+          <div class="divider"></div>
+          <div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:6px 0;"><span>ครั้งที่เสร็จแล้ว</span><b>3 / 10</b></div>
+          <div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--border);"><span>ช่วงเป้าหมาย dB</span><b>70–85</b></div>
+          <div class="btn" style="border:1px solid var(--danger);color:var(--danger);width:100%;margin-top:12px;">หยุดฝึก</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. DASHBOARD -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">7</span> สรุปผล (ผู้ป่วย · ไม่มีคะแนน)</div>
+    <div class="body">
+      <h1 style="color:var(--teal-900);font-size:21px;margin:2px 0 14px;">สรุปผลการฝึก</h1>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div class="metric"><div class="v">12</div><div class="l">จำนวนครั้งที่ฝึก</div></div>
+        <div class="metric"><div class="v">4/7</div><div class="l">วันที่ฝึกสัปดาห์นี้</div></div>
+      </div>
+      <div class="card p16" style="margin-bottom:16px;">
+        <div style="font-size:12.5px;color:var(--ink2);margin-bottom:12px;">ความถี่การฝึกย้อนหลัง 7 วัน</div>
+        <div style="display:flex;align-items:flex-end;gap:12px;height:110px;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;"><div style="width:12px;height:60%;background:var(--teal-500);border-radius:3px 3px 0 0;"></div><div style="width:12px;height:40%;background:var(--coral-700);border-radius:3px 3px 0 0;"></div></div><span style="font-size:10px;color:var(--muted);">จ</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;"><div style="width:12px;height:80%;background:var(--teal-500);border-radius:3px 3px 0 0;"></div><div style="width:12px;height:55%;background:var(--coral-700);border-radius:3px 3px 0 0;"></div></div><span style="font-size:10px;color:var(--muted);">อ</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;"><div style="width:12px;height:20%;background:var(--teal-500);border-radius:3px 3px 0 0;"></div><div style="width:12px;height:10%;background:var(--coral-700);border-radius:3px 3px 0 0;"></div></div><span style="font-size:10px;color:var(--muted);">พ</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;"><div style="display:flex;gap:3px;align-items:flex-end;height:100%;"><div style="width:12px;height:90%;background:var(--teal-500);border-radius:3px 3px 0 0;"></div><div style="width:12px;height:65%;background:var(--coral-700);border-radius:3px 3px 0 0;"></div></div><span style="font-size:10px;color:var(--muted);">พฤ</span></div>
+        </div>
+        <div class="legend"><span><span class="dot" style="background:var(--teal-500);"></span>LSVT BIG</span><span><span class="dot" style="background:var(--coral-700);"></span>LSVT LOUD</span></div>
+      </div>
+      <div class="section-title">ประวัติล่าสุด</div>
+      <table class="hist"><tr><th>วันที่</th><th>ประเภท</th><th>ระยะเวลา</th></tr>
+      <tr><td>19 ส.ค.</td><td><span class="badge big">LSVT BIG</span></td><td>03:20</td></tr>
+      <tr><td>19 ส.ค.</td><td><span class="badge loud">LSVT LOUD</span></td><td>02:10</td></tr></table>
+    </div>
+  </div>
+
+  <!-- 8. CHAT / FALL -->
+  <div class="screen phone">
+    <div class="cap"><span class="n">8</span> แชท (real-time) + แจ้งเตือนล้ม</div>
+    <div class="body">
+      <div class="card" style="overflow:hidden;margin-bottom:16px;">
+        <div class="row" style="padding:12px 14px;border-bottom:1px solid var(--border);">
+          <div style="width:34px;height:34px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">กภ</div>
+          <div class="grow"><div style="font-size:14px;font-weight:600;color:var(--teal-900);">กภ.ธนกร รักษาดี</div><div style="font-size:11px;color:var(--ok);">● ออนไลน์</div></div>
+        </div>
+        <div style="padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:8px;">
+          <div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:4px;padding:8px 12px;font-size:13px;max-width:75%;">วันนี้ฝึกครบไหมครับ?</div>
+          <div style="align-self:flex-end;background:var(--teal-700);color:#fff;border-radius:14px;border-bottom-right-radius:4px;padding:8px 12px;font-size:13px;max-width:75%;">ครบแล้วครับ 💪</div>
+        </div>
+        <div class="row" style="padding:10px 12px;border-top:1px solid var(--border);"><input class="f grow" placeholder="พิมพ์ข้อความ…"><div style="width:38px;height:38px;border-radius:50%;background:var(--teal-700);color:#fff;display:flex;align-items:center;justify-content:center;">➤</div></div>
+      </div>
+      <div class="modal-wrap">
+        <div class="modal">
+          <div style="font-size:42px;">⚠️</div>
+          <h2 style="margin:2px 0;color:var(--danger);">ตรวจพบการล้ม</h2>
+          <p class="ink2" style="font-size:13px;margin:0 0 4px;">คุณต้องการความช่วยเหลือหรือไม่?</p>
+          <p class="muted" style="font-size:12.5px;margin:0 0 16px;">จะโทรแจ้งฉุกเฉินอัตโนมัติใน <b style="color:var(--danger);">12</b> วินาที</p>
+          <div class="btn block" style="background:var(--danger);color:#fff;margin-bottom:8px;">📞 โทรฉุกเฉินเดี๋ยวนี้</div>
+          <div class="btn block o" style="border-color:var(--border);color:var(--ink2);">ฉันไม่เป็นไร</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. THERAPIST — PATIENT LIST -->
+  <div class="screen wide">
+    <div class="cap"><span class="n">9</span> นักกายภาพ — รายชื่อผู้ป่วย</div>
+    <div class="body">
+      <div class="row" style="justify-content:space-between;margin-bottom:14px;"><h1 style="margin:0;color:var(--teal-900);font-size:20px;">ผู้ป่วยของฉัน</h1></div>
+      <div style="max-width:320px;margin-bottom:14px;"><input class="f" placeholder="🔍 ค้นหาชื่อผู้ป่วย"></div>
+      <div class="exrow"><div style="width:44px;height:44px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">สช</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">สมชาย ใจดี</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;">ฝึกล่าสุด 2 ชม. ที่แล้ว</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 12px;">💬</div></div>
+      <div class="exrow"><div style="width:44px;height:44px;border-radius:50%;background:var(--teal-100);color:var(--teal-900);display:flex;align-items:center;justify-content:center;font-weight:600;">วภ</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">วิภา สุขสันต์</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;">ฝึกล่าสุด เมื่อวานนี้</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 12px;">💬</div></div>
+    </div>
+  </div>
+
+  <!-- 10. THERAPIST — PATIENT DASHBOARD -->
+  <div class="screen wide">
+    <div class="cap"><span class="n">10</span> นักกายภาพ — Dashboard ผู้ป่วย (รายเดือน/สัปดาห์)</div>
+    <div class="body">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px;"><div><div class="muted" style="font-size:12px;">← รายชื่อผู้ป่วย</div><h2 style="margin:2px 0 0;color:var(--teal-900);font-size:17px;">สมชาย ใจดี — ระยะ 2</h2></div><div class="btn o">แชทกับผู้ป่วย</div></div>
+      <div style="display:flex;gap:26px;border-bottom:1px solid var(--border);margin:6px 0 14px;">
+        <div style="padding:8px 0;font-weight:600;color:var(--teal-900);border-bottom:2.5px solid var(--teal-700);">รายเดือน</div>
+        <div style="padding:8px 0;font-weight:600;color:var(--ink2);">รายสัปดาห์</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;">
+        <div class="metric grow"><div class="v">22 / 31</div><div class="l">วันที่ฝึกในเดือนนี้</div></div>
+        <div class="metric grow"><div class="v">402 นาที</div><div class="l">รวมเวลา LSVT BIG</div></div>
+        <div class="metric grow"><div class="v">208 นาที</div><div class="l">รวมเวลา LSVT LOUD</div></div>
+      </div>
+      <div class="card p20" style="margin-bottom:16px;">
+        <div style="font-size:12.5px;color:var(--ink2);margin-bottom:12px;">ระยะเวลาฝึกรวมรายสัปดาห์ — ก.ค. (นาที)</div>
+        <div style="display:flex;align-items:flex-end;gap:24px;height:130px;padding-left:8px;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:18px;height:62%;background:var(--teal-500);border-radius:2px;"></div><div style="width:18px;height:34%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:10.5px;color:var(--ink2);">สัปดาห์ 1</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:18px;height:80%;background:var(--teal-500);border-radius:2px;"></div><div style="width:18px;height:46%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:10.5px;color:var(--ink2);">สัปดาห์ 2</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:18px;height:50%;background:var(--teal-500);border-radius:2px;"></div><div style="width:18px;height:26%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:10.5px;color:var(--ink2);">สัปดาห์ 3</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:18px;height:100%;background:var(--teal-500);border-radius:2px;"></div><div style="width:18px;height:60%;background:var(--coral-700);border-radius:2px;"></div></div><span style="font-size:10.5px;color:var(--ink2);">สัปดาห์ 4</span></div>
+        </div>
+        <div class="legend"><span><span class="dot" style="background:var(--teal-500);"></span>LSVT BIG</span><span><span class="dot" style="background:var(--coral-700);"></span>LSVT LOUD</span></div>
+      </div>
+      <div class="section-title">ตั้งค่า LSVT LOUD สำหรับผู้ป่วยรายนี้</div>
+      <div class="card p16" style="margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+          <div><label style="font-size:12px;font-weight:600;">Min</label><select class="f"><option>60 dB</option></select></div>
+          <div><label style="font-size:12px;font-weight:600;">Goal</label><select class="f"><option>80 dB</option></select></div>
+          <div><label style="font-size:12px;font-weight:600;">Max</label><select class="f"><option>95 dB</option></select></div>
+        </div>
+      </div>
+      <div class="section-title">คำพูดในชีวิตประจำวัน</div>
+      <div class="card p16">
+        <div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:8px;font-size:13px;"><span>สวัสดี</span><span style="color:var(--danger);">✕</span></div>
+        <div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:12px;font-size:13px;"><span>หิวข้าว</span><span style="color:var(--danger);">✕</span></div>
+        <div class="row" style="gap:8px;"><input class="f grow" placeholder="พิมพ์คำพูดใหม่…"><div class="btn oc">+ เพิ่ม</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
