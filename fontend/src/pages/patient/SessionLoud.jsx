@@ -43,6 +43,9 @@ export default function SessionLoud() {
     if (!nextStep) return navigate('/home')
     navigate(`/training/loud/session?step=${nextStep.id}`)
   }
+  function retryStep() {
+    navigate(`/training/loud/session?step=${step.id}&retry=${Date.now()}`)
+  }
 
   const settings = loudSettings.get()
   const repGoal = settings?.reps ?? 10
@@ -271,29 +274,30 @@ export default function SessionLoud() {
               ยินดีด้วย! คุณฝึก “{step.name}” ครบ {repGoal} ครั้งแล้ว
             </p>
 
-            {nextStep ? (
-              <>
-                <button
-                  onClick={goNextStep}
-                  className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
-                >
-                  ฝึกต่อ — {nextStep.name} <ChevronRight size={18} />
-                </button>
-                <button
-                  onClick={() => navigate('/home')}
-                  className="w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors inline-flex items-center justify-center gap-1.5"
-                >
-                  <Home size={16} /> กลับสู่หน้าหลัก
-                </button>
-              </>
-            ) : (
+            {nextStep && (
               <button
-                onClick={() => navigate('/home')}
-                className="btn-primary w-full flex items-center justify-center gap-2"
+                onClick={goNextStep}
+                className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
               >
-                <Home size={18} /> กลับสู่หน้าหลัก
+                ฝึกต่อ — {nextStep.name} <ChevronRight size={18} />
               </button>
             )}
+            <button
+              onClick={retryStep}
+              className="w-full py-2.5 rounded-btn border border-coral-700 text-coral-700 font-semibold text-[13.5px] hover:bg-coral-100 transition-colors mb-2"
+            >
+              ทำแบบฝึกหัดนี้ซ้ำ
+            </button>
+            <button
+              onClick={() => navigate('/home')}
+              className={
+                nextStep
+                  ? 'w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors inline-flex items-center justify-center gap-1.5'
+                  : 'btn-primary w-full flex items-center justify-center gap-2'
+              }
+            >
+              <Home size={nextStep ? 16 : 18} /> กลับสู่หน้าหลัก
+            </button>
           </div>
         </div>
       )}

@@ -36,13 +36,13 @@ import Messages from './pages/therapist/Messages.jsx'
 // route, different ?exercise=) fully remounts it — resetting reps/pose state.
 function KeyedBigSession() {
   const [sp] = useSearchParams()
-  return <SessionBig key={sp.get('exercise') || '1'} />
+  return <SessionBig key={`${sp.get('exercise') || '1'}:${sp.get('retry') || '0'}`} />
 }
 
-// Same for the LOUD session, keyed by step so "ฝึกต่อ" starts fresh.
+// Same for the LOUD session, keyed by step (+retry) so "ฝึกต่อ"/"ทำซ้ำ" start fresh.
 function KeyedLoudSession() {
   const [sp] = useSearchParams()
-  return <SessionLoud key={sp.get('step') || '1'} />
+  return <SessionLoud key={`${sp.get('step') || '1'}:${sp.get('retry') || '0'}`} />
 }
 
 function RequireAuth({ role, children }) {

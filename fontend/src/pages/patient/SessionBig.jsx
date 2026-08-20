@@ -202,6 +202,12 @@ export default function SessionBig() {
               )}
             </button>
             <button
+              onClick={() => navigate(`/training/big/session?exercise=${exId}&retry=${Date.now()}`)}
+              className="w-full py-2.5 rounded-btn border border-teal-700 text-teal-700 font-semibold text-[13.5px] hover:bg-teal-100 transition-colors mb-2"
+            >
+              ทำท่านี้ซ้ำ
+            </button>
+            <button
               onClick={() => navigate('/training/big')}
               className="w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors"
             >
