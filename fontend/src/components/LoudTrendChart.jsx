@@ -31,15 +31,16 @@ export default function LoudTrendChart({ rows, days = 8 }) {
     )
   }
 
-  const W = 640, H = 240, mL = 40, mT = 16, mR = 16, mB = 34
+  const W = 640, H = 340, mL = 44, mT = 20, mR = 30, mB = 42
   const plotW = W - mL - mR, plotH = H - mT - mB
   const x = (i) => (pts.length === 1 ? mL + plotW / 2 : mL + (i / (pts.length - 1)) * plotW)
   const y = (v) => mT + plotH - (v / 100) * plotH
   const line = (key) => pts.map((p, i) => `${x(i)},${y(p[key])}`).join(' ')
 
+  // dy separates the two value labels so they don't overlap when lines are close.
   const series = [
-    { key: 'loud', color: '#4E9484', label: 'ความดัง' },
-    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง' },
+    { key: 'loud', color: '#4E9484', label: 'ความดัง', dy: -12 },
+    { key: 'acc', color: '#B9542A', label: 'ความถูกต้อง', dy: 22 },
   ]
 
   return (
@@ -48,30 +49,30 @@ export default function LoudTrendChart({ rows, days = 8 }) {
         {[0, 25, 50, 75, 100].map((v) => (
           <g key={v}>
             <line x1={mL} y1={y(v)} x2={mL + plotW} y2={y(v)} stroke="#E6E0D4" strokeWidth="1" strokeDasharray={v === 0 ? '0' : '3 3'} />
-            <text x={mL - 6} y={y(v) + 3} fontSize="10" fill="#8E9B96" textAnchor="end">{v}</text>
+            <text x={mL - 8} y={y(v) + 4} fontSize="13" fill="#8E9B96" textAnchor="end">{v}</text>
           </g>
         ))}
         {series.map((s) => (
           <g key={s.key}>
             {pts.length > 1 && (
-              <polyline points={line(s.key)} fill="none" stroke={s.color} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
+              <polyline points={line(s.key)} fill="none" stroke={s.color} strokeWidth="3.2" strokeLinejoin="round" strokeLinecap="round" />
             )}
             {pts.map((p, i) => (
               <g key={i}>
-                <circle cx={x(i)} cy={y(p[s.key])} r="3.5" fill="#fff" stroke={s.color} strokeWidth="2" />
-                <text x={x(i)} y={y(p[s.key]) - 8} fontSize="9.5" fill={s.color} textAnchor="middle" fontWeight="600">{p[s.key]}</text>
+                <circle cx={x(i)} cy={y(p[s.key])} r="5" fill="#fff" stroke={s.color} strokeWidth="2.5" />
+                <text x={x(i)} y={y(p[s.key]) + s.dy} fontSize="12.5" fill={s.color} textAnchor="middle" fontWeight="700">{p[s.key]}</text>
               </g>
             ))}
           </g>
         ))}
         {pts.map((p, i) => (
-          <text key={i} x={x(i)} y={mT + plotH + 16} fontSize="10" fill="#5B6B66" textAnchor="middle">{p.label}</text>
+          <text key={i} x={x(i)} y={mT + plotH + 24} fontSize="13" fill="#5B6B66" textAnchor="middle">{p.label}</text>
         ))}
       </svg>
-      <div className="flex gap-5 mt-3.5">
+      <div className="flex gap-6 mt-4 justify-center">
         {series.map((s) => (
-          <span key={s.key} className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
-            <span className="w-3 h-1 rounded-full" style={{ background: s.color }} /> {s.label}
+          <span key={s.key} className="flex items-center gap-2 text-[14px] font-medium text-ink-secondary">
+            <span className="w-5 h-1.5 rounded-full" style={{ background: s.color }} /> {s.label}
           </span>
         ))}
       </div>
