@@ -67,6 +67,12 @@
   .tabbar{ display:flex; justify-content:space-around; border-top:1px solid var(--border); background:#fff; padding:8px 0; margin:0 -16px -16px; }
   .tabbar .t{ font-size:10.5px; color:var(--muted); text-align:center; }
   .tabbar .t.on{ color:var(--teal-700); font-weight:600; }
+  @media print{
+    body{ background:#fff; }
+    .screen{ box-shadow:none; break-inside:avoid; }
+    .gallery{ gap:20px; padding:16px; }
+  }
+  @page{ size:A3 landscape; margin:10mm; }
 </style>
 </head>
 <body>
