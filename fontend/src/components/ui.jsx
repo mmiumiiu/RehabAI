@@ -58,14 +58,14 @@ export function Select({ icon: Icon, children, error, ...props }) {
 
 export function Button({ variant = 'primary', as, to, className = '', children, ...props }) {
   const styles = {
-    primary: 'bg-teal-700 text-white hover:bg-teal-800',
-    coral: 'bg-coral-700 text-white hover:brightness-95',
-    outline: 'border border-teal-700 text-teal-700 bg-transparent hover:bg-teal-100',
-    outlineCoral: 'border border-coral-700 text-coral-700 bg-transparent hover:bg-coral-100',
-    danger: 'border border-danger text-danger bg-transparent hover:bg-[#FBEAE8]',
+    primary: 'text-white bg-[linear-gradient(135deg,#1B9C4C,#0F5C2E)] shadow-[0_6px_16px_rgba(20,100,60,0.28)] hover:brightness-105',
+    coral: 'text-white bg-[linear-gradient(135deg,#FF8452,#D94A1D)] shadow-[0_6px_16px_rgba(230,90,35,0.28)] hover:brightness-105',
+    outline: 'bg-white border border-line text-ink-secondary hover:bg-bg',
+    outlineCoral: 'bg-white border border-coral-500 text-coral-700 hover:bg-coral-100',
+    danger: 'bg-white border border-danger text-danger hover:bg-[#FCE1E7]',
     ghost: 'text-ink-secondary hover:bg-line/50',
   }
-  const cls = `inline-flex items-center justify-center gap-2 rounded-btn font-heading font-medium text-[14px] px-4 py-2.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${styles[variant]} ${className}`
+  const cls = `inline-flex items-center justify-center gap-2 rounded-pill font-heading font-semibold text-[14px] px-5 py-2.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${styles[variant]} ${className}`
   if (to) return <Link to={to} className={cls} {...props}>{children}</Link>
   const Tag = as || 'button'
   return <Tag className={cls} {...props}>{children}</Tag>
