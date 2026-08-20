@@ -85,7 +85,7 @@ export default function TtsTest() {
       <p className="text-[13px] text-teal-700 font-semibold uppercase tracking-wide mb-1">
         ทดสอบระบบเสียง · Text-to-Speech (gTTS)
       </p>
-      <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-2">
+      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-2">
         อ่านคำอธิบายท่าออกเสียง (ภาษาไทย)
       </h1>
       <p className="text-[13px] text-ink-secondary mb-6">
@@ -133,7 +133,7 @@ export default function TtsTest() {
       </div>
 
       <div className="card px-5 py-5">
-        <h3 className="font-heading text-[16px] font-semibold text-teal-900 mb-2">
+        <h3 className="font-heading text-[16px] font-semibold text-ink-primary mb-2">
           {exercise?.name}
         </h3>
         <p className="text-[14px] text-ink-primary leading-relaxed mb-5">

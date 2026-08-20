@@ -38,7 +38,7 @@ export default function TherapistLogin() {
         <Link to="/login" className="flex-1 text-center py-2 rounded-md text-ink-secondary">ผู้ป่วย</Link>
         <span className="flex-1 text-center py-2 rounded-md bg-teal-700 text-white">นักกายภาพบำบัด</span>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-1.5">เข้าสู่ระบบ</h2>
+      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">เข้าสู่ระบบ</h2>
       <p className="text-[13.5px] text-ink-secondary mb-6">สำหรับนักกายภาพบำบัดที่ยืนยันตัวตนแล้ว</p>
 
       <form onSubmit={submit} noValidate>

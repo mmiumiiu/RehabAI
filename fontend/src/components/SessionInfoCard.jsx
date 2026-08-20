@@ -4,7 +4,7 @@ import { ProgressBar } from './ui.jsx'
 export default function SessionInfoCard({ name, desc, reps, target, stats, tone = 'big', onStop }) {
   return (
     <div className="card p-6 flex flex-col">
-      <h2 className="font-heading text-[18px] font-semibold text-teal-900 mb-1.5">{name}</h2>
+      <h2 className="font-heading text-[18px] font-semibold text-ink-primary mb-1.5">{name}</h2>
       <p className="text-[13px] text-ink-secondary leading-relaxed mb-5">{desc}</p>
 
       <ProgressBar value={reps} max={target} tone={tone} />

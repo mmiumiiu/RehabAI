@@ -43,7 +43,7 @@ export default function TherapistPicker({ onSelect }) {
         >
           {done ? <Check size={14} /> : num}
         </span>
-        <span className="text-[14px] font-heading font-medium text-teal-900">{title}</span>
+        <span className="text-[14px] font-heading font-medium text-ink-primary">{title}</span>
       </div>
       {control}
       {hint && <p className="text-[11.5px] text-ink-muted mt-1.5">{hint}</p>}

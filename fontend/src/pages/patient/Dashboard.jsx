@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-[900px]">
-      <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-6">สรุปผลการฝึก</h1>
+      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">สรุปผลการฝึก</h1>
 
       <MetricRow
         items={[

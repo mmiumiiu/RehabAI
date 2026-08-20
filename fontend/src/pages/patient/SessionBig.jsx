@@ -149,7 +149,7 @@ export default function SessionBig() {
         <div className="card p-6">
           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
             <div className="min-w-0 flex-1">
-              <h2 className="font-heading text-[18px] font-semibold text-teal-900 mb-1.5">{ex.name}</h2>
+              <h2 className="font-heading text-[18px] font-semibold text-ink-primary mb-1.5">{ex.name}</h2>
               <p className="text-[13.5px] text-ink-secondary leading-relaxed">{ex.how}</p>
             </div>
             <button
@@ -186,7 +186,7 @@ export default function SessionBig() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
             <div className="text-[46px] leading-none mb-2">🎉</div>
-            <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
+            <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">Congratulations!</h2>
             <p className="text-[14px] text-ink-secondary mb-5">
               ยินดีด้วย! คุณทำท่า “{ex.name}” ครบ {ex.target} ครั้งแล้ว
             </p>

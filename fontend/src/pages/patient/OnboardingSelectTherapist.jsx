@@ -27,7 +27,7 @@ export default function OnboardingSelectTherapist() {
         <div className="w-14 h-14 rounded-2xl bg-teal-100 text-teal-900 flex items-center justify-center mx-auto mb-4">
           <Users size={28} />
         </div>
-        <h1 className="font-heading text-[22px] font-semibold text-teal-900 text-center mb-2">
+        <h1 className="font-heading text-[22px] font-semibold text-ink-primary text-center mb-2">
           {isChange ? 'เปลี่ยนนักกายภาพบำบัด' : 'เลือกนักกายภาพบำบัดของคุณ'}
         </h1>
         <p className="text-[13px] text-ink-secondary text-center leading-relaxed mb-6">

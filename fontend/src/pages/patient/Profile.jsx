@@ -9,7 +9,7 @@ import { useAuth } from '../../context/AuthContext.jsx'
 function Block({ title, children }) {
   return (
     <Card className="p-6 mb-5">
-      <h3 className="font-heading text-[15px] font-semibold text-teal-900 mb-4">{title}</h3>
+      <h3 className="font-heading text-[15px] font-semibold text-ink-primary mb-4">{title}</h3>
       {children}
     </Card>
   )
@@ -39,7 +39,7 @@ export default function Profile() {
       <Card className="p-6 mb-5 flex items-center gap-4">
         <Avatar text={profile.name.slice(0, 2)} size={64} />
         <div>
-          <h2 className="font-heading text-[20px] font-semibold text-teal-900">{profile.name}</h2>
+          <h2 className="font-heading text-[20px] font-semibold text-ink-primary">{profile.name}</h2>
           <p className="text-[12.5px] text-ink-secondary">สมัครเมื่อ {user?.createdAt} · {PARKINSON_STAGES.find((s) => s.value === profile.stage)?.short}</p>
         </div>
         <button className="ml-auto text-[12.5px] text-teal-700 font-semibold hover:underline">แก้ไขรูป</button>
@@ -73,7 +73,7 @@ export default function Profile() {
             <div className="flex items-center gap-3 pb-4 border-b border-line">
               <Avatar text={therapist.name.replace(/^กภ\.?|^ก\.พ\.?/, '').trim().slice(0, 2)} size={44} />
               <div className="flex-1">
-                <div className="text-[14px] font-medium text-teal-900">{therapist.name}</div>
+                <div className="text-[14px] font-medium text-ink-primary">{therapist.name}</div>
                 <div className="text-[12px] text-ink-muted">{therapist.pos}</div>
                 <div className="text-[12px] text-ink-muted">{therapist.hospital}</div>
               </div>

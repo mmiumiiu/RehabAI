@@ -14,7 +14,7 @@ export default function EmergencySettings() {
       <Link to="/profile" className="inline-flex items-center gap-1.5 text-[13px] text-ink-secondary hover:text-teal-700 mb-3">
         <ArrowLeft size={16} /> กลับไปโปรไฟล์
       </Link>
-      <h1 className="font-heading text-[22px] font-semibold text-teal-900 mb-6">ผู้ติดต่อฉุกเฉิน</h1>
+      <h1 className="font-heading text-[22px] font-semibold text-ink-primary mb-6">ผู้ติดต่อฉุกเฉิน</h1>
 
       <Card className="p-6 mb-5">
         <div className="flex justify-between items-center py-3 border-b border-line">

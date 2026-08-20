@@ -80,7 +80,7 @@ export default function EmergencyAlert() {
       <div className="w-full max-w-[380px] space-y-3">
         <button
           onClick={() => navigate(-1)}
-          className="w-full bg-white text-teal-900 font-heading font-semibold py-3.5 rounded-pill text-[15px]"
+          className="w-full bg-white text-ink-primary font-heading font-semibold py-3.5 rounded-pill text-[15px]"
         >
           ยกเลิกการโทร 1669 — ฉันไม่เป็นไร
         </button>

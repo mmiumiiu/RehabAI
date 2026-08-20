@@ -39,7 +39,7 @@ export default function Login() {
           เป็นนักกายภาพบำบัด?
         </Link>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-1.5">ยินดีต้อนรับกลับ</h2>
+      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">ยินดีต้อนรับกลับ</h2>
       <p className="text-[13.5px] text-ink-secondary mb-6">เข้าสู่ระบบเพื่อฝึกกายภาพบำบัดต่อ</p>
 
       <form onSubmit={submit} noValidate>

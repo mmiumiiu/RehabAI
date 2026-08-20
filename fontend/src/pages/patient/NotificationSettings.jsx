@@ -85,7 +85,7 @@ export default function NotificationSettings() {
       <Link to="/profile" className="inline-flex items-center gap-1.5 text-[13px] text-ink-secondary hover:text-teal-700 mb-3">
         <ArrowLeft size={16} /> กลับไปโปรไฟล์
       </Link>
-      <h1 className="font-heading text-[22px] font-semibold text-teal-900 mb-1">การแจ้งเตือนทาง Line</h1>
+      <h1 className="font-heading text-[22px] font-semibold text-ink-primary mb-1">การแจ้งเตือนทาง Line</h1>
       <p className="text-[13px] text-ink-secondary mb-6">รับการแจ้งเตือนการฝึกผ่าน Line OA ของ RehabAI</p>
 
       {/* Line account link status */}

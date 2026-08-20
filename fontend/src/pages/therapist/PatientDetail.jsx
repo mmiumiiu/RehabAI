@@ -43,7 +43,7 @@ export default function PatientDetail() {
 
       <div className="px-4 md:px-8 py-5 md:py-7 max-w-[900px] mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <h1 className="font-heading text-[22px] font-semibold text-teal-900">{patient.name}</h1>
+          <h1 className="font-heading text-[22px] font-semibold text-ink-primary">{patient.name}</h1>
           <Badge tone="big">{PARKINSON_STAGES.find((s) => s.value === patient.stage)?.short}</Badge>
         </div>
 

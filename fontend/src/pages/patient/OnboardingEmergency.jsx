@@ -25,7 +25,7 @@ export default function OnboardingEmergency() {
         <div className="w-14 h-14 rounded-2xl bg-teal-100 text-teal-900 flex items-center justify-center mx-auto mb-4">
           <ShieldCheck size={28} />
         </div>
-        <h1 className="font-heading text-[22px] font-semibold text-teal-900 text-center mb-2">
+        <h1 className="font-heading text-[22px] font-semibold text-ink-primary text-center mb-2">
           ยินดีต้อนรับสู่ RehabAI
         </h1>
         <p className="text-[13.5px] text-ink-secondary text-center leading-relaxed mb-6">

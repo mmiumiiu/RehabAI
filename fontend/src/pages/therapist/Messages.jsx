@@ -40,7 +40,7 @@ export default function Messages() {
   return (
     <div className="h-[calc(100vh-56px)] md:h-screen flex flex-col">
       <header className="px-4 md:px-8 py-4 md:py-5 border-b border-line bg-surface flex-shrink-0">
-        <h1 className="font-heading text-[20px] font-semibold text-teal-900">ข้อความ</h1>
+        <h1 className="font-heading text-[20px] font-semibold text-ink-primary">ข้อความ</h1>
       </header>
 
       <div className="flex-1 flex min-h-0">
@@ -71,7 +71,7 @@ export default function Messages() {
             </button>
             <Avatar text={active.initials} />
             <div className="flex-1 min-w-0">
-              <div className="text-[14px] font-semibold text-teal-900 truncate">{active.name}</div>
+              <div className="text-[14px] font-semibold text-ink-primary truncate">{active.name}</div>
               <div className="text-[11.5px] text-ink-muted">ฝึกล่าสุด {active.lastActive}</div>
             </div>
             <Button variant="outline" className="w-auto py-2 hidden sm:inline-flex" onClick={() => navigate(`/therapist/patients/${active.id}`)}>

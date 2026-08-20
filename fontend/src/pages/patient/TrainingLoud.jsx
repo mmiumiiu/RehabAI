@@ -21,13 +21,13 @@ export default function TrainingLoud() {
           {done}/{steps.length} ขั้นตอนเสร็จแล้ว
         </span>
       </div>
-      <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-6">
+      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">
         LSVT LOUD — ฝึกความดังของเสียงพูด
       </h1>
 
       {groups.map((group) => (
         <div key={group.title} className="mb-7">
-          <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">{group.title}</h2>
+          <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">{group.title}</h2>
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex items-center gap-4 card px-5 py-4">

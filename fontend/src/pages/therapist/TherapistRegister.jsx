@@ -74,7 +74,7 @@ export default function TherapistRegister() {
           <div className="w-14 h-14 rounded-2xl bg-warn-bg text-warn-fg flex items-center justify-center mx-auto mb-4">
             <ShieldCheck size={28} />
           </div>
-          <h2 className="font-heading text-[20px] font-semibold text-teal-900 mb-2">รอการตรวจสอบ</h2>
+          <h2 className="font-heading text-[20px] font-semibold text-ink-primary mb-2">รอการตรวจสอบ</h2>
         </div>
         <div className="rounded-btn p-4 text-[13px] leading-relaxed" style={{ background: '#FFF7D6', color: '#8A6400' }}>
           การเช็คโดเมนอีเมลเป็นเพียงสัญญาณเบื้องต้นเท่านั้น ทีมงานจะติดต่อแผนกกายภาพบำบัดของ
@@ -93,7 +93,7 @@ export default function TherapistRegister() {
       <div className="text-right mb-4">
         <Link to="/register" className="text-[12.5px] text-teal-700 font-semibold hover:underline">เป็นผู้ป่วย?</Link>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-1.5">สมัครสมาชิกนักกายภาพบำบัด</h2>
+      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">สมัครสมาชิกนักกายภาพบำบัด</h2>
       <p className="text-[13.5px] text-ink-secondary mb-6">เลือกโรงพยาบาลที่คุณสังกัด — บัญชีทุกบัญชีต้องได้รับการยืนยันจากโรงพยาบาลก่อนใช้งาน</p>
 
       <form onSubmit={submit} noValidate>

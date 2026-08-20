@@ -89,13 +89,13 @@ export default function TrainingBig() {
           {bigDone}/{standing.length} ท่าเสร็จแล้ว
         </span>
       </div>
-      <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-6">
+      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">
         LSVT BIG — ฝึกการเคลื่อนไหว
       </h1>
 
       {seated.length > 0 && (
         <div className="mb-7">
-          <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่านั่ง</h3>
+          <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">ท่านั่ง</h3>
           <div className="space-y-3">
             {seated.map((ex) => (
               <ExerciseRow key={ex.id} ex={ex} locked onStart={start} done={prog.big.includes(ex.id)} />
@@ -104,7 +104,7 @@ export default function TrainingBig() {
         </div>
       )}
 
-      <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">ท่ายืน</h3>
+      <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">ท่ายืน</h3>
       <div className="space-y-3 mb-10">
         {standing.map((ex) => (
           <ExerciseRow key={ex.id} ex={ex} onStart={start} done={prog.big.includes(ex.id)} />
@@ -120,13 +120,13 @@ export default function TrainingBig() {
           {loudDone}/{loudSteps.length} ขั้นตอนเสร็จแล้ว
         </span>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-teal-900 mb-5">
+      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-5">
         LSVT LOUD — ฝึกความดังของเสียงพูด
       </h2>
 
       {groupLoudSteps(loudSteps).map((group) => (
         <div key={group.title} className="mb-6">
-          <h3 className="font-heading text-[22px] font-semibold text-teal-900 mb-4">{group.title}</h3>
+          <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">{group.title}</h3>
           <div className="space-y-3">
             {group.steps.map((s, i) => (
               <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">

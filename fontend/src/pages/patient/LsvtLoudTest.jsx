@@ -34,7 +34,7 @@ export default function LsvtLoudTest() {
       <p className="text-[13px] text-teal-700 font-semibold uppercase tracking-wide mb-1">
         ทดสอบระบบ · LSVT LOUD
       </p>
-      <h1 className="font-heading text-[24px] font-semibold text-teal-900 mb-2">
+      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-2">
         ตรวจจับความดังเสียง (dB) และความถูกต้องของคำ
       </h1>
       <p className="text-[13px] text-ink-secondary mb-6">

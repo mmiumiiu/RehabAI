@@ -107,7 +107,7 @@ export default function TherapistProgress() {
             key={v}
             onClick={() => setView(v)}
             className={`py-2.5 mr-7 -mb-px text-[14px] font-semibold border-b-[2.5px] transition-colors ${
-              view === v ? 'text-teal-900 border-teal-700' : 'text-ink-secondary border-transparent'
+              view === v ? 'text-ink-primary border-teal-700' : 'text-ink-secondary border-transparent'
             }`}
           >
             {l}
@@ -136,7 +136,7 @@ export default function TherapistProgress() {
       <div className="flex flex-wrap gap-3.5 mb-6">
         {metrics.map((m) => (
           <div key={m.label} className="flex-1 min-w-[150px] card px-[18px] py-4">
-            <div className="font-heading text-[22px] font-semibold text-teal-900">{m.value}</div>
+            <div className="font-heading text-[22px] font-semibold text-ink-primary">{m.value}</div>
             <div className="text-[12px] text-ink-secondary mt-1">{m.label}</div>
           </div>
         ))}

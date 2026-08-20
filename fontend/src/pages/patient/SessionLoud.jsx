@@ -302,7 +302,7 @@ export default function SessionLoud() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
             <div className="text-[46px] leading-none mb-2">🎉</div>
-            <h2 className="font-heading text-[24px] font-semibold text-teal-900 mb-1">Congratulations!</h2>
+            <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">Congratulations!</h2>
             <p className="text-[14px] text-ink-secondary mb-4">
               ยินดีด้วย! คุณฝึก “{step.name}” ครบ {repGoal} ครั้งแล้ว
             </p>

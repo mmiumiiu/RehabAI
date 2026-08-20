@@ -38,7 +38,7 @@ export default function LoudPhraseSettings() {
 
   return (
     <Card className="p-6 mb-7">
-      <h3 className="font-heading text-[16px] font-semibold text-teal-900 mb-1">คำพูดในชีวิตประจำวัน</h3>
+      <h3 className="font-heading text-[16px] font-semibold text-ink-primary mb-1">คำพูดในชีวิตประจำวัน</h3>
       <p className="text-[12.5px] text-ink-secondary leading-relaxed mb-4">
         ใช้ในหมวด “ประโยคในชีวิตประจำวัน” ของ LSVT LOUD — เพิ่ม/ลบประโยคที่ผู้ป่วยจะฝึกพูดให้ดังและชัด
         เลือกประโยคที่ผู้ป่วยใช้บ่อยจริงเพื่อให้ฝึกแล้วนำไปใช้ได้จริง

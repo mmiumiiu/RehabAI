@@ -41,7 +41,7 @@ export default function Chat() {
         <div className="flex items-center gap-3 px-5 py-3.5 border-b border-line">
           <Avatar text={initialsOf(therapist.name)} />
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-teal-900">{therapist.name}</div>
+            <div className="text-[14px] font-semibold text-ink-primary">{therapist.name}</div>
             <div className="text-[11.5px] text-ok-fg flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#147A3D]" /> ออนไลน์
             </div>

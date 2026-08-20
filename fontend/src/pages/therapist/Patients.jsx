@@ -16,7 +16,7 @@ export default function Patients() {
     <div>
       <header className="flex justify-between items-center px-4 md:px-8 py-4 md:py-5 border-b border-line bg-surface">
         <div>
-          <h1 className="font-heading text-[20px] font-semibold text-teal-900">ผู้ป่วยของฉัน</h1>
+          <h1 className="font-heading text-[20px] font-semibold text-ink-primary">ผู้ป่วยของฉัน</h1>
           <p className="text-[12.5px] text-ink-secondary">ติดตามความคืบหน้าของผู้ป่วยที่เชื่อมต่อแล้ว</p>
         </div>
       </header>
