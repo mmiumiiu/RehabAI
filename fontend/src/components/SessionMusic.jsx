@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Settings } from './icons.jsx'
+import { onSpeechChange, isSpeaking } from '../lib/speechBus.js'
 
 const MUSIC_KEY = 'rehabai_music'
+const DUCK_VOLUME = 0.05   // quiet level while the spoken guidance is playing
+const RAMP_MS = 3000       // fade back up to the set volume after it finishes
 function load() {
   try { return JSON.parse(localStorage.getItem(MUSIC_KEY)) || {} } catch { return {} }
 }
@@ -14,11 +17,43 @@ export default function SessionMusic() {
   const [enabled, setEnabled] = useState(saved.enabled ?? true)
   const [volume, setVolume] = useState(saved.volume ?? 0.35)
   const audioRef = useRef(null)
+  const volRef = useRef(volume)   // latest target volume, for the duck/ramp logic
+  const rampRef = useRef(null)
+
+  function clearRamp() {
+    if (rampRef.current) { clearInterval(rampRef.current); rampRef.current = null }
+  }
 
   useEffect(() => {
+    volRef.current = volume
     localStorage.setItem(MUSIC_KEY, JSON.stringify({ enabled, volume }))
-    if (audioRef.current) audioRef.current.volume = volume
+    // Apply immediately unless we're ducked for the spoken guidance.
+    if (audioRef.current && !isSpeaking()) { clearRamp(); audioRef.current.volume = volume }
   }, [enabled, volume])
+
+  // Duck while the TTS guidance speaks; ramp gently back up when it finishes.
+  useEffect(() => {
+    const unsub = onSpeechChange((speaking) => {
+      const a = audioRef.current
+      if (!a) return
+      clearRamp()
+      if (speaking) {
+        a.volume = Math.min(volRef.current, DUCK_VOLUME)
+        return
+      }
+      const start = a.volume
+      const target = volRef.current
+      if (target <= start) { a.volume = target; return }
+      const steps = 30
+      let i = 0
+      rampRef.current = setInterval(() => {
+        i += 1
+        a.volume = start + (target - start) * (i / steps)
+        if (i >= steps) { a.volume = target; clearRamp() }
+      }, RAMP_MS / steps)
+    })
+    return () => { unsub(); clearRamp() }
+  }, [])
 
   // Play when enabled. Autoplay may be blocked until a gesture, so also retry on
   // the first pointer interaction with the page.
