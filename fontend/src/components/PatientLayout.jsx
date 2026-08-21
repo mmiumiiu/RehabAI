@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Home, Activity, Chart, User, Chat } from './icons.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
@@ -13,9 +14,21 @@ const NAV = [
 
 function greeting() {
   const h = new Date().getHours()
-  if (h < 12) return 'สวัสดีตอนเช้า'
-  if (h < 17) return 'สวัสดีตอนบ่าย'
-  return 'สวัสดีตอนเย็น'
+  if (h < 5) return { text: 'สวัสดีตอนดึก', emoji: '🌙' }
+  if (h < 12) return { text: 'สวัสดีตอนเช้า', emoji: '☀️' }
+  if (h < 17) return { text: 'สวัสดีตอนบ่าย', emoji: '🌤️' }
+  if (h < 20) return { text: 'สวัสดีตอนเย็น', emoji: '🌇' }
+  return { text: 'สวัสดีตอนค่ำ', emoji: '🌙' }
+}
+
+// Re-renders every minute so the greeting tracks the real time of day.
+function useGreeting() {
+  const [g, setG] = useState(greeting)
+  useEffect(() => {
+    const id = setInterval(() => setG(greeting()), 60 * 1000)
+    return () => clearInterval(id)
+  }, [])
+  return g
 }
 
 function isOn(match, isActive) {
@@ -27,6 +40,7 @@ export default function PatientLayout() {
   const navigate = useNavigate()
   const name = user?.name || 'ผู้ใช้งาน'
   const initials = name.slice(0, 2)
+  const hello = useGreeting()
 
   return (
     <div className="h-screen flex overflow-hidden">
@@ -74,7 +88,7 @@ export default function PatientLayout() {
       <div className="flex-1 min-w-0 bg-bg flex flex-col">
         <header className="flex justify-between items-center px-4 md:px-8 py-4 border-b border-line bg-surface">
           <div>
-            <p className="text-[13px] text-ink-secondary m-0">{greeting()} ☀️</p>
+            <p className="text-[13px] text-ink-secondary m-0">{hello.text} {hello.emoji}</p>
             <p className="font-heading text-[16px] md:text-[18px] font-semibold text-ink-primary m-0 truncate max-w-[180px] md:max-w-none">{name}</p>
           </div>
           <div className="flex items-center gap-2.5">
