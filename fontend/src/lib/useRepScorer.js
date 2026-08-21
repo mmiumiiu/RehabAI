@@ -6,6 +6,9 @@ import { useEffect, useRef, useState } from 'react'
 export function useRepScorer(landmarks, exerciseId, enabled = true) {
   const [repCount, setRepCount] = useState(0)
   const [recording, setRecording] = useState(false)
+  // Increments when an attempt times out (raised but never completed the rep) —
+  // treated as "did it wrong" so the session can prompt the patient to retry.
+  const [wrongCount, setWrongCount] = useState(0)
 
   const stateRef = useRef('IDLE') // IDLE | UP
   const smoothYRef = useRef(0.65)
@@ -28,11 +31,12 @@ export function useRepScorer(landmarks, exerciseId, enabled = true) {
       setRecording(false)
       setRepCount(c => c + 1)
     } else if (stateRef.current === 'UP' && elapsed > 10) {
+      // Timed out without completing the movement → wrong attempt (not counted).
       stateRef.current = 'IDLE'
       setRecording(false)
-      setRepCount(c => c + 1)
+      setWrongCount(w => w + 1)
     }
   }, [landmarks, enabled, exerciseId])
 
-  return { repCount, recording }
+  return { repCount, recording, wrongCount }
 }

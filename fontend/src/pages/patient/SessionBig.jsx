@@ -4,6 +4,7 @@ import { useCamera } from '../../lib/useCamera.js'
 import { usePoseLandmarker } from '../../lib/usePoseLandmarker.js'
 import { useRepScorer } from '../../lib/useRepScorer.js'
 import { useSpeak } from '../../lib/useSpeak.js'
+import { speechStart, speechEnd } from '../../lib/speechBus.js'
 import PoseCanvas from '../../components/PoseCanvas.jsx'
 import PoseSkeleton from '../../components/PoseSkeleton.jsx'
 import SOSButton from '../../components/SOSButton.jsx'
@@ -11,7 +12,7 @@ import FallAlert from '../../components/FallAlert.jsx'
 import SessionMusic from '../../components/SessionMusic.jsx'
 import { useFallDetector } from '../../lib/useFallDetector.js'
 import { ProgressBar } from '../../components/ui.jsx'
-import { Camera, Check, Home, ChevronRight } from '../../components/icons.jsx'
+import { Camera, Check, Home, ChevronRight, Refresh } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { sessionHistory, exerciseProgress } from '../../lib/services.js'
 
@@ -35,12 +36,31 @@ export default function SessionBig() {
 
   const { videoRef, status } = useCamera(true)
   const { landmarks, ready: poseReady } = usePoseLandmarker(videoRef, status === 'live')
-  const { repCount, recording } = useRepScorer(landmarks, exId, status === 'live')
+  const { repCount, recording, wrongCount } = useRepScorer(landmarks, exId, status === 'live')
 
   // Read the exercise instruction aloud 2s after the session opens.
   useSpeak(`${ex.name} ${ex.how}`, { delayMs: 2000 })
 
   const complete = repCount >= ex.target
+
+  // On a wrong attempt, speak "ลองทำใหม่อีกครั้ง" (ducks the music via speechBus)
+  // and flash a retry prompt on the camera bar for a few seconds.
+  const [showRetry, setShowRetry] = useState(false)
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+  useEffect(() => {
+    if (wrongCount === 0 || complete) return
+    setShowRetry(true)
+    const hide = setTimeout(() => setShowRetry(false), 3500)
+    const audio = new Audio(`${API_URL}/tts?text=${encodeURIComponent('ลองทำใหม่อีกครั้ง')}`)
+    let done = false
+    const finish = () => { if (done) return; done = true; speechEnd() }
+    audio.addEventListener('ended', finish)
+    audio.addEventListener('error', finish)
+    speechStart()
+    audio.play().catch(finish)
+    return () => { clearTimeout(hide); audio.pause(); finish() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wrongCount])
 
   // Fall detection from the live pose — surfaces the SOS/emergency flow.
   const { fallen, dismiss } = useFallDetector(landmarks, status === 'live' && !complete)
@@ -66,6 +86,7 @@ export default function SessionBig() {
   // Bottom bar message
   let barMsg = ex.how.split(' ').slice(0, 8).join(' ') + '…'
   if (complete) barMsg = 'เยี่ยมมาก! ทำครบตามเป้าหมายแล้ว'
+  else if (showRetry) barMsg = 'ยังไม่ถูกต้อง — ลองทำใหม่อีกครั้ง'
   else if (recording) barMsg = 'กำลังนับ…'
   else if (status === 'live' && !poseReady) barMsg = 'กำลังโหลด AI…'
   else if (status === 'live' && poseReady && !landmarks) barMsg = 'ไม่พบผู้ใช้งานในกล้อง'
@@ -137,9 +158,9 @@ export default function SessionBig() {
 
           <div
             className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
-            style={{ background: complete ? 'rgba(27,156,76,0.92)' : 'rgba(27,156,76,0.80)' }}
+            style={{ background: showRetry && !complete ? 'rgba(216,38,79,0.90)' : complete ? 'rgba(27,156,76,0.92)' : 'rgba(27,156,76,0.80)' }}
           >
-            <Check size={18} />
+            {showRetry && !complete ? <Refresh size={18} /> : <Check size={18} />}
             {barMsg}
           </div>
         </div>
