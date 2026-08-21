@@ -41,7 +41,8 @@ export default {
         ok: { bg: '#E3F6E9', fg: '#1E7A40' },
       },
       fontFamily: {
-        heading: ['Mitr', 'Poppins', 'Sarabun', 'sans-serif'],
+        // Looped Thai font (มีหัว) — easier to read than the loopless Mitr
+        heading: ['Sarabun', 'Inter', 'sans-serif'],
         body: ['Sarabun', 'Inter', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
