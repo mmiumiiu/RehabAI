@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { Home, Activity, Chart, User, Bell, Chat } from './icons.jsx'
+import { Home, Activity, Chart, User, Chat } from './icons.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 // Colorful nav — one hue per item (indigo / green / blue / red / pink)
@@ -78,9 +78,6 @@ export default function PatientLayout() {
             <p className="font-heading text-[16px] md:text-[18px] font-semibold text-ink-primary m-0 truncate max-w-[180px] md:max-w-none">{name}</p>
           </div>
           <div className="flex items-center gap-2.5">
-            <button className="w-11 h-11 rounded-[14px] flex items-center justify-center" style={{ background: '#FFF4D6', color: '#B8860B' }} title="การแจ้งเตือน">
-              <Bell size={18} />
-            </button>
             <button onClick={() => navigate('/profile')} title="โปรไฟล์" className="w-11 h-11 rounded-[14px] flex items-center justify-center text-[12px] font-bold" style={{ background: '#FBE7F1', color: '#B03A76' }}>
               {initials}
             </button>
