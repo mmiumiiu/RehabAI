@@ -21,10 +21,7 @@ function domainCheck(hospital, email) {
   if (typed === bound || typed.endsWith('.' + bound)) {
     return { tone: 'ok', text: `อีเมลตรงกับโดเมนของ ${hospital} — ผ่านการเช็คเบื้องต้นอัตโนมัติ` }
   }
-  return {
-    tone: 'warn',
-    text: `อีเมลนี้ไม่ตรงกับโดเมนของ ${hospital} (@${bound}) ระบบจะส่งให้ทีมงานตรวจสอบเพิ่มเติมแบบ manual review`,
-  }
+  return null
 }
 
 const checkStyles = {

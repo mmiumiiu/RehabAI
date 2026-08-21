@@ -66,16 +66,6 @@ export default function Login() {
         </button>
       </form>
 
-      <button
-        type="button"
-        onClick={submit}
-        disabled={busy}
-        className="mt-3 w-full min-h-[52px] rounded-btn border-2 border-teal-600 bg-teal-100 text-teal-700 font-heading font-bold text-[15px] flex items-center justify-center gap-2.5 active:translate-y-[2px] transition-transform disabled:opacity-50"
-      >
-        <span className="w-[22px] h-[22px] rounded-full bg-white flex items-center justify-center text-[12px] font-bold text-coral-600">G</span>
-        เข้าสู่ระบบด้วย Google
-      </button>
-
       <p className="text-center text-[14px] text-ink-secondary mt-5">
         ยังไม่มีบัญชี?{' '}
         <Link to="/register" className="text-teal-700 font-semibold hover:underline">สมัครสมาชิก</Link>
