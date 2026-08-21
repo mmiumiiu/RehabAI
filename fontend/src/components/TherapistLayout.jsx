@@ -20,7 +20,9 @@ export default function TherapistLayout() {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[236px] flex-shrink-0 flex-col p-4 bg-surface border-r border-line">
         <div className="mb-6 px-1.5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[13px] text-white flex items-center justify-center font-heading font-semibold" style={{ background: '#5B50E0', boxShadow: '0 6px 14px rgba(91,80,224,.35)' }}>R</div>
+          <div className="w-10 h-10 rounded-[12px] bg-white border border-line flex items-center justify-center overflow-hidden" style={{ boxShadow: '0 6px 14px rgba(47,166,90,.22)' }}>
+            <img src="/logo.png" alt="RehabAI" className="w-[30px] h-[30px] object-contain" />
+          </div>
           <div>
             <b className="font-heading text-[17px] text-ink-primary leading-none">RehabAI</b>
             <div className="text-[10px] font-bold px-2 py-0.5 rounded-pill inline-block mt-1" style={{ background: '#FBE7F1', color: '#B03A76' }}>นักกายภาพบำบัด</div>

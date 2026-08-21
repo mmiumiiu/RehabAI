@@ -6,21 +6,20 @@ export function Logo({ light = false, size = 36 }) {
   return (
     <div className="flex items-center gap-2.5">
       <div
-        className="rounded-[9px] flex items-center justify-center"
+        className="rounded-[10px] flex items-center justify-center overflow-hidden border"
         style={{
           width: size,
           height: size,
-          background: light ? 'rgba(255,255,255,0.14)' : '#E1FAEA',
+          background: '#fff',
+          borderColor: light ? 'rgba(255,255,255,0.4)' : '#E9E6F7',
+          boxShadow: '0 6px 14px rgba(47,166,90,.22)',
         }}
       >
-        <svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none">
-          <path d="M4 15c4-8 12-8 16 0" stroke={light ? '#fff' : '#0A4023'} strokeWidth="2" strokeLinecap="round" />
-          <circle cx="12" cy="8" r="2.4" fill={light ? '#E1FAEA' : '#147A3D'} />
-        </svg>
+        <img src="/logo.png" alt="RehabAI" style={{ width: size * 0.82, height: size * 0.82, objectFit: 'contain' }} />
       </div>
       <span
         className="font-heading font-semibold text-[17px]"
-        style={{ color: light ? '#fff' : '#0A4023' }}
+        style={{ color: light ? '#fff' : '#2B2650' }}
       >
         RehabAI
       </span>
