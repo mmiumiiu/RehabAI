@@ -8,6 +8,7 @@ import TherapistLayout from './components/TherapistLayout.jsx'
 // Patient pages
 import Login from './pages/patient/Login.jsx'
 import Register from './pages/patient/Register.jsx'
+import PrivacyConsent from './pages/patient/PrivacyConsent.jsx'
 import OnboardingSelectTherapist from './pages/patient/OnboardingSelectTherapist.jsx'
 import OnboardingEmergency from './pages/patient/OnboardingEmergency.jsx'
 import Home from './pages/patient/Home.jsx'
@@ -66,6 +67,7 @@ export default function App() {
       {/* Patient auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/onboarding/consent" element={<PrivacyConsent />} />
       <Route path="/onboarding/select-therapist" element={<OnboardingSelectTherapist />} />
       <Route path="/onboarding/emergency-contact" element={<OnboardingEmergency />} />
 

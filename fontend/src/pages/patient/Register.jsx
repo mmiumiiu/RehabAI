@@ -39,7 +39,7 @@ export default function Register() {
         fallHistory: form.fall === 'yes',
         role: 'patient',
       })
-      navigate('/onboarding/select-therapist')
+      navigate('/onboarding/consent')
     } finally {
       setBusy(false)
     }
