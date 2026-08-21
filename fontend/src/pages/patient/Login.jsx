@@ -39,8 +39,8 @@ export default function Login() {
           เป็นนักกายภาพบำบัด?
         </Link>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">ยินดีต้อนรับกลับ</h2>
-      <p className="text-[13.5px] text-ink-secondary mb-6">เข้าสู่ระบบเพื่อฝึกกายภาพบำบัดต่อ</p>
+      <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">ยินดีต้อนรับกลับมา 👋</h2>
+      <p className="text-[14.5px] text-ink-secondary mb-6">เข้าสู่ระบบเพื่อเริ่มฝึกวันนี้</p>
 
       <form onSubmit={submit} noValidate>
         <Field label="อีเมล" error={errors.email}>
@@ -66,10 +66,17 @@ export default function Login() {
         </button>
       </form>
 
-      <div className="flex items-center gap-2.5 my-5 text-ink-muted text-[12px]">
-        <div className="flex-1 h-px bg-line" />หรือ<div className="flex-1 h-px bg-line" />
-      </div>
-      <p className="text-center text-[13px] text-ink-secondary">
+      <button
+        type="button"
+        onClick={submit}
+        disabled={busy}
+        className="mt-3 w-full min-h-[52px] rounded-btn border-2 border-teal-600 bg-teal-100 text-teal-700 font-heading font-bold text-[15px] flex items-center justify-center gap-2.5 active:translate-y-[2px] transition-transform disabled:opacity-50"
+      >
+        <span className="w-[22px] h-[22px] rounded-full bg-white flex items-center justify-center text-[12px] font-bold text-coral-600">G</span>
+        เข้าสู่ระบบด้วย Google
+      </button>
+
+      <p className="text-center text-[14px] text-ink-secondary mt-5">
         ยังไม่มีบัญชี?{' '}
         <Link to="/register" className="text-teal-700 font-semibold hover:underline">สมัครสมาชิก</Link>
       </p>

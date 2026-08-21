@@ -44,8 +44,8 @@ export default function Register() {
           เป็นนักกายภาพบำบัด?
         </Link>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">สร้างบัญชีใหม่</h2>
-      <p className="text-[13.5px] text-ink-secondary mb-6">ใช้เวลาเพียงไม่กี่นาที</p>
+      <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">สร้างบัญชีใหม่ 🌱</h2>
+      <p className="text-[14.5px] text-ink-secondary mb-6">เริ่มต้นเส้นทางการฟื้นฟูของคุณ</p>
 
       <form onSubmit={submit} noValidate>
         <div className="grid grid-cols-2 gap-3.5">
