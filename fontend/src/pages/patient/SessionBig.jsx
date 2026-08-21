@@ -81,7 +81,7 @@ export default function SessionBig() {
         {/* Demo animation — loops continuously */}
         <div className="relative rounded-2xl overflow-hidden bg-cam aspect-[16/10] flex items-center justify-center">
           {ex.video ? (
-            <video src={ex.video} autoPlay loop muted playsInline className="w-full h-full object-contain" />
+            <video src={ex.video} autoPlay loop muted playsInline className="w-full h-full object-contain" style={{ transform: 'scale(1.35)' }} />
           ) : (
             <div className="text-white/60 text-[13px] text-center px-6">
               <Camera size={36} className="mx-auto mb-2 opacity-70" />
