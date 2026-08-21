@@ -89,6 +89,9 @@ export default function TrainingBig() {
           {bigDone}/{standing.length} ท่าเสร็จแล้ว
         </span>
       </div>
+      <p className="text-[13.5px] text-coral-700 font-semibold mb-4">
+        ข้อแนะนำ: ควรทำกายภาพก่อนรับประทานอาหาร
+      </p>
       <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">
         LSVT BIG — ฝึกการเคลื่อนไหว
       </h1>
