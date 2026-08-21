@@ -12,7 +12,7 @@ export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    name: 'สมชาย ใจดี', email: 'patient@demo.com', password: 'demo1234', confirm: 'demo1234', stage: 'stage1', accept: true,
+    name: 'สมชาย ใจดี', email: 'patient@demo.com', password: 'demo1234', confirm: 'demo1234', stage: 'stage1', fall: 'no', accept: true,
   })
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
@@ -30,7 +30,7 @@ export default function Register() {
     if (Object.keys(errs).length) return
     setBusy(true)
     try {
-      await register({ name: form.name, email: form.email, parkinsonStage: form.stage, role: 'patient' })
+      await register({ name: form.name, email: form.email, parkinsonStage: form.stage, fallHistory: form.fall === 'yes', role: 'patient' })
       navigate('/onboarding/select-therapist')
     } finally {
       setBusy(false)
@@ -74,6 +74,17 @@ export default function Register() {
             RehabAI ออกแบบมาสำหรับผู้ป่วยระยะ 1-2 ที่ยังช่วยเหลือตนเองได้ หากมีอาการรุนแรงกว่านี้
             แนะนำให้ปรึกษานักกายภาพบำบัดก่อนใช้งาน
           </p>
+        </Field>
+        <Field label="เคยมีประวัติการล้มหรือไม่">
+          <Select value={form.fall} onChange={set('fall')}>
+            <option value="no">ไม่เคยมีประวัติการล้ม</option>
+            <option value="yes">เคยมีประวัติการล้ม</option>
+          </Select>
+          {form.fall === 'yes' && (
+            <p className="text-[11.5px] text-coral-700 mt-1.5 leading-relaxed">
+              เพื่อความปลอดภัย ควรมีผู้ดูแลอยู่ด้วยขณะทำกายภาพ
+            </p>
+          )}
         </Field>
         <label className="flex items-start gap-2.5 text-[12.5px] text-ink-secondary my-3 cursor-pointer">
           <input

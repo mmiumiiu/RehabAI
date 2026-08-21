@@ -5,6 +5,7 @@ import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
 import { BIG_EXERCISES, groupLoudSteps } from '../../lib/mockData.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
 // Seated poses (ท่านั่ง) need a chair; they are shown with a muted "locked"
@@ -65,6 +66,7 @@ function ExerciseRow({ ex, locked = false, onStart, done = false }) {
 
 export default function TrainingBig() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const prog = useExerciseProgress()
   const seated = BIG_EXERCISES.filter((e) => e.posture === 'seated')
@@ -89,9 +91,15 @@ export default function TrainingBig() {
           {bigDone}/{standing.length} ท่าเสร็จแล้ว
         </span>
       </div>
-      <p className="text-[13.5px] text-coral-700 font-semibold mb-4">
+      <p className="text-[13.5px] text-coral-700 font-semibold mb-1">
         ข้อแนะนำ: ควรทำกายภาพก่อนรับประทานอาหาร
       </p>
+      {user?.fallHistory && (
+        <p className="text-[13.5px] text-coral-700 font-semibold mb-4">
+          เนื่องจากคุณมีประวัติการล้ม การทำกายภาพควรมีผู้ดูแลอยู่ด้วย
+        </p>
+      )}
+      {!user?.fallHistory && <div className="mb-4" />}
       <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">
         LSVT BIG — ฝึกการเคลื่อนไหว
       </h1>

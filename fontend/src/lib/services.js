@@ -36,7 +36,7 @@ export const auth = {
     return user
   },
 
-  async register({ name, email, role = 'patient', parkinsonStage }) {
+  async register({ name, email, role = 'patient', parkinsonStage, fallHistory }) {
     await wait(700)
     const user = {
       uid: 'demo-' + role,
@@ -44,6 +44,7 @@ export const auth = {
       role,
       name,
       parkinsonStage: parkinsonStage || 'stage1',
+      fallHistory: !!fallHistory,
       createdAt: 'วันนี้',
       // therapist accounts start pending license verification (spec §4.2)
       verificationStatus: role === 'therapist' ? 'pending' : undefined,
