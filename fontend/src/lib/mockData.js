@@ -334,8 +334,8 @@ export const VILLAGE_NEIGHBORS = [
   { id: 11, name: 'พี่หนึ่ง', trees: 1, streak: 1, watered: 0, left: 21.81, top: 9.0 },
 ]
 
-// The player's own plot sits in the middle of the ring.
-export const MY_PLOT = { left: 36.88, top: 30.45, width: 26.25 }
+// Neighbour island width as a % of the map; the player's own plot renders at
+// 1.5× this, centred.
 export const NEIGHBOR_PLOT_WIDTH = 13.75
 
 export const GARDEN_WATERINGS = [

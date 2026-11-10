@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GardenPlot from '../../components/GardenPlot.jsx'
-import { Home, MapPin, ArrowLeft, Check } from '../../components/icons.jsx'
+import { MapPin, ArrowLeft, Check } from '../../components/icons.jsx'
 import {
-  VILLAGE_NEIGHBORS, MY_GARDEN, MY_PLOT, NEIGHBOR_PLOT_WIDTH,
-  CHEER_MESSAGES, gardenLevelOf,
+  VILLAGE_NEIGHBORS, MY_GARDEN, NEIGHBOR_PLOT_WIDTH, CHEER_MESSAGES, gardenLevelOf,
 } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 
-// Village map — the "#village" section of design/bridge-mockup.html. The
-// player's plot sits in the middle of a ring of neighbours; tapping a neighbour
-// opens their garden panel, tapping your own goes to /garden.
+// Village map — a pale-green meadow holding one island per garden. The player's
+// plot sits dead centre at 1.5× the size with a red glow; tapping a neighbour
+// opens their garden panel, tapping your own goes to /garden. The page title and
+// the "แตะที่สวน" hint live above the map, not inside it.
 // Data is mock (mockData.js) until the backend exists.
 
 // Mockup's wooden sign: cream fill, thick brown border, solid bottom shadow.
@@ -22,34 +22,71 @@ const WOOD = {
 }
 const WOOD_BIG = { ...WOOD, border: '4px solid #8E5F2C', boxShadow: '0 5px 0 #8E5F2C' }
 
+// Level badge colour ladder: grey → blue → orange → gold as the garden grows.
+function levelColor(level) {
+  if (level >= 7) return '#C9971C'
+  if (level >= 5) return '#E07B1A'
+  if (level >= 3) return '#157AB5'
+  return '#7B8A93'
+}
+
 function LevelBadge({ level }) {
   return (
-    <span className="text-b-xs font-bold bg-teal-700 text-white rounded-[7px] px-2 py-px">{level}</span>
+    <span
+      className="text-b-xs font-bold text-white rounded-[8px] px-2.5 py-px"
+      style={{ background: levelColor(level) }}
+    >
+      {level}
+    </span>
   )
 }
 
-// One clickable plot on the map, positioned by percentage.
+// One clickable island on the map. Hovering lifts it and turns its ring blue
+// (handled inside GardenPlot via `group-hover`) so it reads as tappable.
 function Plot({ left, top, width, seed, trees, label, mine, onClick }) {
   const level = gardenLevelOf(trees).level
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={mine ? 'ดูรายละเอียดสวนของคุณ' : `ดูสวนของ${label}`}
-      className="absolute flex flex-col items-center p-0 bg-transparent border-0 cursor-pointer"
-      style={{ left: `${left}%`, top: `${top}%`, width: `${width}%` }}
+    <div
+      className="absolute"
+      style={{
+        left: `${left}%`,
+        top: `${top}%`,
+        width: `${width}%`,
+        transform: mine ? 'translate(-50%, -50%)' : undefined,
+      }}
     >
-      <GardenPlot level={level} trees={trees} seed={seed} className="w-full h-auto" title={`สวนของ${label}`} />
-      <span
-        className="-mt-1.5 inline-flex items-center gap-2 px-3.5 py-1 rounded-[10px] font-bold whitespace-nowrap max-w-[120%]"
-        style={mine
-          ? { background: '#EEE8FA', border: '3px solid #6D3FC0', boxShadow: '0 4px 0 #6D3FC0', color: '#4B2A86', fontSize: 21 }
-          : { ...WOOD, fontSize: 16 }}
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={mine ? 'ดูรายละเอียดสวนของคุณ' : `ดูสวนของ${label}`}
+        className="group w-full flex flex-col items-center p-0 bg-transparent border-0 cursor-pointer transition-transform duration-150 hover:-translate-y-2 focus-visible:-translate-y-2"
       >
-        {label}
-        <LevelBadge level={level} />
-      </span>
-    </button>
+        <GardenPlot
+          level={level}
+          trees={trees}
+          seed={seed}
+          ring={mine ? 'own' : null}
+          className="w-full h-auto"
+          title={`สวนของ${label}`}
+        />
+        {mine ? (
+          <span
+            className="-mt-2 inline-flex items-center px-4 py-1.5 rounded-[12px] font-bold whitespace-nowrap text-white"
+            style={{ background: '#D32F2F', fontSize: 20 }}
+          >
+            สวนของคุณ · ระดับ {level}
+          </span>
+        ) : (
+          <span
+            className="-mt-2 inline-flex items-center gap-2 px-3.5 py-1 rounded-[10px] font-bold whitespace-nowrap bg-surface"
+            style={{ border: '2px solid #D7DEE3', color: '#0B2E45', fontSize: 16 }}
+          >
+            {label}
+            <LevelBadge level={level} />
+          </span>
+        )}
+      </button>
+    </div>
   )
 }
 
@@ -157,77 +194,63 @@ export default function Village() {
   const neighbor = VILLAGE_NEIGHBORS.find((n) => n.id === open) || null
 
   return (
-    <section
-      aria-label="แผนที่หมู่บ้าน"
-      className="relative w-full rounded-card overflow-hidden"
-      style={{ aspectRatio: '16 / 11', minHeight: 420, background: '#9BD67A' }}
-    >
-      {/* soft field texture */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.22) 0 2px, transparent 3px), radial-gradient(circle at 70% 60%, rgba(255,255,255,0.18) 0 2px, transparent 3px)',
-          backgroundSize: '90px 90px, 120px 120px',
-        }}
-      />
-      {/* a path ring under the plots */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{ width: '74%', height: '74%', border: '18px solid #C8B487', opacity: 0.45 }}
-      />
-
-      {VILLAGE_NEIGHBORS.map((n) => (
-        <Plot
-          key={n.id}
-          left={n.left}
-          top={n.top}
-          width={NEIGHBOR_PLOT_WIDTH}
-          seed={n.id}
-          trees={n.trees}
-          label={n.name}
-          onClick={() => setOpen(n.id)}
-        />
-      ))}
-
-      <Plot
-        left={MY_PLOT.left}
-        top={MY_PLOT.top}
-        width={MY_PLOT.width}
-        seed={99}
-        trees={MY_GARDEN.trees}
-        label={`${myName} (คุณ)`}
-        mine
-        onClick={() => navigate('/garden')}
-      />
-
-      {/* floating header */}
-      <div className="absolute left-0 right-0 top-0 p-4 flex justify-between items-start gap-3 flex-wrap pointer-events-none">
-        <div className="flex gap-2.5 flex-wrap pointer-events-auto">
-          <Link
-            to="/home"
-            className="inline-flex items-center gap-2.5 min-h-[54px] px-4 rounded-btn font-heading text-b-base font-bold no-underline"
-            style={WOOD_BIG}
-          >
-            <Home size={22} /> หน้าแรก
-          </Link>
-          <h1
-            className="inline-flex items-center gap-2.5 min-h-[54px] px-4 rounded-btn font-heading text-b-h3 font-bold m-0"
-            style={WOOD_BIG}
-          >
-            <MapPin size={22} /> แผนที่หมู่บ้าน
-          </h1>
+    <div className="flex flex-col gap-6">
+      {/* Page header — outside the map, same shape as every other page */}
+      <header className="flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <p className="text-b-label font-semibold text-ink-secondary m-0 mb-1">แตะที่สวนเพื่อเข้าไปดู</p>
+          <h1 className="font-heading text-b-h1 font-bold m-0 leading-[1.25]">แผนที่หมู่บ้าน</h1>
         </div>
-      </div>
+        <Link
+          to="/garden"
+          className="inline-flex items-center justify-center gap-3 min-h-[51px] px-6 rounded-btn bg-surface border-[3px] border-line text-ink-primary text-b-btn font-bold hover:bg-teal-50 transition-colors"
+        >
+          <MapPin size={22} /> สวนของฉัน
+        </Link>
+      </header>
 
-      <div
-        className="absolute right-4 bottom-4 px-4 py-2.5 rounded-[13px] text-b-base font-bold"
-        style={{ background: 'rgba(255,246,227,0.96)', color: '#4A2E0F' }}
+      <section
+        aria-label="แผนที่หมู่บ้าน"
+        className="relative w-full rounded-card overflow-hidden border-[1.5px] border-line"
+        style={{ aspectRatio: '16 / 11', minHeight: 420, background: '#E6F4DC' }}
       >
-        แตะที่สวนเพื่อเข้าไปดู
-      </div>
+        {/* soft meadow texture — no path, just a faint speckle */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 20% 30%, rgba(155,210,126,0.35) 0 3px, transparent 4px), radial-gradient(circle at 70% 60%, rgba(155,210,126,0.28) 0 3px, transparent 4px)',
+            backgroundSize: '90px 90px, 130px 130px',
+          }}
+        />
 
-      {neighbor && <NeighborPanel neighbor={neighbor} onClose={() => setOpen(null)} />}
-    </section>
+        {VILLAGE_NEIGHBORS.map((n) => (
+          <Plot
+            key={n.id}
+            left={n.left}
+            top={n.top}
+            width={NEIGHBOR_PLOT_WIDTH}
+            seed={n.id}
+            trees={n.trees}
+            label={n.name}
+            onClick={() => setOpen(n.id)}
+          />
+        ))}
+
+        {/* Your plot — dead centre, 1.5× the size of a neighbour's */}
+        <Plot
+          left={50}
+          top={48}
+          width={NEIGHBOR_PLOT_WIDTH * 1.5}
+          seed={99}
+          trees={MY_GARDEN.trees}
+          label={myName}
+          mine
+          onClick={() => navigate('/garden')}
+        />
+
+        {neighbor && <NeighborPanel neighbor={neighbor} onClose={() => setOpen(null)} />}
+      </section>
+    </div>
   )
 }
