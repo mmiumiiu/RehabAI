@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../../components/AuthLayout.jsx'
-import { Field, Input, Select } from '../../components/ui.jsx'
+import { Field, Input, Select, Button } from '../../components/ui.jsx'
 import { Mail, Lock, User, ShieldCheck, MapPin, Hospital, Check } from '../../components/icons.jsx'
 import { REGIONS, REGION_HOSPITALS, HOSPITAL_DOMAINS } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
@@ -24,10 +24,11 @@ function domainCheck(hospital, email) {
   return null
 }
 
+// Mockup notice cards: tinted fill + 2px border in the same hue.
 const checkStyles = {
-  ok: { background: '#E4F6E9', color: '#147A3D' },
-  warn: { background: '#FFF7D6', color: '#8A6400' },
-  neutral: { background: '#F1EFF9', color: '#69637C' },
+  ok: { background: '#E3F1DC', borderColor: '#BFDDB0', color: '#24661A' },
+  warn: { background: '#FFF1C7', borderColor: '#E6CF86', color: '#6B4A00' },
+  neutral: { background: '#E0F1FA', borderColor: '#B4DCEC', color: '#0B3550' },
 }
 
 export default function TherapistRegister() {
@@ -68,49 +69,51 @@ export default function TherapistRegister() {
     return (
       <AuthLayout therapist>
         <div className="text-center">
-          <div className="w-14 h-14 rounded-2xl bg-warn-bg text-warn-fg flex items-center justify-center mx-auto mb-4">
-            <ShieldCheck size={28} />
+          <div className="w-20 h-20 rounded-[24px] bg-warn-bg text-warn-fg flex items-center justify-center mx-auto mb-5">
+            <ShieldCheck size={40} />
           </div>
-          <h2 className="font-heading text-[20px] font-semibold text-ink-primary mb-2">รอการตรวจสอบ</h2>
+          <h1 className="font-heading text-b-h1 font-bold m-0">รอการตรวจสอบ</h1>
         </div>
-        <div className="rounded-btn p-4 text-[13px] leading-relaxed" style={{ background: '#FFF7D6', color: '#8A6400' }}>
+        <div
+          className="rounded-[18px] border-2 p-5 text-b-base font-semibold leading-[1.6]"
+          style={checkStyles.warn}
+        >
           การเช็คโดเมนอีเมลเป็นเพียงสัญญาณเบื้องต้นเท่านั้น ทีมงานจะติดต่อแผนกกายภาพบำบัดของ
           {' '}<strong>{form.hospital}</strong> เพื่อยืนยันตัวตนอีกครั้งก่อนเปิดใช้งานบัญชีเสมอ
           ระบบจะแจ้งผลภายใน 1-2 วันทำการ ระหว่างนี้ยังไม่สามารถดูข้อมูลผู้ป่วยได้
         </div>
-        <button onClick={() => navigate('/therapist/patients')} className="btn-primary mt-5">
+        <Button as="button" onClick={() => navigate('/therapist/patients')} className="w-full">
           เข้าสู่ระบบ (โหมดสาธิต)
-        </button>
+        </Button>
       </AuthLayout>
     )
   }
 
   return (
     <AuthLayout therapist>
-      <div className="text-right mb-4">
-        <Link to="/register" className="text-[12.5px] text-teal-700 font-semibold hover:underline">เป็นผู้ป่วย?</Link>
-      </div>
-      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">สมัครสมาชิกนักกายภาพบำบัด</h2>
-      <p className="text-[13.5px] text-ink-secondary mb-6">เลือกโรงพยาบาลที่คุณสังกัด — บัญชีทุกบัญชีต้องได้รับการยืนยันจากโรงพยาบาลก่อนใช้งาน</p>
-
-      <form onSubmit={submit} noValidate>
-        <div className="grid grid-cols-2 gap-3.5">
-          <Field label="เลือกภาค">
-            <Select icon={MapPin} value={region} onChange={changeRegion}>
-              {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-            </Select>
-          </Field>
-          <Field label="สังกัดโรงพยาบาล" error={errors.hospital}>
-            <Select icon={Hospital} value={form.hospital} onChange={set('hospital')}>
-              {hospitals.map((h) => <option key={h} value={h}>{h}</option>)}
-            </Select>
-          </Field>
-        </div>
-        <p className="text-[11.5px] text-ink-muted -mt-2 mb-4">
-          ไม่พบโรงพยาบาลของคุณในรายการ?{' '}
-          <button type="button" className="text-teal-700 font-semibold hover:underline">เพิ่มโรงพยาบาลใหม่</button>
-          {' '}(ทีมงานตรวจสอบก่อนเผยแพร่)
+      <div>
+        <h1 className="font-heading text-b-h1 font-bold m-0 mb-2.5">สมัครสมาชิกนักกายภาพบำบัด</h1>
+        <p className="text-b-base text-ink-secondary m-0">
+          เลือกโรงพยาบาลที่คุณสังกัด — บัญชีทุกบัญชีต้องได้รับการยืนยันจากโรงพยาบาลก่อนใช้งาน
         </p>
+      </div>
+
+      <form onSubmit={submit} noValidate className="flex flex-col gap-1">
+        <Field label="เลือกภาค">
+          <Select icon={MapPin} value={region} onChange={changeRegion}>
+            {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+          </Select>
+        </Field>
+        <Field label="สังกัดโรงพยาบาล" error={errors.hospital}>
+          <Select icon={Hospital} value={form.hospital} onChange={set('hospital')}>
+            {hospitals.map((h) => <option key={h} value={h}>{h}</option>)}
+          </Select>
+          <p className="text-b-sm text-ink-secondary mt-2 m-0">
+            ไม่พบโรงพยาบาลของคุณในรายการ?{' '}
+            <button type="button" className="font-bold text-teal-700 hover:underline">เพิ่มโรงพยาบาลใหม่</button>
+            {' '}(ทีมงานตรวจสอบก่อนเผยแพร่)
+          </p>
+        </Field>
 
         <Field label="ตำแหน่งในโรงพยาบาล" error={errors.position}>
           <Input icon={ShieldCheck} placeholder="เช่น นักกายภาพบำบัด, นักกายภาพบำบัดชำนาญการ" value={form.position} onChange={set('position')} />
@@ -124,22 +127,29 @@ export default function TherapistRegister() {
           <Input icon={Mail} type="email" value={form.email} onChange={set('email')} />
         </Field>
         {check && (
-          <div className="flex items-start gap-2 rounded-btn px-3.5 py-2.5 -mt-2 mb-4 text-[12px] leading-relaxed" style={checkStyles[check.tone]}>
-            {check.tone === 'ok' && <span className="flex-shrink-0 mt-0.5"><Check size={14} /></span>}
+          <div
+            className="flex items-start gap-4 rounded-[18px] border-2 px-5 py-4 -mt-2 mb-5 text-b-base font-semibold leading-[1.6]"
+            style={checkStyles[check.tone]}
+          >
+            {check.tone === 'ok' && <span className="flex-shrink-0 mt-1"><Check size={22} /></span>}
             <span>{check.text}</span>
           </div>
         )}
 
         <Field label="รหัสผ่าน" error={errors.password}>
-          <Input icon={Lock} type="password" placeholder="••••••••" value={form.password} onChange={set('password')} />
+          <Input icon={Lock} type="password" placeholder="อย่างน้อย 8 ตัวอักษร" value={form.password} onChange={set('password')} />
         </Field>
-        <button type="submit" className="btn-primary">สมัครสมาชิก</button>
+        <Button as="button" type="submit" className="w-full">ส่งคำขอสมัคร</Button>
       </form>
 
-      <p className="text-center text-[13px] text-ink-secondary mt-5">
+      <p className="text-b-base text-center text-ink-secondary m-0">
         มีบัญชีอยู่แล้ว?{' '}
-        <Link to="/therapist/login" className="text-teal-700 font-semibold hover:underline">เข้าสู่ระบบ</Link>
+        <Link to="/therapist/login" className="font-bold text-teal-700 hover:underline">เข้าสู่ระบบ</Link>
       </p>
+
+      <Link to="/register" className="text-b-label font-bold text-center text-teal-700 hover:underline">
+        สำหรับผู้ป่วย สมัครที่นี่
+      </Link>
     </AuthLayout>
   )
 }

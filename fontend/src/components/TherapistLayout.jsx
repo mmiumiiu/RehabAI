@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Users, Chat } from './icons.jsx'
+import { Logo } from './ui.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const NAV = [
@@ -19,13 +20,10 @@ export default function TherapistLayout() {
     <div className="h-screen flex overflow-hidden">
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[236px] flex-shrink-0 flex-col p-4 bg-surface border-r border-line">
-        <div className="mb-6 px-1.5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-[12px] bg-white border border-line flex items-center justify-center overflow-hidden" style={{ boxShadow: '0 6px 14px rgba(47,166,90,.22)' }}>
-            <img src="/logo.png" alt="RehabAI" className="w-[30px] h-[30px] object-contain" />
-          </div>
-          <div>
-            <b className="font-heading text-[17px] text-ink-primary leading-none">RehabAI</b>
-            <div className="text-[10px] font-bold px-2 py-0.5 rounded-pill inline-block mt-1" style={{ background: '#FBE7F1', color: '#B03A76' }}>นักกายภาพบำบัด</div>
+        <div className="mb-6 px-1.5">
+          <Logo size={40} />
+          <div className="text-[11px] font-bold px-3 py-0.5 rounded-pill inline-block mt-2 bg-teal-100 text-teal-800">
+            สำหรับนักกายภาพบำบัด
           </div>
         </div>
         <nav className="flex flex-col gap-1.5">

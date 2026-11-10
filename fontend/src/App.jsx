@@ -18,6 +18,10 @@ import SessionBig from './pages/patient/SessionBig.jsx'
 import SessionWeightShift from './pages/patient/SessionWeightShift.jsx'
 import SessionLoud from './pages/patient/SessionLoud.jsx'
 import Dashboard from './pages/patient/Dashboard.jsx'
+import Village from './pages/patient/Village.jsx'
+import Garden from './pages/patient/Garden.jsx'
+import Community from './pages/patient/Community.jsx'
+import CommunityPost from './pages/patient/CommunityPost.jsx'
 import Profile from './pages/patient/Profile.jsx'
 import NotificationSettings from './pages/patient/NotificationSettings.jsx'
 import EmergencySettings from './pages/patient/EmergencySettings.jsx'
@@ -89,6 +93,10 @@ export default function App() {
         <Route path="/training/big" element={<TrainingBig />} />
         <Route path="/training/loud" element={<TrainingLoud />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/village" element={<Village />} />
+        <Route path="/garden" element={<Garden />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/community/:id" element={<CommunityPost />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings/notifications" element={<NotificationSettings />} />
         <Route path="/settings/emergency" element={<EmergencySettings />} />

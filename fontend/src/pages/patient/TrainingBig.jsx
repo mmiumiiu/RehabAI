@@ -1,79 +1,98 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Badge, Button } from '../../components/ui.jsx'
-import { Check, Clock } from '../../components/icons.jsx'
-import PlayPhraseButton from '../../components/PlayPhraseButton.jsx'
-import { BIG_EXERCISES, groupLoudSteps } from '../../lib/mockData.js'
-import { useLoudSteps } from '../../lib/useLoudSteps.js'
+import { Button, ProgressRing } from '../../components/ui.jsx'
+import { Check, Activity, AlertTriangle, ChevronRight } from '../../components/icons.jsx'
+import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 
 // LSVT BIG standard set — 7 Maximal Daily Exercises, grouped by posture.
-// Seated poses (ท่านั่ง) need a chair; they are shown with a muted "locked"
-// look and are NOT counted in the daily standing progress. The color change is
-// purely visual grouping — the "เริ่มฝึก" button and status badge stay active.
+// Layout follows the "movelist" section of design/bridge-mockup.html: a summary
+// ring + next-exercise button, an amber safety card, posture filter pills, then
+// one large card per exercise. Mockup px ÷ 1.4 (the patient portal body zoom).
 
-// muted palette for the seated ("locked") rows — mirrors .ex-row.locked in the mockup
-const lockedRow = { background: '#EDEBF6', borderColor: '#DDD8EC' }
-const lockedNum = { background: '#DDD8EC', borderColor: '#C9C3DC', color: '#69637C' }
+const FILTERS = [
+  { key: 'all', label: 'ทั้งหมด' },
+  { key: 'seated', label: 'ท่านั่ง' },
+  { key: 'standing', label: 'ท่ายืน' },
+]
 
-function ExerciseRow({ ex, locked = false, onStart, done = false }) {
+const POSTURE_BADGE = {
+  seated: { label: 'ท่านั่ง', background: '#E0F1FA', color: '#0B3550' },
+  standing: { label: 'ท่ายืน', background: '#FFF1C7', color: '#6B4A00' },
+}
+
+// Mockup exercise card: index circle, 93px picture tile, title + badges, action.
+function ExerciseCard({ ex, index, done, next, onStart }) {
+  const badge = POSTURE_BADGE[ex.posture]
   return (
-    <div className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5" style={locked ? lockedRow : undefined}>
-      {done ? (
-        <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
-          <Check size={15} />
-        </div>
-      ) : (
-        <div
-          className="w-[26px] h-[26px] rounded-full border flex items-center justify-center text-[12px] font-semibold flex-shrink-0 bg-bg border-line text-ink-secondary"
-          style={locked ? lockedNum : undefined}
-        >
-          {ex.id}
-        </div>
-      )}
+    <article
+      className="bg-surface rounded-card shadow-card px-5 py-4 flex flex-wrap items-center gap-5"
+      style={next ? { border: '3px solid #157AB5' } : { border: '1.5px solid #CDE3EE' }}
+    >
+      <span
+        className="w-[43px] h-[43px] rounded-full flex items-center justify-center text-b-btn font-bold flex-shrink-0"
+        style={next ? { background: '#157AB5', color: '#fff' } : { background: '#E6F1F7', color: '#0B2E45' }}
+      >
+        {index}
+      </span>
 
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <h4 className="font-heading text-[22px] font-semibold" style={locked ? { color: '#69637C' } : undefined}>
-            {ex.name}
-          </h4>
-          {ex.highRisk && <Badge tone="balance">เสี่ยงสูง</Badge>}
+      <span className="w-[93px] h-[93px] rounded-[19px] bg-teal-100 text-teal-700 flex items-center justify-center flex-shrink-0">
+        <Activity size={44} />
+      </span>
+
+      <div className="flex-1 min-w-[220px] flex flex-col gap-2.5">
+        <h3 className="font-heading text-b-h3 font-bold m-0 leading-[1.25]">{ex.name}</h3>
+        <div className="flex items-center gap-3 flex-wrap">
+          <span className="inline-flex items-center gap-1.5 text-b-sm font-bold px-4 py-1 rounded-pill" style={badge}>
+            {badge.label}
+          </span>
+          {ex.highRisk && (
+            <span className="inline-flex items-center gap-1.5 text-b-sm font-bold px-4 py-1 rounded-pill bg-coral-100 text-coral-700">
+              <AlertTriangle size={17} /> เสี่ยงสูง
+            </span>
+          )}
+          <span className="text-b-base">{ex.targetLabel}</span>
         </div>
-        <p className={`text-[15px] leading-snug mt-0.5 ${locked ? '' : 'text-ink-secondary'}`} style={locked ? { color: '#9E97AF' } : undefined}>
-          {ex.how}
-        </p>
+        <p className="text-b-sm text-ink-secondary leading-[1.5] m-0">{ex.how}</p>
       </div>
 
-      <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-        <span className={`text-[12px] whitespace-nowrap ${locked ? '' : 'text-ink-muted'}`} style={locked ? { color: '#9E97AF' } : undefined}>
-          {ex.targetLabel}
-        </span>
+      <div className="flex-shrink-0 flex items-center gap-3">
         {done ? (
           <>
-            <Badge tone="done">เสร็จแล้ว</Badge>
-            <Button variant="outline" onClick={() => onStart(ex)}>ทำซ้ำ</Button>
+            <span className="inline-flex items-center gap-2.5 text-b-base font-bold text-ok-fg">
+              <Check size={22} /> ทำแล้ว
+            </span>
+            <Button variant="outline" onClick={() => onStart(ex)} className="min-h-[54px]">ทำซ้ำ</Button>
           </>
+        ) : next ? (
+          <Button variant="blue" onClick={() => onStart(ex)} className="min-h-[57px]">
+            เริ่มท่านี้<ChevronRight size={22} />
+          </Button>
         ) : (
-          <>
-            <Badge tone="todo" className="hidden sm:inline-flex">ยังไม่เริ่ม</Badge>
-            <Button variant="outline" onClick={() => onStart(ex)}>เริ่มฝึก</Button>
-          </>
+          <Button variant="outline" onClick={() => onStart(ex)} className="min-h-[54px]">เริ่ม</Button>
         )}
       </div>
-    </div>
+    </article>
   )
 }
 
 export default function TrainingBig() {
   const navigate = useNavigate()
   const { user } = useAuth()
-
   const prog = useExerciseProgress()
-  const seated = BIG_EXERCISES.filter((e) => e.posture === 'seated')
+  const [filter, setFilter] = useState('all')
+
   const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
   const bigDone = standing.filter((e) => prog.big.includes(e.id)).length
-  const loudSteps = useLoudSteps()
-  const loudDone = loudSteps.filter((s) => prog.loud.includes(s.id)).length
+  const bigLeft = standing.length - bigDone
+  const minutesLeft = bigLeft * 3
+
+  // Next up = first exercise of the day that isn't finished yet.
+  const nextEx = BIG_EXERCISES.find((e) => !prog.big.includes(e.id))
+
+  const shown = filter === 'all' ? BIG_EXERCISES : BIG_EXERCISES.filter((e) => e.posture === filter)
+  const countOf = (key) => (key === 'all' ? BIG_EXERCISES.length : BIG_EXERCISES.filter((e) => e.posture === key).length)
 
   function start(ex) {
     if (ex.weightShift) navigate('/training/big/session-weightshift')
@@ -81,105 +100,83 @@ export default function TrainingBig() {
   }
 
   return (
-    <div className="max-w-[820px]">
-      {/* ── LSVT BIG ── */}
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-[16px] text-teal-700 font-semibold uppercase tracking-wide">
-          ฝึกกายภาพบำบัด · ท่ามาตรฐาน LSVT BIG (7 Maximal Daily Exercises)
+    <div className="flex flex-col gap-7">
+      <header>
+        <p className="text-b-label font-semibold text-ink-secondary m-0 mb-1">
+          ฝึกเคลื่อนไหว · ท่ามาตรฐาน LSVT BIG
         </p>
-        <span className="text-[12px] text-teal-700 font-semibold bg-teal-100 px-3 py-1.5 rounded-full">
-          {bigDone}/{standing.length} ท่าเสร็จแล้ว
-        </span>
-      </div>
-      <p className="text-[13.5px] text-coral-700 font-semibold mb-1">
-        ข้อแนะนำ: ควรทำกายภาพก่อนรับประทานอาหาร
-      </p>
-      {user?.fallHistory && (
-        <p className="text-[13.5px] text-coral-700 font-semibold mb-4">
-          เนื่องจากคุณมีประวัติการล้ม การทำกายภาพควรมีผู้ดูแลอยู่ด้วย
-        </p>
-      )}
-      {!user?.fallHistory && <div className="mb-4" />}
-      <h1 className="font-heading text-[24px] font-semibold text-ink-primary mb-6">
-        LSVT BIG — ฝึกการเคลื่อนไหว
-      </h1>
+        <h1 className="font-heading text-b-h1 font-bold m-0 leading-[1.25]">ท่าฝึกของวันนี้</h1>
+      </header>
 
-      {seated.length > 0 && (
-        <div className="mb-7">
-          <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">ท่านั่ง</h3>
-          <div className="space-y-3">
-            {seated.map((ex) => (
-              <ExerciseRow key={ex.id} ex={ex} locked onStart={start} done={prog.big.includes(ex.id)} />
-            ))}
+      <div className="flex flex-wrap gap-5 items-stretch">
+        {/* Summary: ring + next-exercise button */}
+        <section className="flex-[2_1_420px] min-w-0 bg-surface rounded-card border-[1.5px] border-line shadow-card p-6 flex flex-wrap gap-6 items-center">
+          <ProgressRing value={bigDone} goal={standing.length} label="ท่า" />
+          <div className="flex-1 min-w-[220px] flex flex-col gap-4">
+            <h2 className="font-heading text-b-h2 font-bold m-0 leading-[1.3]">
+              {bigLeft > 0 ? `เหลืออีก ${bigLeft} ท่า ประมาณ ${minutesLeft} นาที` : 'ฝึกครบทุกท่าแล้ววันนี้'}
+            </h2>
+            {nextEx && (
+              <Button variant="blue" onClick={() => start(nextEx)} className="min-h-[57px] self-start">
+                ฝึกท่าถัดไป<ChevronRight size={22} />
+              </Button>
+            )}
           </div>
-        </div>
-      )}
+        </section>
 
-      <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">ท่ายืน</h3>
-      <div className="space-y-3 mb-10">
-        {standing.map((ex) => (
-          <ExerciseRow key={ex.id} ex={ex} onStart={start} done={prog.big.includes(ex.id)} />
+        {/* Safety card */}
+        <section
+          className="flex-[1_1_300px] min-w-0 rounded-[20px] border-2 p-6 flex flex-col gap-3.5"
+          style={{ background: '#FFF1C7', borderColor: '#E6CF86', color: '#6B4A00' }}
+        >
+          <h2 className="flex items-center gap-3 font-heading text-b-h3 font-bold m-0">
+            <AlertTriangle size={26} /> ก่อนเริ่มฝึก
+          </h2>
+          <p className="text-b-label font-semibold leading-[1.5] m-0">วางเก้าอี้ที่มั่นคงไว้ข้างตัว</p>
+          <p className="text-b-label font-semibold leading-[1.5] m-0">ยืนห่างกล้อง 2 เมตร ให้เห็นทั้งตัว</p>
+          <p className="text-b-label font-semibold leading-[1.5] m-0">หยุดทันทีถ้าเวียนหัวหรือเจ็บ</p>
+          <p className="text-b-label font-semibold leading-[1.5] m-0">ควรทำกายภาพก่อนรับประทานอาหาร</p>
+          {user?.fallHistory && (
+            <p className="text-b-label font-bold leading-[1.5] m-0">
+              คุณมีประวัติการล้ม — ควรมีผู้ดูแลอยู่ด้วยขณะฝึก
+            </p>
+          )}
+        </section>
+      </div>
+
+      {/* Posture filter pills */}
+      <div className="flex flex-wrap gap-3">
+        {FILTERS.map(({ key, label }) => {
+          const on = filter === key
+          return (
+            <button
+              key={key}
+              type="button"
+              aria-pressed={on}
+              onClick={() => setFilter(key)}
+              className={`min-h-[51px] px-5 rounded-pill border-[3px] text-b-base font-bold transition-colors ${
+                on ? 'bg-teal-700 border-teal-700 text-white' : 'bg-surface border-line text-ink-primary hover:bg-teal-50'
+              }`}
+            >
+              {label} {countOf(key)} ท่า
+            </button>
+          )
+        })}
+      </div>
+
+      {/* One big card per exercise */}
+      <div className="flex flex-col gap-4">
+        {shown.map((ex) => (
+          <ExerciseCard
+            key={ex.id}
+            ex={ex}
+            index={ex.id}
+            done={prog.big.includes(ex.id)}
+            next={nextEx?.id === ex.id}
+            onStart={start}
+          />
         ))}
       </div>
-
-      {/* ── LSVT LOUD ── */}
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-[16px] text-coral-700 font-semibold uppercase tracking-wide">
-          ฝึกเสียงพูด · LSVT LOUD
-        </p>
-        <span className="text-[12px] text-coral-700 font-semibold bg-coral-100 px-3 py-1.5 rounded-full">
-          {loudDone}/{loudSteps.length} ขั้นตอนเสร็จแล้ว
-        </span>
-      </div>
-      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-5">
-        LSVT LOUD — ฝึกความดังของเสียงพูด
-      </h2>
-
-      {groupLoudSteps(loudSteps).map((group) => (
-        <div key={group.title} className="mb-6">
-          <h3 className="font-heading text-[22px] font-semibold text-ink-primary mb-4">{group.title}</h3>
-          <div className="space-y-3">
-            {group.steps.map((s, i) => (
-              <div key={s.id} className="flex flex-wrap items-center gap-3 card px-4 py-4 sm:px-5">
-                {prog.loud.includes(s.id) ? (
-                  <div className="w-[26px] h-[26px] rounded-full bg-ok-bg text-ok-fg flex items-center justify-center flex-shrink-0">
-                    <Check size={15} />
-                  </div>
-                ) : (
-                  <div className="w-[26px] h-[26px] rounded-full bg-bg border border-line flex items-center justify-center text-[12px] font-semibold text-ink-secondary flex-shrink-0">
-                    {i + 1}
-                  </div>
-                )}
-                <div className="w-11 h-11 rounded-[10px] bg-coral-100 text-coral-700 flex-shrink-0 flex items-center justify-center font-heading font-semibold text-[15px]">
-                  {i + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-heading text-[18px] font-semibold">{s.name}</h4>
-                  <p className="text-[15px] leading-snug mt-0.5 text-ink-secondary">{s.detail}</p>
-                </div>
-                <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-                  <span className="flex items-center gap-1 text-[12px] text-ink-muted whitespace-nowrap">
-                    <Clock size={14} /> {s.minutes} นาที
-                  </span>
-                  <PlayPhraseButton text={s.phrase} />
-                  {prog.loud.includes(s.id) ? (
-                    <>
-                      <Badge tone="done">เสร็จแล้ว</Badge>
-                      <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
-                        ทำซ้ำ
-                      </Button>
-                    </>
-                  ) : (
-                    <Button variant="outlineCoral" onClick={() => navigate(`/training/loud/session?step=${s.id}`)}>
-                      เริ่มฝึก
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
     </div>
   )
 }

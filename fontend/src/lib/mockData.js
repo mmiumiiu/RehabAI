@@ -177,18 +177,36 @@ export const emergencyContactsSeed = [
 ]
 
 // Therapist portal patient list. Spec §4.3
+// `daysSince` = days since the last session (drives the "ไม่ได้ฝึก N วัน" flag),
+// `totalDays` / `avgAccuracy` feed the detail-page stat cards, and `week` is the
+// 7-day minutes series (oldest → today) for the training-time chart.
 export const PATIENTS = [
   {
-    id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: '2 ชม. ที่แล้ว',
-    streak: 5, lastScore: 86, weekCount: 4, initials: 'สช',
+    id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: 'วันนี้ 08:40',
+    streak: 5, lastScore: 88, weekCount: 5, initials: 'สช',
+    daysSince: 0, totalDays: 22, avgAccuracy: 86,
+    week: [
+      { big: 18, loud: 8 }, { big: 22, loud: 10 }, { big: 0, loud: 0 }, { big: 25, loud: 11 },
+      { big: 15, loud: 7 }, { big: 20, loud: 9 }, { big: 0, loud: 0 },
+    ],
   },
   {
-    id: 'p2', name: 'วิภา สุขสันต์', stage: 'stage2', lastActive: 'เมื่อวานนี้',
-    streak: 12, lastScore: 79, weekCount: 6, initials: 'วภ',
+    id: 'p2', name: 'นภาพร ชื่นใจ', stage: 'stage1', lastActive: 'เมื่อวาน',
+    streak: 2, lastScore: 64, weekCount: 3, initials: 'นภ',
+    daysSince: 1, totalDays: 11, avgAccuracy: 68,
+    week: [
+      { big: 0, loud: 0 }, { big: 14, loud: 6 }, { big: 0, loud: 0 }, { big: 12, loud: 8 },
+      { big: 0, loud: 0 }, { big: 16, loud: 5 }, { big: 0, loud: 0 },
+    ],
   },
   {
-    id: 'p3', name: 'ประเสริฐ มั่นคง', stage: 'stage1', lastActive: '3 วันที่แล้ว',
-    streak: 0, lastScore: 71, weekCount: 1, initials: 'ปส',
+    id: 'p3', name: 'วิชัย ถาวรกุล', stage: 'stage2', lastActive: '4 วันก่อน',
+    streak: 0, lastScore: 41, weekCount: 1, initials: 'วช',
+    daysSince: 4, totalDays: 6, avgAccuracy: 52,
+    week: [
+      { big: 10, loud: 4 }, { big: 0, loud: 0 }, { big: 0, loud: 0 }, { big: 0, loud: 0 },
+      { big: 0, loud: 0 }, { big: 0, loud: 0 }, { big: 0, loud: 0 },
+    ],
   },
 ]
 
@@ -256,3 +274,177 @@ export const HOSPITAL_THERAPISTS = {
 export function therapistsForHospital(hospital) {
   return HOSPITAL_THERAPISTS[hospital] || DEFAULT_THERAPISTS
 }
+
+// ─── Garden / village (mockup sections #village and #garden) ────────────────
+// Gamification layer: one training day plants one tree, and the accumulated
+// tree count decides the garden's level. Mock stand-in for Firestore.
+
+export const GARDEN_LEVELS = [
+  { level: 1, name: 'ต้นกล้าต้นแรก', trees: 1, time: 'วันแรก', reward: 'ต้นกล้า 1 ต้น' },
+  { level: 2, name: 'แปลงผักเล็ก', trees: 3, time: 'สัปดาห์แรก', reward: 'แปลงผักหน้าบ้าน' },
+  { level: 3, name: 'สวนหย่อม', trees: 7, time: 'ประมาณ 2 สัปดาห์', reward: 'รั้วไม้ + ดอกไม้' },
+  { level: 4, name: 'สวนดอกไม้', trees: 16, time: 'ประมาณ 1 เดือน', reward: 'ดอกไม้หลายสี' },
+  { level: 5, name: 'สวนผลไม้', trees: 30, time: 'ประมาณ 2 เดือน', reward: 'ต้นไม้ออกผล' },
+  { level: 6, name: 'สวนป่าร่มรื่น', trees: 60, time: 'ประมาณ 3–4 เดือน', reward: 'บ่อน้ำ + ต้นไม้ใหญ่' },
+  { level: 7, name: 'สวนพฤกษาริมน้ำ', trees: 100, time: 'ประมาณ 6 เดือน', reward: 'ศาลา + ลำธาร' },
+]
+
+// Highest level whose tree requirement is met (level 1 until the first tree).
+export function gardenLevelOf(trees) {
+  let current = GARDEN_LEVELS[0]
+  for (const l of GARDEN_LEVELS) if (trees >= l.trees) current = l
+  return current
+}
+
+// The level after the current one, or null at the top.
+export function nextGardenLevel(trees) {
+  return GARDEN_LEVELS.find((l) => l.trees > trees) || null
+}
+
+export const MY_GARDEN = { trees: 22, streak: 5, totalDays: 22 }
+
+// Neighbours ringing the player's plot. left/top are percentages of the map
+// box, taken from the mockup so the ring keeps its shape at any size.
+export const VILLAGE_NEIGHBORS = [
+  { id: 1, name: 'ป้าแดง', trees: 104, streak: 21, watered: 12, left: 43.12, top: 3.18 },
+  { id: 2, name: 'ลุงสมพงษ์', trees: 63, streak: 9, watered: 7, left: 64.44, top: 9.0 },
+  { id: 3, name: 'ยายบุญมี', trees: 41, streak: 6, watered: 4, left: 78.94, top: 24.73 },
+  { id: 4, name: 'น้าจันทร์', trees: 18, streak: 3, watered: 9, left: 82.12, top: 45.27 },
+  { id: 5, name: 'ตาจ่อย', trees: 72, streak: 14, watered: 2, left: 72.88, top: 64.09 },
+  { id: 6, name: 'ป้าสมศรี', trees: 35, streak: 4, watered: 5, left: 54.19, top: 75.36 },
+  { id: 7, name: 'ตาเปี๊ยก', trees: 9, streak: 2, watered: 1, left: 32.06, top: 75.36 },
+  { id: 8, name: 'น้าแอ๊ด', trees: 12, streak: 5, watered: 3, left: 13.38, top: 64.09 },
+  { id: 9, name: 'ยายหอม', trees: 25, streak: 7, watered: 6, left: 4.12, top: 45.27 },
+  { id: 10, name: 'ลุงเฉลิม', trees: 4, streak: 1, watered: 0, left: 7.31, top: 24.73 },
+  { id: 11, name: 'พี่หนึ่ง', trees: 1, streak: 1, watered: 0, left: 21.81, top: 9.0 },
+]
+
+// The player's own plot sits in the middle of the ring.
+export const MY_PLOT = { left: 36.88, top: 30.45, width: 26.25 }
+export const NEIGHBOR_PLOT_WIDTH = 13.75
+
+export const GARDEN_WATERINGS = [
+  { name: 'ป้าแดง', when: 'เมื่อเช้า' },
+  { name: 'ลุงสมพงษ์', when: 'เมื่อวาน' },
+  { name: 'น้าจันทร์', when: '2 วันก่อน' },
+]
+
+export const GARDEN_CHEERS = [
+  { text: 'วันนี้ก็ทำได้ดี', from: 'ป้าแดง', when: 'เมื่อเช้า' },
+  { text: 'สู้ ๆ นะ', from: 'ยายบุญมี', when: 'เมื่อวาน' },
+]
+
+export const CHEER_MESSAGES = ['สู้ ๆ นะ', 'เก่งมาก ฝึกต่อไปนะ', 'วันนี้ก็ทำได้ดี', 'เป็นกำลังใจให้เสมอ']
+
+export const GARDEN_RULES = [
+  {
+    title: 'วันไหนนับเป็น 1 ต้น',
+    detail: 'ฝึกจบอย่างน้อย 1 โปรแกรมของวันนั้น (ฝึกเคลื่อนไหวครบทุกท่า หรือฝึกเสียงพูดครบทุกขั้นตอน)',
+  },
+  {
+    title: 'ระดับดูจากต้นไม้สะสม',
+    detail: 'นับรวมทุกวันที่ฝึก ไม่ต้องติดต่อกัน ต้นไม้ไม่ตาย และระดับไม่ลดลง',
+  },
+  {
+    title: 'ของตกแต่งพิเศษ',
+    detail: 'ฝึกครบ 4 วันในสัปดาห์ ต้นไม้ออกผล · ฝึกครบทั้ง 2 โปรแกรมในวันเดียวกัน ได้ของตกแต่งเพิ่ม',
+  },
+  {
+    title: 'กำลังใจจากเพื่อน',
+    detail: 'เพื่อนมารดน้ำหรือส่งกำลังใจ ดอกไม้ในสวนบานเพิ่ม แต่ไม่นับเป็นต้นไม้',
+  },
+]
+
+// ─── Community (mockup sections #community and #communitypost) ──────────────
+// Peer-support feed. Mock stand-in for Firestore; comments are keyed by post id.
+
+export const COMMUNITY_TOPICS = ['ประสบการณ์', 'ชะลออาการ', 'ชวนทำกิจกรรม', 'ให้กำลังใจ']
+
+// Pill colours per topic, straight from the mockup.
+export const TOPIC_STYLES = {
+  ประสบการณ์: { background: '#E0F1FA', color: '#0B3550' },
+  ชะลออาการ: { background: '#E3F1DC', color: '#24661A' },
+  ชวนทำกิจกรรม: { background: '#FFF1C7', color: '#6B4A00' },
+  ให้กำลังใจ: { background: '#EEE8FA', color: '#4B2A86' },
+}
+
+// `verified` marks a therapist account (teal badge); otherwise the badge shows
+// how long the member has lived with Parkinson's.
+export const COMMUNITY_POSTS = [
+  {
+    id: 1,
+    author: 'ป้าแดง',
+    badge: 'เป็นมา 4 ปี',
+    when: '2 ชั่วโมงที่แล้ว',
+    topic: 'ประสบการณ์',
+    body: 'ช่วงแรกมือสั่นจนติดกระดุมเสื้อเองไม่ได้ ท้อมาก ตอนนี้ฝึกทุกเช้าวันละ 20 นาที ติดต่อกันมา 3 เดือน รู้สึกว่าเดินมั่นคงขึ้น ติดกระดุมได้เองแล้ว ใครเพิ่งเริ่มอย่าเพิ่งท้อนะคะ ค่อย ๆ ไปทีละวัน',
+    cheers: 128, comments: 24, shares: 6,
+    memberFor: 'สมาชิก 7 เดือน · 42 โพสต์', streak: 21, gardenLevel: 7,
+  },
+  {
+    id: 2,
+    author: 'กภ.สุนิสา รักษ์ดี',
+    verified: true,
+    badge: 'นักกายภาพยืนยันแล้ว',
+    when: 'เมื่อเช้า',
+    topic: 'ชะลออาการ',
+    body: 'เคล็ดลับวันนี้: ตอนเดินให้ก้าวยาว ๆ และแกว่งแขนให้สุด ทำวันละ 10 นาที ช่วยฝึกการทรงตัวและลดการเดินซอยเท้า ควรมีคนอยู่ใกล้ ๆ หรือเดินข้างราวจับนะครับ มีคำถามถามใต้โพสต์นี้ได้เลย',
+    cheers: 96, comments: 31, shares: 40,
+    memberFor: 'นักกายภาพบำบัด · โรงพยาบาลศิริราช',
+  },
+  {
+    id: 3,
+    author: 'ลุงสมพงษ์',
+    badge: 'เป็นมา 2 ปี',
+    when: 'เมื่อวาน',
+    topic: 'ชวนทำกิจกรรม',
+    body: 'ใครอยู่แถวสีลมมารำไทชิด้วยกันไหมครับ ช้า ๆ ไม่หนัก ผมไปมา 2 เดือน ได้เพื่อนเยอะ ใจก็สบายขึ้น ใครไปไม่ไหวมาเป็นกำลังใจทางนี้ได้ครับ',
+    cheers: 54, comments: 18, shares: 9,
+    memberFor: 'สมาชิก 1 ปี · 15 โพสต์', streak: 9, gardenLevel: 6,
+    event: { month: 'พ.ย.', day: 15, title: 'รำไทชิเช้าวันเสาร์', time: '07:00–08:00 น.', place: 'สวนลุมพินี ประตูฝั่งสีลม', going: 12 },
+  },
+  {
+    id: 4,
+    author: 'น้าจันทร์',
+    badge: 'เป็นมา 1 ปี',
+    when: '2 วันก่อน',
+    topic: 'ให้กำลังใจ',
+    body: 'วันนี้หลานบอกว่าได้ยินยายพูดชัดขึ้นเยอะ ดีใจจนน้ำตาซึม ขอบคุณทุกคนในกลุ่มที่คอยส่งกำลังใจกันนะคะ ถ้าใครเหนื่อยวันนี้ ส่งกำลังใจให้ค่ะ สู้ไปด้วยกัน',
+    cheers: 211, comments: 47, shares: 12,
+    memberFor: 'สมาชิก 4 เดือน · 9 โพสต์', streak: 3, gardenLevel: 4,
+  },
+]
+
+// `reply: true` indents the comment under the one above it.
+export const COMMUNITY_COMMENTS = {
+  1: [
+    { id: 1, author: 'น้าจันทร์', badge: 'เป็นมา 1 ปี', when: '1 ชั่วโมงที่แล้ว', cheers: 18, body: 'อ่านแล้วมีกำลังใจขึ้นเยอะเลยค่ะป้า ฉันก็ติดกระดุมยากเหมือนกัน จะลองฝึกทุกเช้าดูค่ะ' },
+    { id: 2, author: 'ป้าแดง', badge: 'เจ้าของโพสต์', when: '50 นาทีที่แล้ว', cheers: 12, reply: true, body: 'สู้ ๆ นะน้า ช่วงแรกฝึกแค่ 5 นาทีก่อนก็ได้ ไม่ต้องหักโหม' },
+    { id: 3, author: 'กภ.สุนิสา รักษ์ดี', verified: true, badge: 'นักกายภาพยืนยันแล้ว', when: '30 นาทีที่แล้ว', cheers: 34, body: 'ดีใจด้วยครับป้าแดง การฝึกสม่ำเสมอสำคัญที่สุด ส่วนการติดกระดุม ลองฝึกหยิบเหรียญใส่กระปุกวันละนิดช่วยเรื่องนิ้วมือได้ครับ' },
+    { id: 4, author: 'ลุงสมพงษ์', badge: 'เป็นมา 2 ปี', when: '10 นาทีที่แล้ว', cheers: 7, body: 'เป็นกำลังใจให้ครับ วันเสาร์มารำไทชิด้วยกันนะครับป้า' },
+  ],
+}
+
+export const QUICK_COMMENTS = ['สู้ ๆ นะคะ', 'ขอบคุณที่แบ่งปัน', 'เป็นกำลังใจให้', 'ขอลองทำตามบ้าง']
+
+export const COMMUNITY_EVENTS = [
+  { id: 1, month: 'พ.ย.', day: 15, title: 'รำไทชิเช้าวันเสาร์', place: 'สวนลุมพินี', going: 12, tint: '#FFF6E0' },
+  { id: 2, month: 'พ.ย.', day: 20, title: 'ร้องเพลงฝึกเสียง', place: 'ออนไลน์', going: 26, tint: '#E0F1FA' },
+]
+
+export const COMMUNITY_TAGS = [
+  { tag: '#เดินทุกเช้า', posts: 86 },
+  { tag: '#ไทชิ', posts: 41 },
+  { tag: '#ร้องเพลงฝึกเสียง', posts: 33 },
+  { tag: '#นอนหลับสบาย', posts: 28 },
+]
+
+export const COMMUNITY_RULES = [
+  'พูดกันด้วยความสุภาพและเห็นใจ',
+  'ห้ามขายยา อาหารเสริม หรือชวนลงทุน',
+  'เรื่องยาและการรักษา ปรึกษาแพทย์ก่อนทำตามเสมอ',
+  'เห็นโพสต์ไม่เหมาะสม กดรายงานได้',
+]
+
+export const COMMUNITY_DISCLAIMER =
+  'เนื้อหาในชุมชนเป็นประสบการณ์ส่วนตัว ไม่ใช่คำแนะนำทางการแพทย์ เรื่องยาและการรักษาควรปรึกษาแพทย์ของคุณก่อนเสมอ'

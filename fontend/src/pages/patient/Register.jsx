@@ -1,40 +1,74 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../../components/AuthLayout.jsx'
-import { Select } from '../../components/ui.jsx'
-import { Activity, Chat } from '../../components/icons.jsx'
+import { Field, Input, Button } from '../../components/ui.jsx'
+import { User, Phone, Mail, Lock, Check, ChevronRight } from '../../components/icons.jsx'
 import { PARKINSON_STAGES } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+const phoneOk = (v) => v.replace(/\D/g, '').length >= 9
 
-const inputCls =
-  'w-full border-2 border-teal-100 rounded-[14px] px-4 min-h-[52px] text-[15px] bg-[#F4FAF5] outline-none focus:border-teal-600 transition-colors'
-const labelCls = 'block text-[13.5px] font-bold mb-1.5 text-[#1F3A2A]'
+// The mockup shows "ระยะที่ N" on one line and the explanation underneath;
+// PARKINSON_STAGES stores both in one string joined by an em dash.
+const splitStage = (label) => {
+  const [title, ...rest] = label.split(' — ')
+  return { title, desc: rest.join(' — ') }
+}
+
+// Mockup radio card: 3px border, blue tint when selected, check in a round dot.
+function ChoiceCard({ selected, title, desc, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`flex items-center gap-4 text-left min-h-[60px] px-4 py-2.5 rounded-btn border-[3px] transition-colors ${
+        selected ? 'border-teal-700 bg-teal-100' : 'border-line bg-surface hover:bg-teal-50'
+      }`}
+    >
+      <span
+        className={`w-7 h-7 rounded-full border-[3px] flex items-center justify-center flex-shrink-0 ${
+          selected ? 'border-teal-700 bg-teal-700 text-white' : 'border-line bg-surface'
+        }`}
+      >
+        {selected && <Check size={16} />}
+      </span>
+      <span className="flex flex-col gap-0.5">
+        <span className="text-b-base font-bold">{title}</span>
+        {desc && <span className="text-b-sm text-ink-secondary">{desc}</span>}
+      </span>
+    </button>
+  )
+}
 
 export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    first: 'สมชาย', last: 'ใจดี', email: 'patient@demo.com', password: 'demo1234', stage: 'stage1', fall: 'no',
+    name: 'สมชาย ใจดี', phone: '089-123-4567', email: 'patient@demo.com',
+    password: 'demo1234', stage: 'stage1', fall: 'no',
   })
   const [errors, setErrors] = useState({})
   const [busy, setBusy] = useState(false)
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+  const pick = (k, v) => () => setForm((f) => ({ ...f, [k]: v }))
 
   async function submit(e) {
     e.preventDefault()
     const errs = {}
-    if (!form.first.trim()) errs.first = 'กรุณากรอกชื่อ'
-    if (!emailOk(form.email)) errs.email = 'อีเมลไม่ถูกต้อง'
-    if (form.password.length < 6) errs.password = 'รหัสผ่านอย่างน้อย 6 ตัวอักษร'
+    if (!form.name.trim()) errs.name = 'กรุณากรอกชื่อ-นามสกุล'
+    if (!phoneOk(form.phone)) errs.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
+    if (form.email && !emailOk(form.email)) errs.email = 'อีเมลไม่ถูกต้อง'
+    if (form.password.length < 8) errs.password = 'รหัสผ่านอย่างน้อย 8 ตัวอักษร'
     setErrors(errs)
     if (Object.keys(errs).length) return
     setBusy(true)
     try {
       await register({
-        name: `${form.first} ${form.last}`.trim(),
-        email: form.email,
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
         parkinsonStage: form.stage,
         fallHistory: form.fall === 'yes',
         role: 'patient',
@@ -46,98 +80,78 @@ export default function Register() {
   }
 
   return (
-    <AuthLayout hero={false} cardWidth={520}>
-      <div className="relative">
-        {/* floating confetti */}
-        <span className="absolute top-1 right-6 w-3 h-3 rounded-full" style={{ background: '#F7C132' }} />
-        <span className="absolute top-8 right-12 w-2 h-2 rounded-full" style={{ background: '#2FA65A' }} />
-        <span className="absolute top-2 right-20 w-2.5 h-2.5 rounded-[3px] rotate-[20deg]" style={{ background: '#D9538F' }} />
-
-        {/* header */}
-        <div className="flex items-center gap-3.5 mb-6">
-          <div className="w-12 h-12 rounded-[15px] bg-teal-600 flex items-center justify-center overflow-hidden flex-shrink-0" style={{ boxShadow: '0 6px 14px rgba(47,166,90,.35)' }}>
-            <img src="/logo.png" alt="RehabAI" className="w-9 h-9 object-contain" style={{ filter: 'brightness(0) invert(1)' }} />
-          </div>
-          <div>
-            <h2 className="font-heading text-[22px] font-semibold text-ink-primary leading-tight">สร้างบัญชีใหม่ 🌱</h2>
-            <p className="text-[13.5px] text-ink-secondary">เริ่มต้นเส้นทางการฟื้นฟูของคุณ</p>
-          </div>
-        </div>
-
-        {/* role selector */}
-        <div className="text-[13.5px] font-bold text-[#1F3A2A] mb-2.5">คุณคือใคร?</div>
-        <div className="grid grid-cols-2 gap-3 mb-5">
-          <div className="rounded-[16px] border-[2.5px] border-teal-600 bg-teal-100 py-3.5 text-center min-h-[88px] flex flex-col items-center justify-center">
-            <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center mb-2"><Activity size={19} /></div>
-            <div className="text-[14.5px] font-bold text-teal-700">ผู้ป่วย / ผู้ดูแล</div>
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate('/therapist/register')}
-            className="rounded-[16px] border-2 border-teal-100 bg-white py-3.5 text-center min-h-[88px] flex flex-col items-center justify-center active:translate-y-[2px] transition-transform"
-          >
-            <div className="w-10 h-10 rounded-full flex items-center justify-center mb-2" style={{ background: '#FBE7F1', color: '#B03A76' }}><Chat size={19} /></div>
-            <div className="text-[14.5px] font-bold text-ink-secondary">นักกายภาพบำบัด</div>
-          </button>
-        </div>
-
-        <form onSubmit={submit} noValidate>
-          <div className="grid grid-cols-2 gap-3.5 mb-3.5">
-            <div>
-              <label className={labelCls}>ชื่อ</label>
-              <input className={inputCls} placeholder="สมชาย" value={form.first} onChange={set('first')} />
-              {errors.first && <p className="field-error mt-1">{errors.first}</p>}
-            </div>
-            <div>
-              <label className={labelCls}>นามสกุล</label>
-              <input className={inputCls} placeholder="ใจดี" value={form.last} onChange={set('last')} />
-            </div>
-          </div>
-
-          <div className="mb-3.5">
-            <label className={labelCls}>อีเมลหรือเบอร์โทรศัพท์</label>
-            <input className={inputCls} type="email" placeholder="somchai@email.com" value={form.email} onChange={set('email')} />
-            {errors.email && <p className="field-error mt-1">{errors.email}</p>}
-          </div>
-
-          <div className="mb-4">
-            <label className={labelCls}>รหัสผ่าน</label>
-            <input className={inputCls} type="password" placeholder="อย่างน้อย 8 ตัวอักษร" value={form.password} onChange={set('password')} />
-            {errors.password && <p className="field-error mt-1">{errors.password}</p>}
-          </div>
-
-          <div className="mb-3.5">
-            <label className={labelCls}>ระยะอาการของโรคพาร์กินสัน (Hoehn &amp; Yahr)</label>
-            <Select value={form.stage} onChange={set('stage')}>
-              {PARKINSON_STAGES.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
-              ))}
-            </Select>
-          </div>
-
-          <div className="mb-5">
-            <label className={labelCls}>เคยมีประวัติการล้มหรือไม่</label>
-            <Select value={form.fall} onChange={set('fall')}>
-              <option value="no">ไม่เคยมีประวัติการล้ม</option>
-              <option value="yes">เคยมีประวัติการล้ม</option>
-            </Select>
-            {form.fall === 'yes' && (
-              <p className="text-[11.5px] text-coral-700 mt-1.5 leading-relaxed">
-                เพื่อความปลอดภัย ควรมีผู้ดูแลอยู่ด้วยขณะทำกายภาพ
-              </p>
-            )}
-          </div>
-
-          <button type="submit" className="btn-primary" disabled={busy}>
-            {busy ? 'กำลังสมัคร…' : 'สมัครสมาชิก 🎉'}
-          </button>
-        </form>
-
-        <p className="text-center text-[14px] text-ink-secondary mt-4.5 pt-1">
-          มีบัญชีอยู่แล้ว?{' '}
-          <Link to="/login" className="text-teal-700 font-semibold hover:underline">เข้าสู่ระบบ</Link>
-        </p>
+    <AuthLayout>
+      <div>
+        <h1 className="font-heading text-b-h1 font-bold m-0 mb-2.5">สมัครสมาชิก</h1>
+        <p className="text-b-base text-ink-secondary m-0">ขั้นตอนที่ 1 จาก 3 · ข้อมูลของคุณ</p>
       </div>
+
+      <form onSubmit={submit} noValidate className="flex flex-col gap-1">
+        <Field label="ชื่อ-นามสกุล" error={errors.name}>
+          <Input icon={User} placeholder="เช่น สมชาย ใจดี" value={form.name} onChange={set('name')} />
+        </Field>
+
+        <Field label="เบอร์โทรศัพท์" error={errors.phone}>
+          <Input icon={Phone} placeholder="08X-XXX-XXXX" value={form.phone} onChange={set('phone')} />
+          <p className="text-b-sm text-ink-secondary mt-2 m-0">
+            ใช้ติดต่อเมื่อมีเหตุฉุกเฉิน · การแจ้งเตือนให้ฝึกส่งทาง LINE
+          </p>
+        </Field>
+
+        <Field label="อีเมล (ไม่บังคับ)" error={errors.email}>
+          <Input icon={Mail} type="email" placeholder="name@example.com" value={form.email} onChange={set('email')} />
+        </Field>
+
+        <Field label="ตั้งรหัสผ่าน" error={errors.password}>
+          <Input icon={Lock} type="password" placeholder="อย่างน้อย 8 ตัวอักษร" value={form.password} onChange={set('password')} />
+        </Field>
+
+        <div className="flex flex-col gap-3 mb-5">
+          <span className="text-b-label font-bold">ระยะอาการตามที่แพทย์แจ้ง</span>
+          {PARKINSON_STAGES.map((s) => {
+            const { title, desc } = splitStage(s.label)
+            return (
+              <ChoiceCard
+                key={s.value}
+                selected={form.stage === s.value}
+                title={title}
+                desc={desc}
+                onClick={pick('stage', s.value)}
+              />
+            )
+          })}
+        </div>
+
+        <div className="flex flex-col gap-3 mb-5">
+          <span className="text-b-label font-bold">เคยมีประวัติการล้มหรือไม่</span>
+          <ChoiceCard
+            selected={form.fall === 'no'}
+            title="ไม่เคยมีประวัติการล้ม"
+            onClick={pick('fall', 'no')}
+          />
+          <ChoiceCard
+            selected={form.fall === 'yes'}
+            title="เคยมีประวัติการล้ม"
+            desc="เพื่อความปลอดภัย ควรมีผู้ดูแลอยู่ด้วยขณะทำกายภาพ"
+            onClick={pick('fall', 'yes')}
+          />
+        </div>
+
+        <Button as="button" type="submit" disabled={busy} className="w-full">
+          {busy ? 'กำลังสมัคร…' : (
+            <>ถัดไป<ChevronRight size={22} /></>
+          )}
+        </Button>
+      </form>
+
+      <p className="text-b-base text-center m-0">
+        มีบัญชีอยู่แล้ว?{' '}
+        <Link to="/login" className="font-bold text-teal-700 hover:underline">เข้าสู่ระบบ</Link>
+      </p>
+
+      <Link to="/therapist/register" className="text-b-label font-bold text-center text-teal-700 hover:underline">
+        สำหรับนักกายภาพบำบัด สมัครที่นี่
+      </Link>
     </AuthLayout>
   )
 }

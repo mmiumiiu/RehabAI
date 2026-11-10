@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabAI — Therapist Dashboard (รายเดือน/รายสัปดาห์)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F4;
+    --surface:#FFFFFF;
+    --teal-900:#1F4A40;
+    --teal-800:#28584C;
+    --teal-700:#2F6F62;
+    --teal-500:#4E9484;
+    --teal-100:#DCEEE8;
+    --coral-700:#B9542A;
+    --coral-100:#FBE7D9;
+    --text-primary:#22302C;
+    --text-secondary:#5B6B66;
+    --text-muted:#8E9B96;
+    --border:#E6E0D4;
+    --danger:#D9483E;
+  }
+  *{box-sizing:border-box;}
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--bg); font-family:'Inter','Sarabun',sans-serif; color:var(--text-primary); }
+
+  /* app shell */
+  .app-shell{ display:flex; min-height:100vh; }
+  .sidebar{ width:220px; background:var(--teal-900); color:#fff; padding:24px 16px; display:flex; flex-direction:column; flex-shrink:0; }
+  .sidebar .brand-mark{ margin-bottom:32px; padding:0 8px; display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:36px;height:36px;border-radius:9px; background:rgba(255,255,255,0.14); display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+  .brand-mark span{ font-family:'Poppins','Sarabun',sans-serif; font-weight:600; font-size:16px; }
+  .therapist-badge{ font-size:9.5px; background:rgba(255,255,255,0.14); color:#fff; padding:2px 9px; border-radius:10px; font-weight:600; margin-top:2px; display:inline-block; }
+  .nav-link{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; font-size:13.5px; color:rgba(255,255,255,0.7); margin-bottom:4px; cursor:pointer; }
+  .nav-link.active{ background:rgba(255,255,255,0.12); color:#fff; font-weight:500; }
+  .sidebar-footer{ margin-top:auto; display:flex; align-items:center; gap:10px; padding:12px 8px; border-top:1px solid rgba(255,255,255,0.12); }
+  .avatar{ width:32px;height:32px;border-radius:50%; background:rgba(255,255,255,0.16); display:flex;align-items:center;justify-content:center; font-size:12px; font-weight:600; flex-shrink:0; }
+  .sidebar-footer .uname{ font-size:12.5px; font-weight:500; }
+  .sidebar-footer .urole{ font-size:10.5px; opacity:.6; }
+
+  .app-main{ flex:1; background:var(--bg); min-width:0; }
+  .app-topbar{ display:flex; justify-content:space-between; align-items:center; padding:20px 32px; border-bottom:1px solid var(--border); background:#fff; }
+  .app-topbar .greet-name{ font-family:'Poppins','Sarabun',sans-serif; font-size:17px; font-weight:600; color:var(--teal-900); margin:0; }
+  .app-topbar .greet-label{ font-size:12px; color:var(--text-secondary); margin:0 0 2px; }
+  .topbar-right{ display:flex; align-items:center; gap:14px; }
+  .app-content{ padding:28px 32px; max-width:920px; margin:0 auto; }
+  .section-title{ font-size:13px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.03em; margin:24px 0 14px; }
+
+  .mini-btn{ border:1px solid var(--teal-700); color:var(--teal-700); background:transparent; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+
+  /* view tabs (เดือน / สัปดาห์) */
+  .view-tabs{ display:flex; gap:0; margin-bottom:16px; border-bottom:1px solid var(--border); }
+  .view-tab{ background:none; border:none; padding:10px 4px; margin-right:26px; font-size:14px; font-weight:600; color:var(--text-secondary); cursor:pointer; border-bottom:2.5px solid transparent; font-family:inherit; }
+  .view-tab.active{ color:var(--teal-900); border-bottom-color:var(--teal-700); }
+
+  /* week sub-tabs */
+  .week-tabs{ display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+  .week-tab{ background:#fff; border:1px solid var(--border); border-radius:20px; padding:7px 16px; font-size:12.5px; font-weight:600; color:var(--text-secondary); cursor:pointer; font-family:inherit; }
+  .week-tab.active{ background:var(--teal-700); border-color:var(--teal-700); color:#fff; }
+
+  .metric-row{ display:flex; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+  .metric-card{ flex:1; min-width:150px; background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .metric-card .val{ font-family:'Poppins','Sarabun',sans-serif; font-size:22px; font-weight:600; color:var(--teal-900); }
+  .metric-card .lbl{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
+
+  .chart-card{ background:#fff; border:1px solid var(--border); border-radius:14px; padding:22px 26px; margin-bottom:8px; }
+  .chart-card .chart-title{ font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:16px; }
+  .legend{ display:flex; gap:18px; margin-top:14px; }
+  .legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); }
+  .legend-dot{ width:8px;height:8px;border-radius:50%; }
+
+  .settings-card{ background:#fff; border:1px solid var(--border); border-radius:14px; padding:22px 26px; margin-bottom:8px; }
+
+  table.history{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  table.history th{ text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--text-muted); background:#F5F2EA; padding:12px 20px; font-weight:600; }
+  table.history td{ padding:13px 20px; font-size:13.5px; border-top:1px solid var(--border); }
+  .badge{ font-size:11px; font-weight:600; padding:3px 10px; border-radius:6px; }
+  .badge.big{ background:var(--teal-100); color:var(--teal-900); }
+  .badge.loud{ background:var(--coral-100); color:var(--coral-700); }
+
+  .note-textarea{ width:100%; border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:13px; font-family:inherit; color:var(--text-primary); min-height:90px; resize:none; }
+
+  /* LSVT LOUD per-patient settings: decibel target (dropdowns) + everyday phrases */
+  .db-setting-hint{ font-size:11.5px; color:var(--text-secondary); margin:0 0 18px; line-height:1.6; }
+  .db-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:18px; }
+  .db-field label{ display:block; font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:8px; }
+  .db-select{ width:100%; border:1px solid var(--border); border-radius:9px; padding:10px 12px; font-size:14px; font-family:inherit; color:var(--text-primary); background:#fff; cursor:pointer; }
+  .db-select:focus{ outline:none; border-color:var(--coral-700); }
+  .db-field .cap{ font-size:11px; color:var(--text-muted); margin-top:7px; line-height:1.4; }
+  .db-summary{ font-size:12.5px; color:var(--text-secondary); text-align:center; margin:0 0 4px; }
+  .save-row{ display:flex; align-items:center; gap:12px; margin-top:14px; }
+  .save-toast{ font-size:12px; color:#3B6D11; font-weight:600; }
+
+  .phrase-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .phrase-row{ display:flex; align-items:center; justify-content:space-between; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 14px; }
+  .phrase-row span{ font-size:13px; }
+  .phrase-del-btn{ background:none; border:none; color:var(--danger); font-size:15px; cursor:pointer; line-height:1; padding:4px 8px; border-radius:6px; }
+  .phrase-del-btn:hover{ background:var(--coral-100); }
+  .phrase-empty{ font-size:12.5px; color:var(--text-muted); padding:6px 2px; }
+  .phrase-add-row{ display:flex; gap:8px; }
+  .phrase-add-row input{ flex:1; border:1px solid var(--border); border-radius:8px; padding:9px 12px; font-size:13px; font-family:inherit; }
+  .mini-btn.loud{ border-color:var(--coral-700); color:var(--coral-700); }
+
+  @media (max-width: 720px){
+    .app-shell{ flex-direction:column; }
+    .sidebar{ width:100%; flex-direction:row; align-items:center; padding:12px 16px; gap:16px; }
+    .sidebar .brand-mark{ margin-bottom:0; padding:0; }
+    .sidebar-footer{ margin-top:0; margin-left:auto; border-top:none; padding:0; }
+    .nav-link{ display:none; }
+    .metric-row{ gap:10px; }
+    .db-grid{ grid-template-columns:1fr; }
+    table.history{ display:block; overflow-x:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <div class="sidebar">
+    <div class="brand-mark">
+      <div class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 12c2-4 4-4 5 0s3 4 5 0 3-4 5 0 2 4 3 0" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><span>RehabAI</span><br><span class="therapist-badge">นักกายภาพบำบัด</span></div>
+    </div>
+    <div class="nav-link active">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 9.5a3 3 0 100-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      รายชื่อผู้ป่วย
+    </div>
+    <div class="nav-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H8l-4 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      ข้อความ
+    </div>
+    <div class="sidebar-footer">
+      <div class="avatar">พญ</div>
+      <div><div class="uname">กภ.สุนิสา รักษ์ดี</div><div class="urole">นักกายภาพบำบัด</div></div>
+    </div>
+  </div>
+
+  <div class="app-main">
+    <div class="app-topbar">
+      <div>
+        <p class="greet-label">← รายชื่อผู้ป่วย</p>
+        <p class="greet-name">สมชาย ใจดี — ระยะ 2 (Hoehn &amp; Yahr)</p>
+      </div>
+      <div class="topbar-right"><button class="mini-btn">แชทกับผู้ป่วย</button></div>
+    </div>
+
+    <div class="app-content">
+
+      <div class="view-tabs">
+        <button class="view-tab active" data-view="month">รายเดือน</button>
+        <button class="view-tab" data-view="week">รายสัปดาห์</button>
+      </div>
+
+      <div class="week-tabs" id="weekTabs" style="display:none;">
+        <button class="week-tab active" data-week="0">สัปดาห์ที่ 1</button>
+        <button class="week-tab" data-week="1">สัปดาห์ที่ 2</button>
+        <button class="week-tab" data-week="2">สัปดาห์ที่ 3</button>
+        <button class="week-tab" data-week="3">สัปดาห์ที่ 4</button>
+      </div>
+
+      <div class="metric-row" id="metricRow"></div>
+
+      <div class="chart-card">
+        <p class="chart-title" id="chartTitle"></p>
+        <div id="chartContainer"></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--teal-500);"></div>LSVT BIG</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--coral-700);"></div>LSVT LOUD</div>
+        </div>
+      </div>
+
+      <p class="section-title">ตั้งค่า LSVT LOUD สำหรับผู้ป่วยรายนี้</p>
+      <div class="settings-card">
+        <p class="db-setting-hint">กำหนดช่วงความดังเสียง (เดซิเบล) เฉพาะบุคคล ระบบจะใช้ค่านี้แสดงเป็นเป้าหมายในหน้าฝึกจริงของผู้ป่วยแทนค่าเริ่มต้นของระบบ ปรับตามเสียงฐาน (baseline) ของผู้ป่วยแต่ละคน</p>
+        <div class="db-grid">
+          <div class="db-field">
+            <label for="dbMin">ค่าต่ำสุด (Min)</label>
+            <select class="db-select" id="dbMin"></select>
+            <p class="cap">ต่ำกว่านี้ถือว่าเบาเกินไป</p>
+          </div>
+          <div class="db-field">
+            <label for="dbGoal">ค่าเป้าหมาย (Goal)</label>
+            <select class="db-select" id="dbGoal"></select>
+            <p class="cap">ระดับที่อยากให้ทำได้</p>
+          </div>
+          <div class="db-field">
+            <label for="dbMax">ค่าสูงสุด (Max)</label>
+            <select class="db-select" id="dbMax"></select>
+            <p class="cap">ดังเกินนี้เสี่ยงตะโกน</p>
+          </div>
+        </div>
+        <p class="db-summary" id="dbSummary"></p>
+        <div class="save-row">
+          <button class="mini-btn loud" id="saveDbBtn">บันทึกค่าเดซิเบล</button>
+          <span class="save-toast" id="dbSavedToast" style="display:none;">✓ บันทึกแล้ว</span>
+        </div>
+      </div>
+
+      <p class="section-title">คำพูดในชีวิตประจำวัน (ขั้นตอนที่ 5 — พูดในชีวิตประจำวัน)</p>
+      <div class="settings-card">
+        <p class="db-setting-hint" style="margin:0 0 14px;">คำ/ประโยคเหล่านี้จะถูกสุ่มใช้ในขั้นตอน "พูดในชีวิตประจำวัน" ของผู้ป่วยรายนี้โดยเฉพาะ ปรับให้เข้ากับบริบทชีวิตประจำวันจริงของผู้ป่วยได้ เช่น ชื่อคนในครอบครัว ของใช้ประจำวัน</p>
+        <div class="phrase-list" id="phraseList"></div>
+        <div class="phrase-add-row">
+          <input type="text" id="newPhraseInput" placeholder="พิมพ์คำพูดใหม่ เช่น ขอน้ำเปล่าแก้วหนึ่งครับ">
+          <button class="mini-btn loud" id="addPhraseBtn">+ เพิ่มคำพูด</button>
+        </div>
+      </div>
+
+      <p class="section-title">ประวัติล่าสุด</p>
+      <table class="history">
+        <tr><th>วันที่</th><th>ประเภทการฝึก</th><th>ระยะเวลา</th></tr>
+        <tr><td>7 ก.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>22 นาที</td></tr>
+        <tr><td>6 ก.ค. 2569</td><td><span class="badge loud">LSVT LOUD</span></td><td>11 นาที</td></tr>
+        <tr><td>5 ก.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>19 นาที</td></tr>
+      </table>
+
+      <p class="section-title">บันทึกของฉัน (เห็นเฉพาะนักกายภาพบำบัด ไม่กระทบโปรแกรมฝึกของผู้ป่วย)</p>
+      <div class="settings-card">
+        <textarea class="note-textarea" placeholder="เช่น สังเกตความแม่นยำท่า Marching+Cross Touch ต่ำกว่าท่าอื่น ควรสอบถามในนัดถัดไป...">สังเกตว่าความแม่นยำท่า "ก้าวถ่ายน้ำหนัก" และ "ยกแขน-ขา" ยังต่ำกว่าท่าอื่นอย่างเห็นได้ชัด น่าจะเป็นเพราะยังไม่มั่นใจเรื่องการทรงตัว จะสอบถามในแชทและติดตามในนัดถัดไป</textarea>
+        <button class="mini-btn" style="margin-top:10px;">บันทึก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- mock data: 4 weeks of July 2569, minutes trained per day, split BIG / LOUD ----
+  const weekData = [
+    { label:'สัปดาห์ที่ 1', dateRange:'1–7 ก.ค. 2569', daysTrained:5,
+      days:[ {d:'จ',big:18,loud:8},{d:'อ',big:22,loud:12},{d:'พ',big:0,loud:0},{d:'พฤ',big:25,loud:15},{d:'ศ',big:15,loud:8},{d:'ส',big:0,loud:0},{d:'อา',big:20,loud:10} ] },
+    { label:'สัปดาห์ที่ 2', dateRange:'8–14 ก.ค. 2569', daysTrained:6,
+      days:[ {d:'จ',big:20,loud:10},{d:'อ',big:24,loud:14},{d:'พ',big:10,loud:5},{d:'พฤ',big:28,loud:16},{d:'ศ',big:18,loud:9},{d:'ส',big:0,loud:0},{d:'อา',big:22,loud:12} ] },
+    { label:'สัปดาห์ที่ 3', dateRange:'15–21 ก.ค. 2569', daysTrained:4,
+      days:[ {d:'จ',big:15,loud:6},{d:'อ',big:0,loud:0},{d:'พ',big:20,loud:10},{d:'พฤ',big:0,loud:0},{d:'ศ',big:25,loud:12},{d:'ส',big:0,loud:0},{d:'อา',big:18,loud:8} ] },
+    { label:'สัปดาห์ที่ 4', dateRange:'22–28 ก.ค. 2569', daysTrained:7,
+      days:[ {d:'จ',big:22,loud:11},{d:'อ',big:26,loud:13},{d:'พ',big:19,loud:9},{d:'พฤ',big:30,loud:18},{d:'ศ',big:24,loud:12},{d:'ส',big:15,loud:6},{d:'อา',big:20,loud:10} ] }
+  ];
+  const totalDaysInMonth = 31;
+
+  let currentView = 'month';   // 'month' | 'week'
+  let currentWeekIndex = 0;
+
+  function weekTotals(w){
+    let big=0, loud=0;
+    w.days.forEach(d=>{ big+=d.big; loud+=d.loud; });
+    return {big, loud};
+  }
+
+  function niceMax(v){
+    if(v<=0) return 5;
+    if(v<=20) return Math.ceil(v/5)*5;
+    if(v<=100) return Math.ceil(v/10)*10;
+    return Math.ceil(v/50)*50;
+  }
+
+  function renderMetrics(){
+    const el = document.getElementById('metricRow');
+    if(currentView==='month'){
+      const totalBig = weekData.reduce((s,w)=>s+weekTotals(w).big,0);
+      const totalLoud = weekData.reduce((s,w)=>s+weekTotals(w).loud,0);
+      const daysTrained = weekData.reduce((s,w)=>s+w.daysTrained,0);
+      el.innerHTML = `
+        <div class="metric-card"><div class="val">${daysTrained} / ${totalDaysInMonth}</div><div class="lbl">วันที่ฝึกในเดือนนี้</div></div>
+        <div class="metric-card"><div class="val">${totalBig} นาที</div><div class="lbl">รวมเวลา LSVT BIG</div></div>
+        <div class="metric-card"><div class="val">${totalLoud} นาที</div><div class="lbl">รวมเวลา LSVT LOUD</div></div>
+      `;
+    } else {
+      const w = weekData[currentWeekIndex];
+      const t = weekTotals(w);
+      el.innerHTML = `
+        <div class="metric-card"><div class="val">${w.daysTrained} / 7</div><div class="lbl">วันที่ฝึกสัปดาห์นี้</div></div>
+        <div class="metric-card"><div class="val">${t.big} นาที</div><div class="lbl">รวมเวลา LSVT BIG</div></div>
+        <div class="metric-card"><div class="val">${t.loud} นาที</div><div class="lbl">รวมเวลา LSVT LOUD</div></div>
+      `;
+    }
+  }
+
+  function renderChart(){
+    let bars, title;
+    if(currentView==='month'){
+      bars = weekData.map((w,i)=>({ label:'สัปดาห์ '+(i+1), big:weekTotals(w).big, loud:weekTotals(w).loud }));
+      title = 'ระยะเวลาฝึกรวมรายสัปดาห์ — เดือน ก.ค. 2569 (นาที)';
+    } else {
+      const w = weekData[currentWeekIndex];
+      bars = w.days.map(d=>({ label:d.d, big:d.big, loud:d.loud }));
+      title = `ระยะเวลาฝึกรายวัน — ${w.label} (${w.dateRange}) หน่วย: นาที`;
+    }
+    document.getElementById('chartTitle').textContent = title;
+
+    const maxVal = niceMax(Math.max(...bars.map(b=>Math.max(b.big,b.loud))));
+    const W=640, H=220, mL=54, mT=14, mR=16, mB=34;
+    const plotW = W-mL-mR, plotH = H-mT-mB;
+    const n = bars.length, groupW = plotW/n;
+    const barW = Math.min(20, groupW*0.28), gap = 5;
+
+    let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">`;
+    svg += `<rect x="${mL}" y="${mT}" width="${plotW}" height="${plotH}" fill="none" stroke="var(--border)" stroke-width="1.2"/>`;
+    for(let i=0;i<=4;i++){
+      const frac = i/4;
+      const y = mT + plotH - frac*plotH;
+      const val = Math.round(maxVal*frac);
+      if(i>0) svg += `<line x1="${mL}" y1="${y}" x2="${mL+plotW}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="3 3"/>`;
+      svg += `<text x="${mL-8}" y="${y+3}" font-size="10" fill="var(--text-muted)" text-anchor="end" font-family="Inter">${val}</text>`;
+    }
+    bars.forEach((b,i)=>{
+      const gx = mL + i*groupW + groupW/2;
+      const bigH = (b.big/maxVal)*plotH, loudH = (b.loud/maxVal)*plotH;
+      const bigX = gx-barW-gap/2, loudX = gx+gap/2;
+      const bigY = mT+plotH-bigH, loudY = mT+plotH-loudH;
+      svg += `<rect x="${bigX}" y="${bigY}" width="${barW}" height="${bigH}" fill="var(--teal-500)" rx="2"/>`;
+      svg += `<rect x="${loudX}" y="${loudY}" width="${barW}" height="${loudH}" fill="var(--coral-700)" rx="2"/>`;
+      if(b.big>0) svg += `<text x="${bigX+barW/2}" y="${bigY-4}" font-size="9.5" fill="var(--teal-900)" text-anchor="middle" font-family="Inter" font-weight="600">${b.big}</text>`;
+      if(b.loud>0) svg += `<text x="${loudX+barW/2}" y="${loudY-4}" font-size="9.5" fill="var(--coral-700)" text-anchor="middle" font-family="Inter" font-weight="600">${b.loud}</text>`;
+      svg += `<text x="${gx}" y="${mT+plotH+16}" font-size="10.5" fill="var(--text-secondary)" text-anchor="middle" font-family="Inter">${b.label}</text>`;
+    });
+    svg += `</svg>`;
+    document.getElementById('chartContainer').innerHTML = svg;
+  }
+
+  function refresh(){ renderMetrics(); renderChart(); }
+
+  document.querySelectorAll('.view-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.view-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentView = btn.dataset.view;
+      document.getElementById('weekTabs').style.display = currentView==='week' ? 'flex' : 'none';
+      refresh();
+    });
+  });
+
+  document.querySelectorAll('.week-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      currentWeekIndex = parseInt(btn.dataset.week, 10);
+      refresh();
+    });
+  });
+
+  refresh();
+
+  // ---- LSVT LOUD per-patient settings: decibel target (dropdowns) ----
+  const dbMinEl = document.getElementById('dbMin');
+  const dbGoalEl = document.getElementById('dbGoal');
+  const dbMaxEl = document.getElementById('dbMax');
+  const dbSummaryEl = document.getElementById('dbSummary');
+  const dbSavedToast = document.getElementById('dbSavedToast');
+  const DB_OPTIONS = [40,45,50,55,60,65,70,75,80,85,90,95,100,105];
+
+  function fillDbSelect(el, defaultVal){
+    el.innerHTML = DB_OPTIONS.map(v => `<option value="${v}"${v===defaultVal?' selected':''}>${v} dB</option>`).join('');
+  }
+  fillDbSelect(dbMinEl, 60);
+  fillDbSelect(dbGoalEl, 80);
+  fillDbSelect(dbMaxEl, 95);
+
+  function renderDbSummary(){
+    const min = +dbMinEl.value, goal = +dbGoalEl.value, max = +dbMaxEl.value;
+    dbSummaryEl.textContent = `ช่วงที่ยอมรับได้ ${min}-${max} dB · เป้าหมาย ${goal} dB`;
+  }
+  [dbMinEl, dbGoalEl, dbMaxEl].forEach(el => el.addEventListener('change', renderDbSummary));
+  renderDbSummary();
+
+  document.getElementById('saveDbBtn').addEventListener('click', ()=>{
+    // ในระบบจริง: บันทึกค่านี้ลง users/{uid}/loudSettings.targetDb ผ่าน Cloud Function
+    dbSavedToast.style.display = 'inline';
+    clearTimeout(window.__dbToastTimer);
+    window.__dbToastTimer = setTimeout(()=>{ dbSavedToast.style.display = 'none'; }, 1800);
+  });
+
+  // ---- LSVT LOUD per-patient settings: everyday phrases (add/remove) ----
+  let customPhrases = [
+    'สวัสดีครับ วันนี้สบายดีไหมครับ',
+    'ขอน้ำเปล่าแก้วหนึ่งครับ',
+    'ขอบคุณมากครับ',
+    'ช่วยส่งรีโมทให้หน่อยครับ',
+    'หลานจะมาเยี่ยมกี่โมงครับ'
+  ];
+
+  function renderPhrases(){
+    const list = document.getElementById('phraseList');
+    if(customPhrases.length === 0){
+      list.innerHTML = `<p class="phrase-empty">ยังไม่มีคำพูดที่ตั้งไว้ — เพิ่มคำพูดแรกด้านล่าง</p>`;
+      return;
+    }
+    list.innerHTML = customPhrases.map((p, i) => `
+      <div class="phrase-row">
+        <span>${p}</span>
+        <button class="phrase-del-btn" data-idx="${i}" title="ลบคำพูดนี้">✕</button>
+      </div>
+    `).join('');
+    list.querySelectorAll('.phrase-del-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        customPhrases.splice(parseInt(btn.dataset.idx, 10), 1);
+        // ในระบบจริง: ลบออกจาก users/{uid}/loudSettings.customPhrases แล้วเซฟกลับ Firestore
+        renderPhrases();
+      });
+    });
+  }
+
+  function addPhrase(){
+    const input = document.getElementById('newPhraseInput');
+    const val = input.value.trim();
+    if(!val) return;
+    customPhrases.push(val);
+    // ในระบบจริง: push เข้า users/{uid}/loudSettings.customPhrases แล้วเซฟกลับ Firestore
+    input.value = '';
+    renderPhrases();
+  }
+
+  document.getElementById('addPhraseBtn').addEventListener('click', addPhrase);
+  document.getElementById('newPhraseInput').addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') addPhrase();
+  });
+
+  renderPhrases();
+</script>
+
+</body>
+</html>

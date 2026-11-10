@@ -21,7 +21,7 @@ export default function EmergencyAlert() {
   // step 1: fire SMS immediately on mount
   useEffect(() => {
     lineNotification.send({
-      body: `[RehabAI] แจ้งเหตุฉุกเฉิน: ${contact.name} โปรดติดต่อผู้ป่วยด่วน พร้อมพิกัดตำแหน่งปัจจุบัน`,
+      body: `[BRIDGE] แจ้งเหตุฉุกเฉิน: ${contact.name} โปรดติดต่อผู้ป่วยด่วน พร้อมพิกัดตำแหน่งปัจจุบัน`,
     })
   }, [])
 

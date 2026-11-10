@@ -36,11 +36,12 @@ export const auth = {
     return user
   },
 
-  async register({ name, email, role = 'patient', parkinsonStage, fallHistory }) {
+  async register({ name, email, phone, role = 'patient', parkinsonStage, fallHistory }) {
     await wait(700)
     const user = {
       uid: 'demo-' + role,
       email,
+      phone,
       role,
       name,
       parkinsonStage: parkinsonStage || 'stage1',

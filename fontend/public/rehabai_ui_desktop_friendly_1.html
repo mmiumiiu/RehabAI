@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabAI — UI Desktop (ดีไซน์ใหม่)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Sarabun:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F6FB; --surface:#FFF;
+    --green-900:#0A4023; --green-800:#0F5C2E; --green-700:#147A3D; --green-600:#1B9C4C; --green-500:#29B85E;
+    --green-200:#BDEFCF; --green-100:#E1FAEA;
+    --coral-700:#D94A1D; --coral-600:#F15A29; --coral-500:#FF8452; --coral-200:#FFD3BC; --coral-100:#FFEEE4;
+    --sun-500:#F7C600; --sun-200:#FCE988; --sun-100:#FFF7D6;
+    --sky-600:#2740B8; --sky-500:#2F4FDE; --sky-200:#C9D2FA; --sky-100:#ECEFFD;
+    --teal-700:#0E8577; --teal-600:#1BB39E; --teal-500:#2DC7B0; --teal-200:#BCEEE7; --teal-100:#E1F7F3;
+    --pink-700:#C24A78; --pink-600:#F0729A; --pink-500:#FF8FB0; --pink-200:#FFD3E2; --pink-100:#FDEAF0;
+    --ink:#2A2740; --ink2:#69637C; --muted:#9E97AF; --border:#EBE8F5;
+    --danger:#E5234F; --danger-100:#FCE1E7; --ok:#147A3D; --cam:#231E36;
+    --r-sm:12px; --r-md:16px; --r-lg:22px; --r-pill:999px;
+    --shadow-sm:0 3px 10px rgba(15,70,45,.07); --shadow-md:0 14px 34px rgba(15,70,45,.12);
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:linear-gradient(180deg,#F3F2FA,#ECEAF6 60%,#E6E3F2); font-family:'Sarabun','Inter',sans-serif; color:var(--ink); }
+  h1,h2,h3,h4{ font-family:'Mitr','Poppins','Sarabun',sans-serif; margin:0; }
+  .page-head{ text-align:center; padding:38px 16px 10px; }
+  .page-head .eyebrow{ display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--border); color:var(--ink2); font-size:12px; font-weight:600; padding:6px 14px; border-radius:var(--r-pill); margin-bottom:12px; box-shadow:var(--shadow-sm); }
+  .page-head h1{ color:var(--ink); margin:0 0 6px; font-size:28px; font-weight:600; }
+  .page-head p{ color:var(--ink2); font-size:14px; margin:0; }
+  .stack{ max-width:1240px; margin:0 auto; padding:20px 20px 50px; display:flex; flex-direction:column; gap:32px; }
+
+  /* browser window */
+  .win{ background:#fff; border:1px solid var(--border); border-radius:20px; overflow:hidden; box-shadow:var(--shadow-md); break-inside:avoid; }
+  .win .bar{ background:#F7F6FB; border-bottom:1px solid var(--border); padding:11px 16px; display:flex; align-items:center; gap:9px; }
+  .win .dot{ width:11px;height:11px;border-radius:50%; }
+  .win .url{ flex:1; background:#fff; border:1px solid var(--border); border-radius:var(--r-pill); padding:5px 14px; font-size:12px; color:var(--ink2); margin-left:6px; }
+  .win .label{ font-size:11.5px; font-weight:600; color:var(--ink2); background:var(--border); padding:3px 10px; border-radius:var(--r-pill); }
+
+  .app{ display:flex; min-height:520px; background:var(--bg); }
+  .side{ width:222px; flex-shrink:0; background:#fff; color:var(--ink); padding:20px 14px; display:flex; flex-direction:column; border-right:1px solid var(--border); }
+  .brand{ display:flex; align-items:center; gap:10px; padding:0 4px; margin-bottom:22px; }
+  .brand .m{ width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--green-500),var(--teal-600));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Mitr';box-shadow:0 6px 14px rgba(27,156,76,.3); }
+  .brand b{ font-family:'Mitr';font-size:16px;font-weight:600;color:var(--ink); }
+  .tbadge{ font-size:9px;background:var(--pink-100);color:var(--pink-700);padding:2px 8px;border-radius:var(--r-pill);display:inline-block;margin-top:3px;font-weight:700; }
+  .nav a{ display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:16px; font-size:13.5px; font-weight:700; margin-bottom:9px; text-decoration:none; }
+  .nav a .nic{ width:29px;height:29px;border-radius:10px;background:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
+  .nav a.c-green{background:var(--green-100);color:var(--green-700);} .nav a.c-green .nic{background:#fff;color:var(--green-600);}
+  .nav a.c-green.on{background:var(--green-600);color:#fff;box-shadow:0 8px 18px rgba(27,156,76,.35);} .nav a.c-green.on .nic{background:rgba(255,255,255,.28);color:#fff;}
+  .nav a.c-orange{background:var(--coral-100);color:var(--coral-700);} .nav a.c-orange .nic{background:#fff;color:var(--coral-600);}
+  .nav a.c-orange.on{background:var(--coral-600);color:#fff;box-shadow:0 8px 18px rgba(241,90,41,.35);} .nav a.c-orange.on .nic{background:rgba(255,255,255,.28);color:#fff;}
+  .nav a.c-blue{background:var(--sky-100);color:var(--sky-600);} .nav a.c-blue .nic{background:#fff;color:var(--sky-500);}
+  .nav a.c-blue.on{background:var(--sky-500);color:#fff;box-shadow:0 8px 18px rgba(47,79,222,.35);} .nav a.c-blue.on .nic{background:rgba(255,255,255,.28);color:#fff;}
+  .nav a.c-teal{background:var(--teal-100);color:var(--teal-700);} .nav a.c-teal .nic{background:#fff;color:var(--teal-600);}
+  .nav a.c-teal.on{background:var(--teal-600);color:#fff;box-shadow:0 8px 18px rgba(27,179,158,.35);} .nav a.c-teal.on .nic{background:rgba(255,255,255,.28);color:#fff;}
+  .nav a.c-pink{background:var(--pink-100);color:var(--pink-700);} .nav a.c-pink .nic{background:#fff;color:var(--pink-600);}
+  .nav a.c-pink.on{background:var(--pink-600);color:#fff;box-shadow:0 8px 18px rgba(240,114,154,.35);} .nav a.c-pink.on .nic{background:rgba(255,255,255,.28);color:#fff;}
+  .side .foot{ margin-top:auto; display:flex; gap:9px; align-items:center; padding-top:14px; border-top:1px solid var(--border); }
+  .side .foot .av{ width:32px;height:32px;border-radius:50%;background:var(--sun-500);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700; }
+  .side .foot small{ color:var(--muted); font-size:10px; display:block; }
+
+  .main{ flex:1; min-width:0; display:flex; flex-direction:column; }
+  .top{ display:flex; justify-content:space-between; align-items:center; padding:15px 26px; border-bottom:1px solid var(--border); background:#fff; }
+  .top .greet{ font-size:11.5px; color:var(--ink2); }
+  .top .nm{ font-family:'Mitr'; font-size:17px; font-weight:600; color:var(--ink); }
+  .top .r{ display:flex; gap:10px; align-items:center; }
+  .top .ic{ width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center; }
+  .top .ic.bell{ background:var(--sun-100); color:var(--sun-500); }
+  .top .ic.av{ background:var(--pink-100); color:var(--pink-700); font-weight:700; font-size:12px; }
+  .content{ padding:26px 28px; overflow:auto; }
+  .wrap960{ max-width:900px; }
+
+  .card{ background:#fff; border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm); }
+  .p16{padding:16px;} .p20{padding:20px;} .p24{padding:24px;}
+  .muted{color:var(--muted);} .ink2{color:var(--ink2);}
+  .btn{ display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--r-pill);font-weight:600;font-size:13px;padding:10px 18px;border:1.5px solid transparent;font-family:inherit;cursor:pointer; }
+  .btn.primary{background:linear-gradient(135deg,var(--green-600),var(--green-800));color:#fff;box-shadow:0 6px 16px rgba(20,100,60,.28);}
+  .btn.coral{background:linear-gradient(135deg,var(--coral-500),var(--coral-700));color:#fff;box-shadow:0 6px 16px rgba(230,90,35,.28);}
+  .btn.o{background:#fff;border-color:var(--border);color:var(--ink2);} .btn.oc{background:#fff;border-color:var(--coral-500);color:var(--coral-700);}
+  .btn.danger-o{background:#fff;border-color:var(--danger);color:var(--danger);}
+  .btn.block{width:100%;}
+  .badge{font-size:11px;font-weight:700;padding:4px 11px;border-radius:var(--r-pill);display:inline-flex;align-items:center;gap:4px;}
+  .badge.big{background:var(--green-100);color:var(--green-800);} .badge.loud{background:var(--coral-100);color:var(--coral-700);}
+  .badge.done{background:#E4F6E9;color:var(--ok);} .badge.risk{background:var(--danger-100);color:var(--danger);}
+  .section-title{font-size:12.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin:18px 0 12px;display:flex;align-items:center;gap:6px;}
+  .row{display:flex;align-items:center;gap:12px;} .grow{flex:1;min-width:0;}
+  .exrow{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:13px 16px;display:flex;align-items:center;gap:13px;margin-bottom:11px;box-shadow:var(--shadow-sm);}
+  .stepnum{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--ink2);background:var(--bg);flex-shrink:0;}
+  .stepnum.ok{background:var(--green-600);color:#fff;border-color:var(--green-600);}
+  .thumb{width:100px;height:62px;border-radius:12px;background:var(--cam);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:10px;}
+  .h4{font-size:18px;font-weight:600;margin:0;font-family:'Mitr';} .desc{font-size:14px;color:var(--ink2);margin:3px 0 0;line-height:1.5;}
+  .metric{background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:16px 18px;box-shadow:var(--shadow-sm);position:relative;}
+  .metric .v{font-family:'Mitr';font-size:22px;font-weight:600;color:var(--ink);} .metric .l{font-size:12px;color:var(--ink2);margin-top:3px;}
+  .cam{background:var(--cam);border-radius:var(--r-lg);position:relative;overflow:hidden;border:2px solid rgba(255,255,255,.1);}
+  input.f,textarea.f,select.f{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;font-size:14px;font-family:inherit;background:#fff;}
+  .divider{height:1px;background:var(--border);margin:12px 0;}
+  table.hist{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;}
+  table.hist th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--ink2);background:var(--bg);padding:11px 16px;font-weight:700;}
+  table.hist td{padding:12px 16px;font-size:13.5px;border-top:1px solid var(--border);}
+  .legend{display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--ink2);}
+  .dot2{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;}
+  .pill{font-size:12px;font-weight:700;padding:6px 15px;border-radius:var(--r-pill);}
+  .modal-wrap{position:absolute;inset:0;background:rgba(14,45,30,.5);display:flex;align-items:center;justify-content:center;}
+  .modal{background:#fff;border-radius:24px;padding:28px;text-align:center;width:380px;box-shadow:var(--shadow-md);}
+  .ibadge{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:22px;}
+  .ibadge.green{background:var(--green-100);color:var(--green-800);} .ibadge.coral{background:var(--coral-100);color:var(--coral-700);}
+  .ibadge.sky{background:var(--sky-100);color:var(--sky-600);} .ibadge.sun{background:var(--sun-100);color:#8A6400;}
+  .avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
+  .avatar.green{background:var(--sky-100);color:var(--sky-600);}
+  .decoline{display:flex;gap:5px;align-items:center;}
+  .decoline span{opacity:.55;}
+
+  .ic-svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vertical-align:-0.15em;flex-shrink:0;}
+  .icon-sprite{position:absolute;width:0;height:0;overflow:hidden;}
+  @media print{ body{background:#fff;} .win{box-shadow:none;} }
+  @page{ size:A3 landscape; margin:8mm; }
+</style>
+</head>
+<body>
+
+<svg class="icon-sprite" aria-hidden="true" xmlns:xlink="http://www.w3.org/1999/xlink">
+<symbol id="i-logo" viewBox="0 0 24 24"><path d="M6 20C6 11 11 4 20 4c0 9-7 14-16 16z"/><path d="M6 20c2-4 5-7 9-9"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v10h5v-6h2v6h5V10"/></symbol>
+<symbol id="i-run" viewBox="0 0 24 24"><path d="M3 13h3.5l2-7 3 14 2.5-9 1.5 2h5.5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V13M12 20V6M19 20v-9"/><path d="M3 20h18"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="4"/><path d="M8 17v3l4-3"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.5 2.5-5.5 6-5.5s6 2 6 5.5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.3 14.2c2.8.3 4.5 2.1 4.5 5.3"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0"/><path d="M12 17v4M9 21h6"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 3-2 4-2 7a3 3 0 0 0 6 0c0-1-1-2-1-2 2 1 3 3 3 5a6 6 0 0 1-12 0c0-4 3-6 6-10z"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 7h11a4 4 0 0 1 4 4v2"/><path d="M20 17H9a4 4 0 0 1-4-4v-2"/><path d="M16 4l3 3-3 3M8 20l-3-3 3-3"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.5 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-5-5"/></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16.5 9.5a4 4 0 0 1 0 5"/></symbol>
+<symbol id="i-volume-loud" viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6.5a8 8 0 0 1 0 11"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2 20h20L12 4z"/><path d="M12 10v4"/><path d="M12 17.2v.2"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M4 12H2M22 12h-2M5.5 5.5 4 4M20 20l-1.5-1.5M5.5 18.5 4 20M20 4l-1.5 1.5"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-chair" viewBox="0 0 24 24"><path d="M6 4v9M18 4v9M6 13h12v3H6z"/><path d="M6 16v5M18 16v5"/></symbol>
+<symbol id="i-walk" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v7M12 10l-4 3M12 10l4 3M12 14l-3 6M12 14l3 6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5z"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0V4z"/><path d="M7 5H4a3 3 0 0 0 3 5M17 5h3a3 3 0 0 1-3 5"/><path d="M12 13v3M9 20h6M9.5 20c0-2 1-3 2.5-3s2.5 1 2.5 3"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+</svg>
+
+<div class="page-head">
+  <span class="eyebrow"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg> RehabAI · ดีไซน์ใหม่</span>
+  <h1>RehabAI — UI เวอร์ชันคอมพิวเตอร์ (Desktop)</h1>
+  <p>หน้าจอจริงบนจอใหญ่ · sidebar + topbar เหมือนแอป · โทนเขียวหลักเดิม เพิ่มความเป็นมิตรและสีสัน</p>
+</div>
+
+<div class="stack">
+
+  <!-- PATIENT: HOME -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/home</span><span class="label">ผู้ป่วย · หน้าแรก</span></div>
+    <div class="app">
+      <div class="side">
+        <div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><div><b>RehabAI</b></div></div>
+<div class="nav"><a class="c-green on"><span class="nic"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg></span>หน้าแรก</a><a class="c-orange"><span class="nic"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span>ฝึกกายภาพ</a><a class="c-blue"><span class="nic"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg></span>สรุปผล</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>แชท</a><a class="c-pink"><span class="nic"><svg class="ic-svg"><use href="#i-user" xlink:href="#i-user"/></svg></span>โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:600;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div>
+      </div>
+      <div class="main">
+        <div class="top"><div><div class="greet">สวัสดีตอนบ่าย <svg class="ic-svg"><use href="#i-sun" xlink:href="#i-sun"/></svg></div><div class="nm">สมชาย ใจดี</div></div><div class="r"><div class="ic bell"><svg class="ic-svg"><use href="#i-bell" xlink:href="#i-bell"/></svg></div><div class="ic av">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div class="hero-streak" style="background:linear-gradient(135deg,var(--coral-500),var(--coral-700));border-radius:var(--r-lg);padding:24px;color:#fff;display:flex;justify-content:space-between;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(230,90,35,.25);">
+            <div style="position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.14) 2px,transparent 2.5px);background-size:24px 24px;opacity:.6;"></div>
+            <div style="position:relative;display:flex;gap:14px;align-items:flex-start;"><div style="width:44px;height:44px;border-radius:13px;background:var(--sun-500);color:var(--coral-700);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;"><svg class="ic-svg"><use href="#i-flame" xlink:href="#i-flame"/></svg></div><div><div style="opacity:.75;font-size:13px;margin-bottom:4px;">ฝึกต่อเนื่อง</div><div style="font-size:30px;font-weight:600;font-family:'Mitr';">3 <span style="font-size:15px;opacity:.75;">วันติดต่อกัน</span></div><div style="opacity:.7;font-size:12.5px;margin-top:6px;">ทำได้ดีมาก! ฝึกวันนี้เพื่อรักษาสถิติ</div></div></div>
+            <div style="position:relative;text-align:right;"><div style="opacity:.65;font-size:12px;">ท่าที่ทำวันนี้</div><div style="font-size:28px;font-weight:600;color:var(--sun-200);font-family:'Mitr';">2</div></div>
+          </div>
+          <div class="section-title"><svg class="ic-svg"><use href="#i-target" xlink:href="#i-target"/></svg> เลือกโปรแกรมฝึกวันนี้</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+            <div class="card p20"><div class="ibadge green"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></div><h3 style="margin:0 0 4px;">LSVT BIG</h3><p class="ink2" style="font-size:13px;margin:0 0 3px;">ฝึกการเคลื่อนไหวผ่านกล้องเว็บแคม</p><p class="muted" style="font-size:12px;margin:0 0 14px;">⏱ 20 นาที · เหลืออีก 3 ท่าวันนี้</p><div class="btn primary">เริ่มฝึก</div></div>
+            <div class="card p20"><div class="ibadge coral"><svg class="ic-svg"><use href="#i-mic" xlink:href="#i-mic"/></svg></div><h3 style="margin:0 0 4px;">LSVT LOUD</h3><p class="ink2" style="font-size:13px;margin:0 0 3px;">ฝึกความดังของเสียงพูดผ่านไมค์</p><p class="muted" style="font-size:12px;margin:0 0 14px;">⏱ 10 นาที · เหลืออีก 9 แบบฝึกหัด</p><div class="btn coral">เริ่มฝึก</div></div>
+          </div>
+          <div class="card p16 row" style="justify-content:space-between;margin-top:18px;background:var(--sky-100);border-color:var(--sky-200);"><span class="row" style="gap:8px;font-size:13.5px;color:var(--sky-600);font-weight:600;"><svg class="ic-svg"><use href="#i-trend" xlink:href="#i-trend"/></svg> ดูสรุปผลและความคืบหน้าของคุณ</span><span style="color:var(--sky-600);font-weight:700;">›</span></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: TRAINING BIG -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/big</span><span class="label">ผู้ป่วย · ฝึกกายภาพ</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><b>RehabAI</b></div>
+        <div class="nav"><a class="c-green"><span class="nic"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg></span>หน้าแรก</a><a class="c-orange on"><span class="nic"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span>ฝึกกายภาพ</a><a class="c-blue"><span class="nic"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg></span>สรุปผล</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>แชท</a><a class="c-pink"><span class="nic"><svg class="ic-svg"><use href="#i-user" xlink:href="#i-user"/></svg></span>โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:600;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main">
+        <div class="top"><div><div class="greet">ฝึกกายภาพบำบัด</div><div class="nm">โปรแกรมฝึกวันนี้</div></div><div class="r"><div class="ic bell"><svg class="ic-svg"><use href="#i-bell" xlink:href="#i-bell"/></svg></div><div class="ic av">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div class="row" style="justify-content:space-between;"><div class="row" style="gap:8px;"><span class="ibadge green" style="width:34px;height:34px;border-radius:10px;font-size:15px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span><span style="font-size:15px;color:var(--green-700);font-weight:700;text-transform:uppercase;">LSVT BIG (7 ท่า)</span></div><span class="pill" style="background:var(--green-100);color:var(--green-800);">1/5 เสร็จแล้ว ✓</span></div>
+          <h1 style="color:var(--ink);font-size:24px;margin:10px 0 18px;">LSVT BIG — ฝึกการเคลื่อนไหว</h1>
+          <h3 style="font-size:20px;color:var(--ink);margin:0 0 12px;"><svg class="ic-svg"><use href="#i-chair" xlink:href="#i-chair"/></svg> ท่านั่ง</h3>
+          <div class="exrow" style="background:var(--sun-100);border-color:var(--sun-200);"><div class="stepnum">1</div><div class="grow"><h4 class="h4">บนล่าง (Floor to Ceiling)</h4><p class="desc">นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→เหนือศีรษะ→กางแขนค้าง 10 วิ</p></div><span class="ink2" style="font-size:12px;">8 ครั้ง</span><div class="btn o">เริ่มฝึก</div></div>
+          <h3 style="font-size:20px;color:var(--ink);margin:18px 0 12px;"><svg class="ic-svg"><use href="#i-walk" xlink:href="#i-walk"/></svg> ท่ายืน</h3>
+          <div class="exrow"><div class="stepnum ok">✓</div><div class="thumb"><svg class="ic-svg"><use href="#i-play" xlink:href="#i-play"/></svg> คลิป</div><div class="grow"><h4 class="h4">ก้าวหน้า (Forward Step)</h4><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><span class="badge done">เสร็จแล้ว</span><div class="btn o">ทำซ้ำ</div></div>
+          <div class="exrow"><div class="stepnum">4</div><div class="thumb"><svg class="ic-svg"><use href="#i-play" xlink:href="#i-play"/></svg> คลิป</div><div class="grow"><h4 class="h4">ก้าวข้าง (Sideways Step)</h4><p class="desc">ยืนตรง ก้าวขาไปด้านข้างพร้อมกางแขนสองข้างไปทางด้านข้างให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><div class="btn o">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">5</div><div class="thumb"><svg class="ic-svg"><use href="#i-play" xlink:href="#i-play"/></svg> คลิป</div><div class="grow"><h4 class="h4">ก้าวหลัง (Backward Step) <span class="badge risk"><svg class="ic-svg"><use href="#i-alert" xlink:href="#i-alert"/></svg> เสี่ยงสูง</span></h4><p class="desc">ยืนตรง ยกมือระดับหัวไหล่ ก้าวขาไปด้านหลัง ก้มลำตัว กวาดมือไปด้านหลังให้สุด</p></div><div class="btn o">เริ่มฝึก</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: SESSION BIG -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/big/session?exercise=3</span><span class="label">ผู้ป่วย · ฝึกจริง BIG</span></div>
+    <div class="app"><div class="main" style="width:100%;"><div class="content" style="position:relative;background:var(--bg);">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1050px;margin:0 auto;">
+        <div class="cam" style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);position:relative;"><span style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.14);color:#fff;padding:5px 12px;border-radius:var(--r-pill);font-size:11px;"><svg class="ic-svg"><use href="#i-play" xlink:href="#i-play"/></svg> ท่าสาธิต</span><svg class="ic-svg"><use href="#i-play" xlink:href="#i-play"/></svg> อนิเมชั่นท่า (วนซ้ำ)</div>
+        <div class="cam" style="aspect-ratio:16/10;position:relative;color:#fff;"><span style="position:absolute;top:14px;left:50%;transform:translateX(-50%);background:var(--danger);padding:5px 14px;border-radius:var(--r-pill);font-size:11px;font-weight:700;"><svg class="ic-svg"><use href="#i-alert" xlink:href="#i-alert"/></svg> SOS ฉุกเฉิน</span><span style="position:absolute;top:50px;left:14px;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:var(--r-pill);font-size:12px;font-weight:700;">ครั้งที่ 5 / 8</span><span style="position:absolute;top:50px;right:14px;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:var(--r-pill);font-size:10.5px;"><span class="dot2" style="background:var(--green-500);"></span>ตรวจจับท่าทาง</span><div style="position:absolute;inset:auto 14px 14px;background:linear-gradient(135deg,var(--green-600),var(--green-800));padding:11px 15px;border-radius:var(--r-sm);font-size:13px;font-weight:600;">✓ กำลังนับ…</div></div>
+      </div>
+      <div class="card p20" style="max-width:1050px;margin:16px auto 0;">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;"><div class="grow"><h2 style="margin:0 0 4px;color:var(--ink);font-size:18px;">ก้าวหน้า (Forward Step)</h2><p class="desc">ยืนตรง เท้าวางเสมอระดับไหล่ ก้าวขาไปด้านหน้าพร้อมกางแขนสองข้างออกให้สุด แล้วกลับสู่ท่าเริ่มต้น</p></div><div class="btn danger-o">หยุดฝึก</div></div>
+        <div style="height:10px;background:var(--bg);border-radius:var(--r-pill);margin:16px 0 10px;overflow:hidden;"><div style="width:62%;height:100%;background:linear-gradient(90deg,var(--green-500),var(--sun-500));"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"><div class="metric"><div class="l">ครั้งที่ทำแล้ว</div><div class="v" style="font-size:17px;">5 / 8</div></div><div class="metric"><div class="l">เวลาในเซสชันนี้</div><div class="v" style="font-size:17px;">02:14</div></div></div>
+      </div>
+      <div class="modal-wrap"><div class="modal"><div style="font-size:46px;color:var(--green-700);"><svg class="ic-svg"><use href="#i-trophy" xlink:href="#i-trophy"/></svg></div><h2 style="margin:4px 0 2px;color:var(--ink);">Congratulations!</h2><p class="ink2" style="font-size:13.5px;margin:0 0 18px;">ยินดีด้วย! คุณทำท่า "ก้าวหน้า" ครบ 8 ครั้งแล้ว</p><div class="btn primary block" style="margin-bottom:10px;">ไปท่าถัดไป — ก้าวข้าง ›</div><div class="ink2" style="font-size:13px;"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg> กลับไปรายการท่าฝึก</div></div></div>
+    </div></div></div>
+  </div>
+
+  <!-- PATIENT: TRAINING LOUD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/loud</span><span class="label">ผู้ป่วย · LSVT LOUD</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><b>RehabAI</b></div>
+        <div class="nav"><a class="c-green"><span class="nic"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg></span>หน้าแรก</a><a class="c-orange on"><span class="nic"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span>ฝึกกายภาพ</a><a class="c-blue"><span class="nic"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg></span>สรุปผล</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>แชท</a><a class="c-pink"><span class="nic"><svg class="ic-svg"><use href="#i-user" xlink:href="#i-user"/></svg></span>โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:600;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">ฝึกเสียงพูด</div><div class="nm">LSVT LOUD</div></div><div class="r"><div class="ic bell"><svg class="ic-svg"><use href="#i-bell" xlink:href="#i-bell"/></svg></div><div class="ic av">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div class="row" style="gap:8px;margin-bottom:6px;"><span class="ibadge coral" style="width:34px;height:34px;border-radius:10px;font-size:15px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-mic" xlink:href="#i-mic"/></svg></span><h1 style="color:var(--ink);font-size:22px;">LSVT LOUD — ฝึกความดังของเสียงพูด</h1></div>
+          <h3 style="font-size:20px;color:var(--ink);margin:16px 0 12px;"><svg class="ic-svg"><use href="#i-volume-loud" xlink:href="#i-volume-loud"/></svg> ฝึกออกเสียงค้าง</h3>
+          <div class="exrow" style="background:var(--coral-100);border-color:var(--coral-200);"><div class="stepnum ok">✓</div><div class="grow"><h4 class="h4">ฝึกออกเสียงค้าง</h4><p class="desc">เปล่งเสียง "อา" ให้ดังและต่อเนื่อง — เป้าหมายค้างเสียง 5–7 วินาที</p></div><div class="btn oc"><svg class="ic-svg"><use href="#i-volume" xlink:href="#i-volume"/></svg> กดเพื่อฟัง</div><span class="badge done">เสร็จแล้ว</span><div class="btn oc">ทำซ้ำ</div></div>
+          <h3 style="font-size:20px;color:var(--ink);margin:18px 0 12px;"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg> ประโยคในชีวิตประจำวัน</h3>
+          <div class="exrow"><div class="stepnum">1</div><div class="grow"><h4 class="h4">สวัสดี</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc"><svg class="ic-svg"><use href="#i-volume" xlink:href="#i-volume"/></svg> กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">2</div><div class="grow"><h4 class="h4">ขอบคุณ</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc"><svg class="ic-svg"><use href="#i-volume" xlink:href="#i-volume"/></svg> กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+          <div class="exrow"><div class="stepnum">3</div><div class="grow"><h4 class="h4">หิวข้าว</h4><p class="desc">พูดให้ดังและชัด</p></div><div class="btn oc"><svg class="ic-svg"><use href="#i-volume" xlink:href="#i-volume"/></svg> กดเพื่อฟัง</div><div class="btn oc">เริ่มฝึก</div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: SESSION LOUD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/training/loud/session?step=7</span><span class="label">ผู้ป่วย · ฝึกจริง LOUD</span></div>
+    <div class="app"><div class="main" style="width:100%;"><div class="content" style="background:var(--bg);">
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:16px;max-width:1050px;margin:0 auto;">
+        <div class="cam" style="padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px;color:#fff;">
+          <div style="width:300px;background:rgba(255,255,255,.10);border-radius:var(--r-md);padding:15px;text-align:center;"><div style="font-size:11px;opacity:.6;text-transform:uppercase;">พูดตามนี้</div><div style="font-size:22px;font-weight:600;margin:6px 0 10px;font-family:'Mitr';">หิวข้าว</div><span style="background:rgba(255,255,255,.14);padding:8px 18px;border-radius:var(--r-pill);font-size:14px;"><svg class="ic-svg"><use href="#i-volume" xlink:href="#i-volume"/></svg> กดเพื่อฟัง</span></div>
+          <div style="font-size:48px;font-weight:600;font-family:'Mitr';">3<span style="font-size:18px;opacity:.45;"> / 10</span></div>
+          <div style="width:126px;height:126px;border-radius:50%;background:linear-gradient(135deg,var(--coral-500),var(--coral-700));display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(240,90,40,.4);"><svg class="ic-svg"><use href="#i-mic" xlink:href="#i-mic"/></svg><br>กดแล้วพูด</div>
+          <div style="text-align:center;"><div style="display:flex;gap:24px;justify-content:center;"><div><div style="font-size:22px;font-weight:600;color:var(--sun-500);">90%</div><div style="font-size:11px;opacity:.6;">ความดังเสียง</div></div><div><div style="font-size:22px;font-weight:600;color:var(--sun-500);">100%</div><div style="font-size:11px;opacity:.6;">ความถูกต้องของคำ</div></div></div><div style="font-size:12px;color:var(--sun-500);margin-top:6px;font-weight:600;">✓ ผ่าน — นับ 1 ครั้ง</div></div>
+        </div>
+        <div class="card p20"><h3 style="margin:0 0 4px;color:var(--ink);">พูดในชีวิตประจำวัน</h3><p class="desc">พูดให้ดังและชัด</p><div class="divider"></div><div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:7px 0;"><span>ครั้งที่เสร็จแล้ว</span><b>3 / 10</b></div><div style="font-size:12.5px;color:var(--ink2);display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid var(--border);"><span>ช่วงเป้าหมาย dB</span><b>70–85</b></div><div class="btn danger-o block" style="margin-top:14px;">หยุดฝึก</div></div>
+      </div>
+    </div></div></div>
+  </div>
+
+  <!-- PATIENT: DASHBOARD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/dashboard</span><span class="label">ผู้ป่วย · สรุปผล</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><b>RehabAI</b></div>
+        <div class="nav"><a class="c-green"><span class="nic"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg></span>หน้าแรก</a><a class="c-orange"><span class="nic"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span>ฝึกกายภาพ</a><a class="c-blue on"><span class="nic"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg></span>สรุปผล</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>แชท</a><a class="c-pink"><span class="nic"><svg class="ic-svg"><use href="#i-user" xlink:href="#i-user"/></svg></span>โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:600;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">สรุปผล</div><div class="nm">สรุปผลการฝึก</div></div><div class="r"><div class="ic bell"><svg class="ic-svg"><use href="#i-bell" xlink:href="#i-bell"/></svg></div><div class="ic av">สช</div></div></div>
+        <div class="content"><div class="wrap960">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+            <div class="metric"><div class="row" style="gap:8px;"><span class="ibadge green" style="width:30px;height:30px;border-radius:8px;font-size:13px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-repeat" xlink:href="#i-repeat"/></svg></span><div><div class="v">12</div><div class="l">จำนวนครั้งที่ฝึก</div></div></div></div>
+            <div class="metric"><div class="row" style="gap:8px;"><span class="ibadge sun" style="width:30px;height:30px;border-radius:8px;font-size:13px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-calendar" xlink:href="#i-calendar"/></svg></span><div><div class="v">4/7</div><div class="l">วันที่ฝึกสัปดาห์นี้</div></div></div></div>
+          </div>
+          <div class="card p20" style="margin-bottom:18px;"><div style="font-size:12.5px;color:var(--green-700);font-weight:700;margin-bottom:14px;"><svg class="ic-svg"><use href="#i-trend" xlink:href="#i-trend"/></svg> ความถี่การฝึกย้อนหลัง 7 วัน</div>
+            <div style="display:flex;align-items:flex-end;gap:26px;height:130px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:60%;background:var(--green-500);border-radius:4px;"></div><div style="width:16px;height:40%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--muted);">จ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:82%;background:var(--green-500);border-radius:4px;"></div><div style="width:16px;height:52%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--muted);">อ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:20%;background:var(--green-500);border-radius:4px;"></div><div style="width:16px;height:10%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--muted);">พ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:100%;background:var(--green-500);border-radius:4px;"></div><div style="width:16px;height:66%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--muted);">พฤ</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:4px;"><div style="display:flex;gap:4px;align-items:flex-end;height:100%;"><div style="width:16px;height:70%;background:var(--green-500);border-radius:4px;"></div><div style="width:16px;height:44%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--muted);">ศ</span></div>
+            </div>
+            <div class="legend"><span><span class="dot2" style="background:var(--green-500);"></span>LSVT BIG</span><span><span class="dot2" style="background:var(--coral-600);"></span>LSVT LOUD</span></div>
+          </div>
+          <div class="section-title"><svg class="ic-svg"><use href="#i-clock" xlink:href="#i-clock"/></svg> ประวัติล่าสุด</div>
+          <table class="hist"><tbody><tr><th>วันที่</th><th>ประเภทการฝึก</th><th>ระยะเวลา</th></tr><tr><td>19 ส.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>03:20</td></tr><tr><td>19 ส.ค. 2569</td><td><span class="badge loud">LSVT LOUD</span></td><td>02:10</td></tr><tr><td>18 ส.ค. 2569</td><td><span class="badge big">LSVT BIG</span></td><td>04:05</td></tr></tbody></table>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PATIENT: CHAT -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/chat</span><span class="label">ผู้ป่วย · แชท (real-time)</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><b>RehabAI</b></div>
+        <div class="nav"><a class="c-green"><span class="nic"><svg class="ic-svg"><use href="#i-home" xlink:href="#i-home"/></svg></span>หน้าแรก</a><a class="c-orange"><span class="nic"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span>ฝึกกายภาพ</a><a class="c-blue"><span class="nic"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg></span>สรุปผล</a><a class="c-teal on"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>แชท</a><a class="c-pink"><span class="nic"><svg class="ic-svg"><use href="#i-user" xlink:href="#i-user"/></svg></span>โปรไฟล์</a></div>
+        <div class="foot"><div class="av">สช</div><div><div style="font-size:12px;font-weight:600;">สมชาย ใจดี</div><small>ผู้ป่วย · ระยะ 2</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet">แชท</div><div class="nm">กภ.ธนกร รักษาดี</div></div><div class="r"><div class="ic bell"><svg class="ic-svg"><use href="#i-bell" xlink:href="#i-bell"/></svg></div><div class="ic av">สช</div></div></div>
+        <div class="content"><div style="max-width:720px;">
+          <div class="card" style="overflow:hidden;">
+            <div class="row" style="padding:14px 18px;border-bottom:1px solid var(--border);background:var(--green-100);"><div class="avatar green" style="width:38px;height:38px;">ธก</div><div class="grow"><div style="font-size:14px;font-weight:700;color:var(--ink);">กภ.ธนกร รักษาดี</div><div style="font-size:11.5px;color:var(--ok);">● ออนไลน์</div></div></div>
+            <div style="padding:18px;background:var(--bg);display:flex;flex-direction:column;gap:11px;min-height:220px;"><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;padding:10px 15px;font-size:13.5px;max-width:70%;box-shadow:var(--shadow-sm);">วันนี้ฝึกครบไหมครับ?</div><div style="align-self:flex-end;background:linear-gradient(135deg,var(--green-600),var(--green-800));color:#fff;border-radius:18px;border-bottom-right-radius:4px;padding:10px 15px;font-size:13.5px;max-width:70%;">ครบแล้วครับ 💪 เสียงดังขึ้นด้วย</div><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;padding:10px 15px;font-size:13.5px;max-width:70%;box-shadow:var(--shadow-sm);">เยี่ยมมากครับ 🎉 พรุ่งนี้ลองเพิ่มท่าก้าวหลังนะ</div></div>
+            <div class="row" style="padding:13px 15px;border-top:1px solid var(--border);"><input class="f grow" placeholder="พิมพ์ข้อความ…"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green-600),var(--green-800));color:#fff;display:flex;align-items:center;justify-content:center;"><svg class="ic-svg"><use href="#i-send" xlink:href="#i-send"/></svg></div></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: PATIENT LIST -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/patients</span><span class="label">นักกายภาพ · รายชื่อผู้ป่วย</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div>
+        <div class="nav"><a class="c-blue on"><span class="nic"><svg class="ic-svg"><use href="#i-users" xlink:href="#i-users"/></svg></span>รายชื่อผู้ป่วย</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>ข้อความ</a></div>
+        <div class="foot"><div class="av">สน</div><div><div style="font-size:12px;font-weight:600;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="nm">ผู้ป่วยของฉัน</div><div class="greet">ติดตามความคืบหน้าของผู้ป่วยที่เชื่อมต่อแล้ว</div></div></div>
+        <div class="content"><div style="max-width:900px;">
+          <div style="max-width:320px;margin-bottom:16px;"><input class="f" placeholder="ค้นหาชื่อผู้ป่วย"></div>
+          <div class="exrow"><div class="avatar green" style="width:46px;height:46px;">สช</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">สมชาย ใจดี</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;"><svg class="ic-svg"><use href="#i-clock" xlink:href="#i-clock"/></svg> ฝึกล่าสุด 2 ชม. ที่แล้ว</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 13px;"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></div></div>
+          <div class="exrow"><div class="avatar green" style="width:46px;height:46px;">วภ</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">วิภา สุขสันต์</b><span class="badge big">ระยะ 2</span></div><div class="muted" style="font-size:12px;"><svg class="ic-svg"><use href="#i-clock" xlink:href="#i-clock"/></svg> ฝึกล่าสุด เมื่อวานนี้</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 13px;"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></div></div>
+          <div class="exrow"><div class="avatar green" style="width:46px;height:46px;">ปส</div><div class="grow"><div class="row" style="gap:8px;"><b style="font-size:15px;">ประเสริฐ มั่นคง</b><span class="badge big">ระยะ 1</span></div><div class="muted" style="font-size:12px;"><svg class="ic-svg"><use href="#i-clock" xlink:href="#i-clock"/></svg> ฝึกล่าสุด 3 วันที่แล้ว</div></div><div class="btn o">ดูรายละเอียด</div><div class="btn o" style="padding:9px 13px;"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></div></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: PATIENT DASHBOARD -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/patients/p1</span><span class="label">นักกายภาพ · Dashboard ผู้ป่วย</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div>
+        <div class="nav"><a class="c-blue on"><span class="nic"><svg class="ic-svg"><use href="#i-users" xlink:href="#i-users"/></svg></span>รายชื่อผู้ป่วย</a><a class="c-teal"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>ข้อความ</a></div>
+        <div class="foot"><div class="av">สน</div><div><div style="font-size:12px;font-weight:600;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div><div class="greet" style="display:inline-flex;align-items:center;gap:4px;"><svg class="ic-svg"><use href="#i-arrow-left" xlink:href="#i-arrow-left"/></svg>รายชื่อผู้ป่วย</div><div class="nm">สมชาย ใจดี — ระยะ 2</div></div><div class="btn o"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg> แชทกับผู้ป่วย</div></div>
+        <div class="content"><div style="max-width:900px;">
+          <div style="display:flex;gap:26px;border-bottom:1px solid var(--border);margin-bottom:16px;"><div style="padding:9px 0;font-weight:700;color:var(--ink);border-bottom:2.5px solid var(--green-600);">รายเดือน</div><div style="padding:9px 0;font-weight:600;color:var(--ink2);">รายสัปดาห์</div></div>
+          <div style="display:flex;gap:14px;margin-bottom:18px;">
+            <div class="metric grow"><div class="row" style="gap:8px;"><span class="ibadge sun" style="width:28px;height:28px;border-radius:8px;font-size:12px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-calendar" xlink:href="#i-calendar"/></svg></span><div><div class="v">22 / 31</div><div class="l">วันที่ฝึกในเดือนนี้</div></div></div></div>
+            <div class="metric grow"><div class="row" style="gap:8px;"><span class="ibadge green" style="width:28px;height:28px;border-radius:8px;font-size:12px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-run" xlink:href="#i-run"/></svg></span><div><div class="v">402 นาที</div><div class="l">รวมเวลา LSVT BIG</div></div></div></div>
+            <div class="metric grow"><div class="row" style="gap:8px;"><span class="ibadge coral" style="width:28px;height:28px;border-radius:8px;font-size:12px;margin-bottom:0;"><svg class="ic-svg"><use href="#i-mic" xlink:href="#i-mic"/></svg></span><div><div class="v">208 นาที</div><div class="l">รวมเวลา LSVT LOUD</div></div></div></div>
+          </div>
+          <div class="card p24" style="margin-bottom:18px;"><div style="font-size:12.5px;color:var(--green-700);font-weight:700;margin-bottom:14px;"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg> ระยะเวลาฝึกรวมรายสัปดาห์ — ก.ค. 2569 (นาที)</div>
+            <div style="display:flex;align-items:flex-end;gap:40px;height:150px;padding-left:10px;">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:62%;background:var(--green-500);border-radius:4px;"></div><div style="width:22px;height:34%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 1</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:82%;background:var(--green-500);border-radius:4px;"></div><div style="width:22px;height:46%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 2</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:50%;background:var(--green-500);border-radius:4px;"></div><div style="width:22px;height:26%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 3</span></div>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:5px;"><div style="display:flex;gap:5px;align-items:flex-end;height:100%;"><div style="width:22px;height:100%;background:var(--green-500);border-radius:4px;"></div><div style="width:22px;height:60%;background:var(--coral-600);border-radius:4px;"></div></div><span style="font-size:11px;color:var(--ink2);">สัปดาห์ 4</span></div>
+            </div>
+            <div class="legend"><span><span class="dot2" style="background:var(--green-500);"></span>LSVT BIG</span><span><span class="dot2" style="background:var(--coral-600);"></span>LSVT LOUD</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div><div class="section-title" style="margin-top:0;"><svg class="ic-svg"><use href="#i-volume-loud" xlink:href="#i-volume-loud"/></svg> ตั้งค่า dB (Min/Goal/Max)</div><div class="card p16"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><select class="f"><option>Min 60</option></select><select class="f"><option>Goal 80</option></select><select class="f"><option>Max 95</option></select></div><div class="btn oc" style="margin-top:12px;">บันทึกค่าเดซิเบล</div></div></div>
+            <div><div class="section-title" style="margin-top:0;"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg> คำพูดในชีวิตประจำวัน</div><div class="card p16"><div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;margin-bottom:8px;font-size:13px;"><span>สวัสดี</span><span style="color:var(--danger);">✕</span></div><div style="display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;margin-bottom:10px;font-size:13px;"><span>หิวข้าว</span><span style="color:var(--danger);">✕</span></div><div class="row" style="gap:8px;"><input class="f grow" placeholder="พิมพ์คำพูดใหม่…"><div class="btn oc">+ เพิ่ม</div></div></div></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERAPIST: MESSAGES -->
+  <div class="win">
+    <div class="bar"><span class="dot" style="background:#ED6A5E;"></span><span class="dot" style="background:#F4BF4F;"></span><span class="dot" style="background:#61C554;"></span><span class="url">rehabai.app/therapist/messages</span><span class="label">นักกายภาพ · ข้อความ</span></div>
+    <div class="app">
+      <div class="side"><div class="brand"><div class="m"><svg class="ic-svg"><use href="#i-logo" xlink:href="#i-logo"/></svg></div><div><b>RehabAI</b><br><span class="tbadge">นักกายภาพบำบัด</span></div></div>
+        <div class="nav"><a class="c-blue"><span class="nic"><svg class="ic-svg"><use href="#i-users" xlink:href="#i-users"/></svg></span>รายชื่อผู้ป่วย</a><a class="c-teal on"><span class="nic"><svg class="ic-svg"><use href="#i-chat" xlink:href="#i-chat"/></svg></span>ข้อความ</a></div>
+        <div class="foot"><div class="av">สน</div><div><div style="font-size:12px;font-weight:600;">กภ.สุนิสา รักษ์ดี</div><small>นักกายภาพบำบัด</small></div></div></div>
+      <div class="main"><div class="top"><div class="nm">ข้อความ</div></div>
+        <div style="display:grid;grid-template-columns:260px 1fr;flex:1;">
+          <div style="border-right:1px solid var(--border);background:#fff;">
+            <div class="row" style="padding:14px 16px;background:var(--green-100);"><div class="avatar" style="width:36px;height:36px;background:#fff;color:var(--ink);font-size:12px;">สช</div><div class="grow"><b style="font-size:13px;">สมชาย ใจดี</b><div class="muted" style="font-size:11px;">ครบแล้วครับ 💪</div></div></div>
+            <div class="row" style="padding:14px 16px;border-top:1px solid var(--border);"><div class="avatar" style="width:36px;height:36px;background:var(--bg);color:var(--ink2);font-size:12px;">วภ</div><div class="grow"><b style="font-size:13px;">วิภา สุขสันต์</b><div class="muted" style="font-size:11px;">ยังไม่มีข้อความ</div></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;background:var(--bg);">
+            <div class="row" style="padding:14px 20px;background:#fff;border-bottom:1px solid var(--border);"><div class="avatar green" style="width:36px;height:36px;font-size:12px;">สช</div><div class="grow"><b style="font-size:14px;">สมชาย ใจดี</b><div class="muted" style="font-size:11px;"><svg class="ic-svg"><use href="#i-clock" xlink:href="#i-clock"/></svg> ฝึกล่าสุด 2 ชม.</div></div><div class="btn o" style="padding:8px 13px;"><svg class="ic-svg"><use href="#i-chart" xlink:href="#i-chart"/></svg> ดูความคืบหน้า</div></div>
+            <div style="flex:1;padding:20px;display:flex;flex-direction:column;gap:11px;min-height:200px;"><div style="align-self:flex-start;background:#fff;border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;padding:10px 14px;font-size:13.5px;max-width:60%;box-shadow:var(--shadow-sm);">วันนี้ฝึกครบไหมครับ?</div><div style="align-self:flex-end;background:linear-gradient(135deg,var(--green-600),var(--green-800));color:#fff;border-radius:18px;border-bottom-right-radius:4px;padding:10px 14px;font-size:13.5px;max-width:60%;">ครบแล้วครับ 💪</div></div>
+            <div class="row" style="padding:13px 18px;background:#fff;border-top:1px solid var(--border);"><input class="f grow" placeholder="พิมพ์ข้อความ…"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--green-600),var(--green-800));color:#fff;display:flex;align-items:center;justify-content:center;"><svg class="ic-svg"><use href="#i-send" xlink:href="#i-send"/></svg></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body></html>

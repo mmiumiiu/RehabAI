@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMicLevel } from './useCamera.js'
+import { scoreLoud } from './loudScore.js'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const SR = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition)
@@ -187,8 +188,22 @@ export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTa
       data.measured_db = Math.round(measuredDb)
       setResult(data)
       onResultRef.current?.(data)
-    } catch (err) {
-      setError('เชื่อมต่อ backend ไม่สำเร็จ — ตรวจสอบว่าเซิร์ฟเวอร์ทำงานอยู่ (' + (err?.message || err) + ')')
+    } catch {
+      // Backend unreachable — score locally with the same rules (loudScore.js is
+      // a port of lsvt_loud.py) so the exercise still works offline.
+      const data = scoreLoud({
+        db: measuredDb,
+        mode: modeRef.current,
+        transcript: heard,
+        target_word: targetRef.current,
+        hold_sec: heldSec,
+        hold_min: holdMinRef.current,
+        hold_target: holdTargetRef.current,
+        band: bandRef.current,
+      })
+      data.measured_db = Math.round(measuredDb)
+      setResult(data)
+      onResultRef.current?.(data)
     }
   }
 

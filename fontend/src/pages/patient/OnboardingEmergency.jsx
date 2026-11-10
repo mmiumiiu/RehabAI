@@ -26,7 +26,7 @@ export default function OnboardingEmergency() {
           <ShieldCheck size={28} />
         </div>
         <h1 className="font-heading text-[22px] font-semibold text-ink-primary text-center mb-2">
-          ยินดีต้อนรับสู่ RehabAI
+          ยินดีต้อนรับสู่ BRIDGE
         </h1>
         <p className="text-[13.5px] text-ink-secondary text-center leading-relaxed mb-6">
           เพิ่มเบอร์ติดต่อฉุกเฉินไว้ เผื่อเกิดเหตุระหว่างฝึก ใช้เวลาไม่ถึง 1 นาที

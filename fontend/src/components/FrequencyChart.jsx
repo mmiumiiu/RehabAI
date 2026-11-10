@@ -1,30 +1,56 @@
-import { WEEK_FREQUENCY } from '../lib/mockData.js'
+// 7-day training-time bar chart — the "เวลาฝึก 7 วันที่ผ่านมา (นาที)" card from
+// the results section of design/bridge-mockup.html. One blue bar (movement) and
+// one purple bar (voice) per day; days with no training read "ไม่ได้ฝึก".
+// `data`: [{ day, big, loud }] where big/loud are minutes, oldest → today.
 
-// 7-day BIG vs LOUD frequency bar chart (spec §3.10 / §4.4)
-export default function FrequencyChart({ data = WEEK_FREQUENCY }) {
-  const max = Math.max(1, ...data.flatMap((d) => [d.big, d.loud]))
+const BIG_COLOR = '#157AB5'
+const LOUD_COLOR = '#6D3FC0'
+
+function Bar({ minutes, max, color }) {
+  if (!minutes) return null
   return (
-    <div className="card p-6">
-      <p className="text-[13px] font-semibold text-ink-secondary mb-5">ความถี่การฝึกย้อนหลัง 7 วัน</p>
-      <div className="flex items-end gap-6 h-[140px]">
-        {data.map((d) => (
-          <div key={d.day} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
-            <div className="flex gap-[5px] items-end h-full">
-              <div className="w-4 rounded-t bg-teal-500" style={{ height: `${(d.big / max) * 100}%` }} title={`BIG ${d.big}`} />
-              <div className="w-4 rounded-t bg-coral-700" style={{ height: `${(d.loud / max) * 100}%` }} title={`LOUD ${d.loud}`} />
+    <div
+      className="w-[34%] max-w-[26px] rounded-t-[7px] rounded-b-[3px]"
+      style={{ height: `${Math.max(4, (minutes / max) * 100)}%`, background: color }}
+      title={`${minutes} นาที`}
+    />
+  )
+}
+
+export default function FrequencyChart({ data = [] }) {
+  const max = Math.max(1, ...data.flatMap((d) => [d.big, d.loud]))
+
+  return (
+    <section className="bg-surface rounded-card border-[1.5px] border-line shadow-card p-6 flex flex-col gap-5">
+      <div className="flex justify-between items-center gap-3 flex-wrap">
+        <h2 className="font-heading text-b-h2 font-bold m-0 leading-[1.3]">เวลาฝึก 7 วันที่ผ่านมา (นาที)</h2>
+        <div className="flex gap-5 text-b-base font-semibold">
+          <span className="flex items-center gap-2.5">
+            <span className="w-4 h-4 rounded-[4px]" style={{ background: BIG_COLOR }} /> เคลื่อนไหว
+          </span>
+          <span className="flex items-center gap-2.5">
+            <span className="w-4 h-4 rounded-[4px]" style={{ background: LOUD_COLOR }} /> เสียงพูด
+          </span>
+        </div>
+      </div>
+
+      <div className="h-[214px] flex gap-2.5">
+        {data.map((d, i) => (
+          <div key={`${d.day}-${i}`} className="flex-1 flex flex-col items-center gap-2.5 h-full">
+            <div className="flex-1 w-full flex items-end justify-center gap-1.5">
+              {d.big || d.loud ? (
+                <>
+                  <Bar minutes={d.big} max={max} color={BIG_COLOR} />
+                  <Bar minutes={d.loud} max={max} color={LOUD_COLOR} />
+                </>
+              ) : (
+                <span className="text-b-xs font-bold text-ink-secondary">ไม่ได้ฝึก</span>
+              )}
             </div>
-            <span className="text-[11px] text-ink-muted">{d.day}</span>
+            <span className="text-b-base font-bold">{d.day}</span>
           </div>
         ))}
       </div>
-      <div className="flex gap-5 mt-4">
-        <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
-          <span className="w-2 h-2 rounded-full bg-teal-500" /> LSVT BIG
-        </span>
-        <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
-          <span className="w-2 h-2 rounded-full bg-coral-700" /> LSVT LOUD
-        </span>
-      </div>
-    </div>
+    </section>
   )
 }

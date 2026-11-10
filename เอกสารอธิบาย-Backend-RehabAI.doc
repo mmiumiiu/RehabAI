@@ -1,0 +1,164 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>เอกสารอธิบาย Backend – RehabAI</title>
+<style>
+  body { font-family: "TH Sarabun New", "Sarabun", "Angsana New", sans-serif; font-size: 16pt; color: #222; line-height: 1.5; }
+  h1 { font-size: 26pt; color: #1E7A40; border-bottom: 3px solid #2FA65A; padding-bottom: 6px; }
+  h2 { font-size: 20pt; color: #14522B; margin-top: 22px; }
+  h3 { font-size: 17pt; color: #473CC7; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  th, td { border: 1px solid #B7B3CE; padding: 6px 9px; font-size: 14pt; text-align: left; vertical-align: top; }
+  th { background: #EFEBFE; color: #2B2650; }
+  code { background: #F1EFF9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; font-size: 13pt; }
+  .box { background: #E3F6E9; border-left: 5px solid #2FA65A; padding: 8px 14px; margin: 10px 0; }
+  .warn { background: #FDE8E4; border-left: 5px solid #E8554D; padding: 8px 14px; margin: 10px 0; }
+  .muted { color: #6B6590; font-size: 13pt; }
+  ul { margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>เอกสารอธิบายระบบ Backend – RehabAI</h1>
+<p class="muted">ระบบฟื้นฟูผู้ป่วยพาร์กินสัน (LSVT BIG – การเคลื่อนไหว / LSVT LOUD – การพูด)<br>
+เอกสารนี้อธิบายฝั่งเซิร์ฟเวอร์แบบเข้าใจง่าย: (1) ข้อมูลการตรวจจับ (2) เสียงอธิบาย (3) โมเดลต่างๆ</p>
+
+<h2>1. ภาพรวมระบบ (ทำงานร่วมกันอย่างไร)</h2>
+<p>งานถูกแบ่งเป็น 2 ฝั่งชัดเจน:</p>
+<ul>
+  <li><b>ฝั่งเบราว์เซอร์ (Frontend)</b> — เป็นคน "ตรวจจับ" คือเปิดกล้อง/ไมค์ แล้วดึงข้อมูลดิบออกมา
+      (จุดข้อต่อร่างกาย และระดับความดังเสียง/คำพูด)</li>
+  <li><b>ฝั่งเซิร์ฟเวอร์ (Backend)</b> — เป็นคน "ตัดสิน" คือรับข้อมูลดิบมา แล้วบอกว่าทำถูกไหม
+      ให้คะแนนเท่าไหร่ และยังทำหน้าที่ "พูดอธิบายท่า" (เสียง) ให้ด้วย</li>
+</ul>
+<div class="box">
+  พูดสั้นๆ: <b>เบราว์เซอร์ตรวจจับ → ส่งข้อมูลเป็นตัวเลขมาให้เซิร์ฟเวอร์ → เซิร์ฟเวอร์ให้คะแนน/คำตัดสินกลับไป</b>
+</div>
+<p>Backend เขียนด้วย <b>Python + FastAPI</b> (ไฟล์หลักคือ <code>backend/main.py</code>)
+และแยกส่วนการให้คะแนนเสียงไว้ที่ <code>backend/lsvt_loud.py</code></p>
+
+<h2>2. ข้อมูลการตรวจจับ (Detection Data)</h2>
+<p>มี 2 ชนิด ตามประเภทการฝึก</p>
+
+<h3>2.1 ข้อมูลท่าทางร่างกาย (สำหรับ LSVT BIG)</h3>
+<ul>
+  <li>เบราว์เซอร์ใช้ <b>MediaPipe Pose (BlazePose)</b> จับโครงร่างคนจากกล้อง ได้จุดข้อต่อ <b>33 จุด</b></li>
+  <li>แต่ละจุดมีค่า 4 ตัว: <code>x, y, z</code> (ตำแหน่งในภาพ) และ <code>visibility</code> (ความมั่นใจว่ามองเห็นจุดนั้น)</li>
+  <li>เก็บต่อเนื่องเป็นชุดของหลายๆ เฟรม (1 ครั้งการทำท่า = 1 rep) แล้วส่งมาที่ <code>POST /score</code></li>
+</ul>
+<p>รูปแบบข้อมูลที่ส่งมา:</p>
+<table>
+  <tr><th>ฟิลด์</th><th>ความหมาย</th></tr>
+  <tr><td><code>landmarks</code></td><td>อาเรย์ [จำนวนเฟรม][33 จุด][4 ค่า: x, y, z, visibility]</td></tr>
+  <tr><td><code>exercise</code></td><td>ชื่อท่า เช่น <code>squat</code>, <code>knee_lift</code></td></tr>
+  <tr><td><code>fps</code></td><td>จำนวนเฟรมต่อวินาที (ค่าเริ่มต้น 20)</td></tr>
+</table>
+<p>ก่อนเข้าโมเดล เซิร์ฟเวอร์จะ "จัดข้อมูลให้เป็นมาตรฐาน" (ฟังก์ชัน <code>build_rep</code>) ได้แก่:</p>
+<ul>
+  <li><b>Normalize</b> — ย้ายจุดกลางสะโพกให้เป็นจุดศูนย์ และหารด้วยความยาวลำตัว เพื่อให้ไม่ขึ้นกับว่าอยู่ใกล้/ไกลกล้อง</li>
+  <li><b>คำนวณมุมข้อต่อ 8 มุม</b> — ศอกซ้าย/ขวา, ไหล่ซ้าย/ขวา, สะโพกซ้าย/ขวา, เข่าซ้าย/ขวา</li>
+  <li><b>ความเร็วการเคลื่อนไหว</b> — อัตราการเปลี่ยนของมุมในแต่ละเฟรม</li>
+  <li><b>ปรับความยาวให้เท่ากันที่ 48 เฟรม</b> (resample) เพื่อให้ทุก rep ยาวเท่ากันก่อนเข้าโมเดล</li>
+</ul>
+<p>รวมเป็น <b>115 ค่าต่อเฟรม</b> ซึ่งเป็นอินพุตของโมเดล</p>
+<div class="warn">
+  <b>ข้อควรระวัง:</b> โค้ดส่วนคำนวณฟีเจอร์เหล่านี้คัดลอกมาจาก notebook ตอนเทรน "แบบตรงตัวทุกบรรทัด"
+  ห้ามแก้/ปรับให้ "ดูดีขึ้น" เพราะถ้าตัวเลขเปลี่ยนแม้นิดเดียว ผลของโมเดลจะเพี้ยนทันที
+</div>
+
+<h3>2.2 ข้อมูลเสียงพูด (สำหรับ LSVT LOUD)</h3>
+<ul>
+  <li>เบราว์เซอร์เป็นคนวัดเอง 2 อย่าง: <b>ความดัง (dB)</b> จากไมค์ และ <b>คำที่พูด (transcript)</b> จากระบบแปลงเสียงเป็นข้อความ</li>
+  <li>แล้วส่งมาที่ <code>POST /lsvt/score</code> ให้เซิร์ฟเวอร์ตัดสิน</li>
+</ul>
+<p>เซิร์ฟเวอร์ให้คะแนนได้ถึง 3 ด้าน (แยกกันชัดเจน ไม่รวมกัน แต่ละด้านเต็ม 100):</p>
+<table>
+  <tr><th>ด้าน</th><th>วัดอะไร</th><th>ตัดสินอย่างไร</th></tr>
+  <tr><td>ความดัง (db)</td><td>พูดดังพอไหม</td><td>เทียบกับ "ช่วงที่นักกายภาพตั้งไว้" ต่อผู้ป่วยแต่ละคน (เบาไป / กำลังดี / ดังไป)</td></tr>
+  <tr><td>ความถูกต้องของคำ (word)</td><td>พูดตรงคำเป้าหมายไหม</td><td>เทียบความคล้ายของข้อความ (difflib) ผ่านเมื่อคล้าย ≥ 70%</td></tr>
+  <tr><td>ระยะเวลาออกเสียง (hold)</td><td>ลากเสียง "อา" ได้นานพอไหม</td><td>เทียบกับช่วงเวลาที่กำหนด เช่น 5–7 วินาที</td></tr>
+</table>
+<div class="box">
+  1 ครั้งจะ "นับว่าผ่าน" ก็ต่อเมื่อ <b>ทุกด้านที่ใช้ได้คะแนนอย่างน้อย 80</b>
+</div>
+
+<h2>3. การอธิบายด้วยเสียง (Text-to-Speech)</h2>
+<p>ทุกครั้งที่เริ่มท่าใน LSVT BIG ระบบจะ "อ่านคำอธิบายท่าเป็นเสียงภาษาไทย" ให้ฟัง โดย:</p>
+<ul>
+  <li>เบราว์เซอร์ส่งข้อความไปที่ <code>GET /tts?text=...</code></li>
+  <li>เซิร์ฟเวอร์ใช้ <b>gTTS (Google Text-to-Speech)</b> ภาษาไทย แปลงข้อความเป็นไฟล์เสียง <b>mp3</b> แล้วส่งกลับ</li>
+  <li>ข้อดี: เสียงเหมือนกันทุกเครื่อง ไม่ขึ้นกับว่าเครื่องผู้ใช้ติดตั้งเสียงภาษาไทยไว้หรือไม่</li>
+  <li>ผลลัพธ์ถูก cache ไว้ 1 วัน เพื่อไม่ต้องสร้างเสียงซ้ำสำหรับข้อความเดิม</li>
+</ul>
+<p class="muted">หมายเหตุ: ในฝั่งเว็บ เพลงประกอบจะ "หลบเสียงเบาลง" อัตโนมัติระหว่างมีเสียงอธิบาย
+แล้วค่อยๆ ดังขึ้นหลังอธิบายจบ</p>
+
+<h2>4. โมเดลต่างๆ (Models)</h2>
+
+<h3>4.1 QualityNet — โมเดลตัดสินความถูกต้องของท่า (LSVT BIG)</h3>
+<ul>
+  <li>เป็นโครงข่ายประสาทเทียมแบบ <b>1D-CNN</b> (ไฟล์ <code>quality_net.pt</code>) เขียนด้วย PyTorch</li>
+  <li><b>อินพุต:</b> ข้อมูล 48 เฟรม × 115 ค่า + รหัสท่าที่กำลังทำ</li>
+  <li><b>เอาต์พุต:</b> ความมั่นใจว่า "ท่าถูกต้อง" เป็นค่า 0–1 (≥ 0.5 = <code>correct</code>, ต่ำกว่า = <code>needs_work</code>)
+      พร้อมค่า ROM (พิสัยการเคลื่อนไหวของแต่ละข้อต่อ)</li>
+  <li>รองรับ 7 ท่า เช่น <code>lateral_raise</code>, <code>overhead_reach</code>, <code>knee_lift</code>,
+      <code>forward_lunge</code>, <code>squat</code></li>
+  <li>ท่าที่ยังไม่มีข้อมูลเทรน จะตอบ <code>unsupported</code> และให้ระบบไปใช้กฎเกณฑ์พื้นฐานแทน</li>
+</ul>
+<p><b>ข้อมูลที่ใช้เทรน (จาก <code>meta.json</code>):</b></p>
+<table>
+  <tr><th>รายการ</th><th>ค่า</th></tr>
+  <tr><td>ชุดข้อมูล</td><td>REHAB24-6 (Cernek et al., SISAP 2024)</td></tr>
+  <tr><td>จำนวน rep / จำนวนคน</td><td>1,008 rep จาก 9 คน</td></tr>
+  <tr><td>ความแม่นยำ (LOSO)</td><td>ประมาณ 66% (±7%)</td></tr>
+  <tr><td>AUC</td><td>ประมาณ 0.73</td></tr>
+</table>
+<div class="warn">
+  <b>ข้อจำกัดสำคัญ (ต้องรู้ก่อนนำไปใช้จริง):</b>
+  <ul>
+    <li>เทรนจาก <b>คนสุขภาพดี 10 คน อายุ 25–50 ปี — ไม่มีผู้ป่วยพาร์กินสันเลย</b></li>
+    <li>ท่าที่ "ผิด" เป็นการจงใจทำผิดตามสคริปต์ ไม่ใช่ความผิดพลาดจริงของผู้ป่วย</li>
+    <li>ถ่ายในห้องแล็บ แสงคงที่ ผู้ทดสอบใส่ชุด motion-capture</li>
+    <li>ครอบคลุมเพียง 4 จาก 8 ท่า ที่เหลือใช้กฎเกณฑ์พื้นฐาน</li>
+    <li>ท่ายกเข่า (knee lift) ใช้การกางขาประมาณแทน (คนละระนาบการเคลื่อนไหว)</li>
+  </ul>
+</div>
+
+<h3>4.2 ตัวให้คะแนน LSVT LOUD — แบบกฎเกณฑ์ (ไม่ใช้ Machine Learning)</h3>
+<ul>
+  <li>ไม่ใช่โมเดล AI แต่เป็น "สูตรคำนวณตรงไปตรงมา" (ไฟล์ <code>lsvt_loud.py</code>) ใช้แค่ไลบรารีมาตรฐานของ Python</li>
+  <li>แปลงค่า dB / ความคล้ายของคำ / เวลาออกเสียง → เป็นคะแนน 0–100 ด้วยการเทียบสัดส่วนเชิงเส้น</li>
+  <li>ข้อดี: อธิบายได้ชัดเจน โปร่งใส และนักกายภาพปรับ "ช่วงเป้าหมาย" ต่อผู้ป่วยแต่ละคนได้</li>
+</ul>
+
+<h3>4.3 ตัวจับท่า (Pose Landmarker)</h3>
+<p>ไฟล์ <code>pose_landmarker_full.task</code> คือโมเดลของ MediaPipe ที่ใช้จับ 33 จุดข้อต่อ
+โดยหลักจะรันในเบราว์เซอร์ (ฝั่งผู้ใช้) เพื่อความเร็วแบบเรียลไทม์</p>
+
+<h2>5. รายการ API หลัก</h2>
+<table>
+  <tr><th>เส้นทาง (Endpoint)</th><th>หน้าที่</th></tr>
+  <tr><td><code>POST /score</code></td><td>ให้คะแนนความถูกต้องของท่า LSVT BIG (ใช้ QualityNet)</td></tr>
+  <tr><td><code>POST /lsvt/score</code></td><td>ให้คะแนนเสียง LSVT LOUD (ความดัง / คำ / เวลา)</td></tr>
+  <tr><td><code>GET /tts</code></td><td>แปลงข้อความไทยเป็นเสียงพูด mp3 (gTTS)</td></tr>
+  <tr><td><code>GET /loud-phrases</code> / <code>POST /loud-phrases</code></td><td>รายการประโยคฝึกพูดที่นักกายภาพกำหนด</td></tr>
+  <tr><td><code>WS /ws/chat</code></td><td>แชทเรียลไทม์ระหว่างผู้ป่วยกับนักกายภาพ</td></tr>
+  <tr><td><code>POST /line/...</code></td><td>เชื่อมบัญชี Line และส่งการแจ้งเตือน</td></tr>
+  <tr><td><code>GET /health</code></td><td>ตรวจสอบว่าระบบทำงานปกติ และดูรายการท่าที่รองรับ</td></tr>
+</table>
+
+<h2>6. การนำไปรันจริง (Deploy)</h2>
+<ul>
+  <li>มี <code>Dockerfile</code> และ <code>railway.toml</code> สำหรับ deploy ขึ้น <b>Railway</b></li>
+  <li>รายการไลบรารีที่ต้องติดตั้งอยู่ใน <code>requirements.txt</code> (FastAPI, PyTorch, gTTS ฯลฯ)</li>
+  <li>ฝั่งเว็บชี้มาที่เซิร์ฟเวอร์ผ่านตัวแปร <code>VITE_API_URL</code></li>
+</ul>
+
+<hr>
+<p class="muted">อ้างอิงจากซอร์สโค้ดจริง: <code>backend/main.py</code>, <code>backend/lsvt_loud.py</code>,
+<code>backend/meta.json</code> — RehabAI</p>
+
+</body>
+</html>

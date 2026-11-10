@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from '../../components/AuthLayout.jsx'
-import { Field, Input } from '../../components/ui.jsx'
+import { Field, Input, Button } from '../../components/ui.jsx'
 import { Mail, Lock } from '../../components/icons.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
 
@@ -34,28 +34,31 @@ export default function TherapistLogin() {
   return (
     <AuthLayout therapist>
       {/* segmented control — role clarity is higher here (spec §4.1) */}
-      <div className="flex p-1 bg-bg rounded-btn mb-6 text-[13px] font-medium">
-        <Link to="/login" className="flex-1 text-center py-2 rounded-md text-ink-secondary">ผู้ป่วย</Link>
-        <span className="flex-1 text-center py-2 rounded-md bg-teal-700 text-white">นักกายภาพบำบัด</span>
+      <div className="flex gap-1 p-1.5 bg-teal-50 border-2 border-line rounded-btn text-b-sm font-bold">
+        <Link to="/login" className="flex-1 text-center py-2.5 rounded-[14px] text-ink-secondary">ผู้ป่วย</Link>
+        <span className="flex-1 text-center py-2.5 rounded-[14px] bg-teal-700 text-white">นักกายภาพบำบัด</span>
       </div>
-      <h2 className="font-heading text-[22px] font-semibold text-ink-primary mb-1.5">เข้าสู่ระบบ</h2>
-      <p className="text-[13.5px] text-ink-secondary mb-6">สำหรับนักกายภาพบำบัดที่ยืนยันตัวตนแล้ว</p>
 
-      <form onSubmit={submit} noValidate>
+      <div>
+        <h1 className="font-heading text-b-h1 font-bold m-0 mb-2.5">เข้าสู่ระบบ</h1>
+        <p className="text-b-base text-ink-secondary m-0">สำหรับนักกายภาพบำบัดที่ยืนยันตัวตนแล้ว</p>
+      </div>
+
+      <form onSubmit={submit} noValidate className="flex flex-col gap-1">
         <Field label="อีเมล" error={errors.email}>
           <Input icon={Mail} type="email" placeholder="you@clinic.com" value={form.email} onChange={set('email')} />
         </Field>
         <Field label="รหัสผ่าน" error={errors.password}>
-          <Input icon={Lock} type="password" placeholder="••••••••" value={form.password} onChange={set('password')} />
+          <Input icon={Lock} type="password" placeholder="กรอกรหัสผ่าน" value={form.password} onChange={set('password')} />
         </Field>
-        <button type="submit" className="btn-primary" disabled={busy}>
+        <Button as="button" type="submit" disabled={busy} className="w-full">
           {busy ? 'กำลังเข้าสู่ระบบ…' : 'เข้าสู่ระบบ'}
-        </button>
+        </Button>
       </form>
 
-      <p className="text-center text-[13px] text-ink-secondary mt-5">
+      <p className="text-b-base text-center text-ink-secondary m-0">
         ยังไม่มีบัญชี?{' '}
-        <Link to="/therapist/register" className="text-teal-700 font-semibold hover:underline">สมัครสมาชิกนักกายภาพบำบัด</Link>
+        <Link to="/therapist/register" className="font-bold text-teal-700 hover:underline">สมัครสมาชิกนักกายภาพบำบัด</Link>
       </p>
     </AuthLayout>
   )

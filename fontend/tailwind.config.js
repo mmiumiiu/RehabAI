@@ -4,56 +4,78 @@ export default {
   theme: {
     extend: {
       colors: {
-        // "RehabAI Colorful" palette
-        bg: '#F7F6FD',
+        // ── "BRIDGE" palette (design/bridge-mockup.html) ──────────────────
+        // Sky-blue surfaces, deep navy ink, red for the primary action.
+        // The old token NAMES are kept (teal / coral / sun / …) so every
+        // existing page reskins without being touched.
+        bg: '#F3F9FC',
         surface: '#FFFFFF',
-        // BIG / primary green (kept under the `teal` name so existing usages reskin)
+
+        // Blue accent — the BRIDGE brand colour.
+        // (Still named `teal` so existing `bg-teal-700` usages pick it up.)
         teal: {
-          900: '#14522B',
-          800: '#1E7A40',
-          700: '#1E7A40',
-          600: '#2FA65A',
-          500: '#2FA65A',
-          200: '#BDEFCF',
-          100: '#E3F6E9',
+          900: '#0B2E45',
+          800: '#0B3550',
+          700: '#157AB5',
+          600: '#157AB5',
+          500: '#3E9AD0',
+          200: '#B4DCEC',
+          100: '#E0F1FA',
+          50: '#F5FAFD',
         },
-        // LOUD / red
+        // Red — the primary button colour in BRIDGE.
         coral: {
-          700: '#B33630',
-          600: '#E8554D',
-          500: '#E8554D',
-          200: '#FBC0BA',
-          100: '#FDE8E4',
+          800: '#9E1F1F', // 3D bottom edge / pressed
+          700: '#B3261E', // mockup's danger text
+          600: '#D32F2F', // primary button fill
+          500: '#D32F2F',
+          200: '#EDB3AD',
+          100: '#FBE3E0',
         },
-        indigo: { 700: '#473CC7', 600: '#5B50E0', 100: '#EFEBFE' },
-        sun: { 700: '#B8860B', 600: '#D9A616', 500: '#F7C132', 200: '#FCE988', 100: '#FFF4D6', text: '#3A2C00' },
-        sky: { 600: '#1D5FBF', 500: '#3D87E8', 200: '#C9D2FA', 100: '#E7F0FE' },
-        pink: { 700: '#B03A76', 600: '#D9538F', 200: '#FFD3E2', 100: '#FBE7F1' },
+        indigo: { 700: '#4B2A86', 600: '#6D3FC0', 100: '#EEE8FA' },
+        sun: { 700: '#6B4A00', 600: '#8E5F2C', 500: '#E6CF86', 200: '#FFF1C7', 100: '#FFF6E3', text: '#4A2E0F' },
+        sky: { 600: '#157AB5', 500: '#3E9AD0', 200: '#B4DCEC', 100: '#E0F1FA' },
+        pink: { 700: '#4B2A86', 600: '#6D3FC0', 200: '#DDC9F5', 100: '#EEE8FA' },
         ink: {
-          primary: '#2B2650',
-          secondary: '#6B6590',
-          muted: '#9B95BD',
+          primary: '#0B2E45',
+          secondary: '#3A5468',
+          muted: '#6C8699',
         },
-        line: '#E9E6F7',
-        cam: '#231E36',
-        danger: '#E5234F',
-        warn: { bg: '#FFF4D6', fg: '#B8860B' },
-        ok: { bg: '#E3F6E9', fg: '#1E7A40' },
+        line: '#CDE3EE',
+        cam: '#0B2E45',
+        danger: '#D32F2F',
+        warn: { bg: '#FFF6E3', fg: '#6B4A00' },
+        ok: { bg: '#E3F1DC', fg: '#24661A' },
       },
       fontFamily: {
-        // Looped Thai font (มีหัว) — easier to read than the loopless Mitr
-        heading: ['Sarabun', 'Inter', 'sans-serif'],
-        body: ['Sarabun', 'Inter', 'sans-serif'],
+        // BRIDGE uses the looped Thai face (มีหัว); Sarabun stays as fallback.
+        heading: ['"IBM Plex Sans Thai Looped"', 'Sarabun', 'Inter', 'sans-serif'],
+        body: ['"IBM Plex Sans Thai Looped"', 'Sarabun', 'Inter', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
+      // Mockup type scale. The mockup is drawn at zoom 1; the app runs at
+      // body zoom 1.3–1.4 (App.jsx), so each value is the mockup px ÷ 1.4 —
+      // i.e. these render at the size the mockup shows.
+      fontSize: {
+        'b-xs': ['14px', '1.5'],   // 20px in mockup
+        'b-sm': ['16px', '1.55'],  // 22px
+        'b-label': ['17px', '1.5'], // 24px — field labels
+        'b-base': ['18px', '1.6'], // 26px — body copy, inputs
+        'b-btn': ['20px', '1.3'],  // 28px — buttons
+        'b-h3': ['24px', '1.35'],  // 34px
+        'b-h2': ['31px', '1.3'],   // 44px
+        'b-h1': ['36px', '1.25'],  // 50px
+        'b-hero': ['39px', '1.3'], // 54px
+      },
       borderRadius: {
-        card: '22px',
-        btn: '16px',
+        card: '26px',
+        btn: '22px',
+        field: '20px',
         pill: '999px',
       },
       boxShadow: {
-        card: '0 3px 10px rgba(15,70,45,0.07)',
-        soft: '0 14px 34px rgba(15,70,45,0.12)',
+        card: '0 10px 28px rgba(21,122,181,0.08)',
+        soft: '0 6px 18px rgba(21,122,181,0.10)',
       },
     },
   },

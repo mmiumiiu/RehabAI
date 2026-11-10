@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { speechStart, speechEnd } from './speechBus.js'
+import { speakLocal, cancelLocal } from './ttsLocal.js'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -24,18 +25,27 @@ export function useSpeak(text, { delayMs = 0, enabled = true } = {}) {
       speechEnd()
     }
 
+    // If the backend audio can't load/play, speak with the browser's TTS so the
+    // guidance is still heard — keep the music ducked until the local speech ends.
+    let fellBack = false
+    const fallback = () => {
+      if (fellBack || cancelled) return
+      fellBack = true
+      speakLocal(text, finish)
+    }
+
     const timer = setTimeout(() => {
       if (cancelled) return
       const audio = new Audio(`${API_URL}/tts?text=${encodeURIComponent(text)}`)
       audioRef.current = audio
       audio.addEventListener('ended', finish)
-      audio.addEventListener('error', finish)
+      audio.addEventListener('error', fallback)
       // Duck the background music while the guidance speaks.
       started = true
       speechStart()
       // Autoplay may be blocked if the click that started the session has aged
-      // out — fail silently rather than throwing an unhandled rejection.
-      audio.play().catch(finish)
+      // out — fall back to browser TTS rather than throwing.
+      audio.play().catch(fallback)
     }, delayMs)
 
     return () => {
@@ -46,6 +56,7 @@ export function useSpeak(text, { delayMs = 0, enabled = true } = {}) {
         audioRef.current.pause()
         audioRef.current = null
       }
+      cancelLocal()
       // If the timer fired we started speaking; make sure the music un-ducks.
       finish()
     }

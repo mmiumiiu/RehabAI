@@ -1,58 +1,98 @@
-// Split-screen auth shell — matches the "login UI" design: a green hero panel on
-// the left (dot texture + floating confetti + logo + tagline + feature chips) and
-// the form in a white rounded card on the right.
-export default function AuthLayout({ children, therapist = false, hero = true, cardWidth = 440 }) {
-  return (
-    <div className="min-h-screen flex" style={{ background: '#F4FAF5' }}>
-      {/* Left · green hero */}
-      {hero && (
-      <aside
-        className="hidden md:flex flex-col justify-center relative overflow-hidden w-[46%] max-w-[560px] p-12 text-white"
-        style={{ background: '#2FA65A' }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,.14) 2px, transparent 2.6px)', backgroundSize: '26px 26px' }}
-        />
-        {/* floating confetti */}
-        <span className="absolute top-10 right-16 w-4 h-4 rounded-full" style={{ background: '#F7C132' }} />
-        <span className="absolute top-24 right-32 w-2.5 h-2.5 rounded-full" style={{ background: '#E8554D' }} />
-        <span className="absolute bottom-24 right-20 w-3 h-3 rounded-[4px] rotate-[20deg]" style={{ background: '#BDEFCF' }} />
-        <span className="absolute bottom-32 left-12 w-2.5 h-2.5 rounded-[3px] -rotate-[15deg]" style={{ background: '#D9538F' }} />
+// Split-screen auth shell — matches the "login"/"register" sections of
+// design/bridge-mockup.html: a sky-blue gradient hero on the left (BRIDGE mark,
+// big headline, tagline) and the form in a single plain column on the right,
+// topped by the "ขนาดตัวอักษร" (text size) control.
+//
+// Sizes are the mockup px ÷ 1.4, because App.jsx applies a body zoom of 1.4 to
+// the patient portal — so what renders matches the mockup.
+import { useEffect, useState } from 'react'
+import { Logo } from './ui.jsx'
 
-        <div className="relative">
-          <div className="w-16 h-16 rounded-[20px] bg-white flex items-center justify-center mb-6 overflow-hidden" style={{ boxShadow: '0 10px 24px rgba(0,0,0,.2)' }}>
-            <img src="/logo.png" alt="RehabAI" className="w-[46px] h-[46px] object-contain" />
+const FONT_STEPS = [1, 1.12, 1.25]
+const STORE_KEY = 'bridge.authFontStep'
+
+function TextSizeControl({ step, onChange }) {
+  return (
+    <div
+      role="group"
+      aria-label="ขนาดตัวอักษร"
+      className="flex items-center gap-2.5 pl-5 pr-2 py-2 rounded-[24px] bg-surface border-2 border-line"
+    >
+      <span className="text-b-sm font-semibold">ขนาดตัวอักษร</span>
+      <button
+        type="button"
+        onClick={() => onChange(step - 1)}
+        disabled={step === 0}
+        aria-label="ลดขนาดตัวอักษร"
+        className="w-[52px] h-[52px] rounded-[18px] border-2 border-line bg-surface text-ink-primary text-b-sm font-bold disabled:opacity-40"
+      >
+        ก
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange(step + 1)}
+        disabled={step === FONT_STEPS.length - 1}
+        aria-label="เพิ่มขนาดตัวอักษร"
+        className="w-[52px] h-[52px] rounded-[18px] border-2 border-line bg-surface text-ink-primary text-b-h3 font-bold disabled:opacity-40"
+      >
+        ก
+      </button>
+    </div>
+  )
+}
+
+export default function AuthLayout({ children, therapist = false, hero = true, cardWidth = 486 }) {
+  const [step, setStep] = useState(() => {
+    const n = Number(localStorage.getItem(STORE_KEY))
+    return Number.isInteger(n) && n >= 0 && n < FONT_STEPS.length ? n : 0
+  })
+
+  useEffect(() => {
+    localStorage.setItem(STORE_KEY, String(step))
+  }, [step])
+
+  const clamp = (n) => Math.max(0, Math.min(FONT_STEPS.length - 1, n))
+
+  return (
+    <div className="min-h-screen flex flex-wrap bg-bg font-body font-medium text-ink-primary">
+      {/* Left · sky-blue hero */}
+      {hero && (
+        <aside
+          className="hidden md:flex flex-col justify-between gap-10 relative overflow-hidden flex-[1_1_330px] p-10"
+          style={{ background: 'linear-gradient(110deg, #CCE6F1 0%, #B4DCEC 40%, #92D0E5 72%, #87CBE8 100%)' }}
+        >
+          <Logo size={43} />
+
+          <div className="flex flex-col gap-4">
+            <h2 className="font-heading text-b-hero font-bold leading-[1.3] m-0">
+              {therapist ? (
+                <>ดูแลผู้ป่วย<br />ของคุณ<br />ได้ทุกที่</>
+              ) : (
+                <>ฟื้นฟูร่างกาย<br />และเสียงพูด<br />ที่บ้านของคุณ</>
+              )}
+            </h2>
+            <p className="text-b-base font-semibold leading-[1.7] m-0" style={{ color: '#133E59' }}>
+              {therapist
+                ? 'ติดตามความคืบหน้าของผู้ป่วยพาร์กินสัน สั่งการบ้าน และพูดคุยกันได้ในที่เดียว'
+                : 'กล้องช่วยดูท่าทาง ไมโครโฟนช่วยฟังเสียง และนักกายภาพของคุณเห็นความคืบหน้าทุกครั้งที่ฝึก'}
+            </p>
           </div>
-          <div className="font-heading text-[32px] font-semibold leading-[1.3] mb-2.5">
-            {therapist ? (
-              <>ดูแลผู้ป่วยของคุณ<br />ได้ทุกที่ ทุกเวลา 🩺</>
-            ) : (
-              <>ฝึกกายภาพที่บ้าน<br />ง่าย สนุก ได้ผลจริง 💪</>
-            )}
-          </div>
-          <p className="text-[15.5px] opacity-85 leading-[1.7] max-w-[360px]">
-            {therapist
-              ? 'พอร์ทัลสำหรับนักกายภาพบำบัด ติดตามความคืบหน้าของผู้ป่วยพาร์กินสัน พร้อมสั่งการบ้านและพูดคุยแบบเรียลไทม์'
-              : 'RehabAI ช่วยผู้ป่วยพาร์กินสันฝึก LSVT BIG และ LSVT LOUD ผ่านกล้องและไมค์ พร้อมนักกายภาพบำบัดดูแลใกล้ชิด'}
+
+          <p className="text-b-sm font-semibold m-0" style={{ color: '#133E59' }}>
+            ฝึกกายภาพและฝึกเสียงพูดที่บ้าน โดยมีนักกายภาพดูแล
           </p>
-          <div className="flex flex-wrap gap-2.5 mt-6">
-            {(therapist
-              ? ['👥 ดูแลผู้ป่วย', '💬 พูดคุย']
-              : ['🏃 ฝึกท่าทาง', '🎤 ฝึกเสียง', '📊 ติดตามผล']
-            ).map((t) => (
-              <span key={t} className="px-4 py-2 rounded-pill text-[13.5px] font-semibold" style={{ background: 'rgba(255,255,255,.18)' }}>
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      </aside>
+        </aside>
       )}
 
-      {/* Right · form card */}
-      <main className="flex-1 flex items-center justify-center p-6 md:p-10">
-        <div className="w-full bg-white rounded-[24px] p-7 md:p-9" style={{ maxWidth: cardWidth, boxShadow: '0 12px 30px rgba(30,90,50,.1)' }}>
+      {/* Right · form column */}
+      <main className="flex-[1.3_1_457px] flex flex-col items-center gap-7 px-6 py-8 md:px-10 md:py-9">
+        <div className="self-stretch flex justify-end">
+          <TextSizeControl step={step} onChange={(n) => setStep(clamp(n))} />
+        </div>
+        <div
+          className="w-full flex flex-col gap-7"
+          style={{ maxWidth: cardWidth, zoom: FONT_STEPS[step] }}
+        >
           {children}
         </div>
       </main>

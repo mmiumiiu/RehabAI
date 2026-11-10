@@ -16,7 +16,31 @@
       "Bash(/usr/bin/python3 test.py)",
       "Bash(curl -fL -o pose_landmarker_full.task https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task)",
       "Bash(npx vite *)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(git fetch *)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(python3 -c \"import fastapi, uvicorn, torch, numpy; print\\('deps OK'\\)\")",
+      "Bash(python3 -m venv .venv)",
+      "Bash(./.venv/bin/pip install *)",
+      "Bash(npm install *)",
+      "Bash(./.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000)",
+      "Bash(curl -s http://localhost:8000/health)",
+      "Bash(curl -s -o /dev/null -w \"frontend HTTP %{http_code}\\\\n\" http://localhost:5173/)",
+      "Bash(curl -s \"http://localhost:8000/tts?text=%E0%B8%97%E0%B8%94%E0%B8%AA%E0%B8%AD%E0%B8%9A\")",
+      "Bash(curl -s -w \" [%{http_code}]\\\\n\" \"http://localhost:8000/health\")",
+      "Bash(curl -s -o /dev/null -w \"localhost:8000/health → %{http_code}\\\\n\" http://localhost:8000/health)",
+      "Bash(git revert *)",
+      "Bash(grep -iE \"\\\\.\\(mp4|mov|webm|m4v|avi\\)$\")",
+      "Bash(LC_ALL=C unzip -l RehabAI-source-code.zip)",
+      "Bash(zip -r -q RehabAI-source-code.zip . -x .git/* -x */node_modules/* -x */.venv/* -x backend/.venv/* -x */dist/* -x fontend/public/*.zip -x fontend/public/*.mov -x fontend/public/*.mp4 -x fontend/public/*.pdf -x fontend/public/*.png -x fontend/public/*.mp3 -x *.zip -x */__pycache__/* -x */.DS_Store -x '*~$*')",
+      "Bash(xargs sed -i '' 's/RehabAI/BRIDGE/g')",
+      "Bash(python3 -)",
+      "Bash(python3 -c ' *)",
+      "Bash(echo \"exit:$?\")"
     ]
   }
 }
