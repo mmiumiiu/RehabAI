@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Button, ProgressRing, StatCard } from '../../components/ui.jsx'
-import { Flame, Activity, Mic, Clock, Chat, ChevronRight } from '../../components/icons.jsx'
+import { Flame, Activity, Mic, Chat, ChevronRight } from '../../components/icons.jsx'
 import { BIG_EXERCISES } from '../../lib/mockData.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
@@ -37,7 +37,7 @@ function startOfWeek() {
   return t - ((dow + 6) % 7) * DAY_MS
 }
 
-function TrainingCard({ icon: Icon, tint, accent, title, minutes, blurb, done, total, unit, cta, to }) {
+function TrainingCard({ icon: Icon, tint, accent, title, blurb, done, total, unit, cta, to }) {
   const pct = total ? Math.max(2, Math.round((done / total) * 100)) : 0
   return (
     <article className="flex-1 min-w-[300px] bg-surface rounded-card border-[1.5px] border-line shadow-card p-6 flex flex-col gap-4">
@@ -45,12 +45,7 @@ function TrainingCard({ icon: Icon, tint, accent, title, minutes, blurb, done, t
         <span className="w-[60px] h-[60px] rounded-[17px] flex items-center justify-center flex-shrink-0" style={{ background: tint, color: accent }}>
           <Icon size={31} />
         </span>
-        <div>
-          <h3 className="font-heading text-b-h3 font-bold m-0">{title}</h3>
-          <span className="inline-flex items-center gap-2 text-b-sm text-ink-secondary">
-            <Clock size={17} /> ประมาณ {minutes} นาที
-          </span>
-        </div>
+        <h3 className="font-heading text-b-h3 font-bold m-0">{title}</h3>
       </div>
 
       <p className="text-b-base leading-[1.6] m-0">{blurb}</p>
@@ -81,8 +76,8 @@ export default function Home() {
   const prog = useExerciseProgress()
 
   // Remaining (not-yet-done-today) counts — update live as the patient finishes.
-  const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
-  const bigLeft = standing.filter((e) => !prog.big.includes(e.id)).length
+  // The whole BIG set counts, so this matches the training list and its ring.
+  const bigLeft = BIG_EXERCISES.filter((e) => !prog.big.includes(e.id)).length
   const loudLeft = loudSteps.filter((s) => !prog.loud.includes(s.id)).length
   const doneToday = prog.big.length + prog.loud.length
 
@@ -93,7 +88,6 @@ export default function Home() {
   const weekStart = startOfWeek()
   const daysThisWeek = [...trainedDays].filter((d) => d >= weekStart).length
   const programsLeft = (bigLeft ? 1 : 0) + (loudLeft ? 1 : 0)
-  const minutesLeft = (bigLeft ? 20 : 0) + (loudLeft ? 10 : 0)
   const firstTarget = bigLeft ? '/training/big' : '/training/loud'
 
   const name = user?.name?.split(' ')[0] || 'ผู้ใช้งาน'
@@ -127,7 +121,7 @@ export default function Home() {
           {programsLeft > 0 ? (
             <>
               <h2 className="font-heading text-b-hero font-bold m-0 leading-[1.25]">
-                วันนี้ฝึก {programsLeft} อย่าง<br />ประมาณ {minutesLeft} นาที
+                วันนี้ฝึก {programsLeft} อย่าง
               </h2>
               <p className="text-b-base font-semibold leading-[1.6] m-0">
                 ฝึกเคลื่อนไหว {bigLeft} ท่า · ฝึกเสียงพูด {loudLeft} ขั้นตอน
@@ -180,12 +174,11 @@ export default function Home() {
           tint="#E0F1FA"
           accent="#157AB5"
           title="ฝึกเคลื่อนไหว"
-          minutes={20}
           blurb="กล้องช่วยดูท่าทาง และบอกทันทีว่าทำถูกหรือไม่"
-          done={standing.length - bigLeft}
-          total={standing.length}
+          done={BIG_EXERCISES.length - bigLeft}
+          total={BIG_EXERCISES.length}
           unit="ท่า"
-          cta={bigLeft < standing.length ? 'ฝึกต่อ' : 'เริ่มฝึก'}
+          cta={bigLeft < BIG_EXERCISES.length ? 'ฝึกต่อ' : 'เริ่มฝึก'}
           to="/training/big"
         />
         <TrainingCard
@@ -193,7 +186,6 @@ export default function Home() {
           tint="#EEE8FA"
           accent="#6D3FC0"
           title="ฝึกเสียงพูด"
-          minutes={10}
           blurb="ไมโครโฟนวัดความดังของเสียง ช่วยให้พูดชัดขึ้น"
           done={loudSteps.length - loudLeft}
           total={loudSteps.length}

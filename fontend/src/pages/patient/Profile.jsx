@@ -120,7 +120,7 @@ export default function Profile() {
           <>
             <div className="flex items-center gap-4 flex-wrap">
               <span className="w-[51px] h-[51px] rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-b-base font-bold flex-shrink-0">
-                {therapist.name.replace(/^กภ\.?|^ก\.พ\.?/, '').trim().slice(0, 2)}
+                {therapist.name.replace(/^กภ\.?/, '').trim().slice(0, 2)}
               </span>
               <div className="flex-1 min-w-[180px]">
                 <div className="text-b-btn font-bold">{therapist.name}</div>

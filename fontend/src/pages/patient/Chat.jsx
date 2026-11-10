@@ -6,8 +6,8 @@ import { chatService } from '../../lib/chatService.js'
 // "แชทกับนักกายภาพ" — the "#chat" section of design/bridge-mockup.html.
 // Mockup px ÷ 1.4 (the patient portal body zoom).
 
-const DEFAULT_THERAPIST = { name: 'ก.พ. ธนกร รักษาดี' }
-const initialsOf = (name) => name.replace(/^กภ\.?|^ก\.พ\.?/, '').trim().slice(0, 2)
+const DEFAULT_THERAPIST = { name: 'กภ. ธนกร รักษาดี' }
+const initialsOf = (name) => name.replace(/^กภ\.?/, '').trim().slice(0, 2)
 
 const QUICK_REPLIES = ['ขอบคุณครับ', 'วันนี้ปวดนิดหน่อย', 'ทำได้ไม่ครบ', 'ขอนัดคุย']
 

@@ -165,19 +165,19 @@ export default function SessionLoud() {
           <SOSButton reason="sos" />
 
           {/* Phrase */}
-          <div className="w-full max-w-[300px] bg-white/[0.08] rounded-xl px-6 py-4 text-center">
-            <p className="text-[11px] text-white/55 uppercase tracking-wide mb-1.5">พูดตามนี้</p>
-            <p className="font-heading text-[22px] font-semibold text-white mb-3">{step.phrase}</p>
+          <div className="w-full max-w-[460px] bg-white/[0.08] rounded-[20px] px-7 py-5 text-center">
+            <p className="text-[20px] font-bold text-white/70 mb-2">พูดตามนี้</p>
+            <p className="font-heading text-[40px] font-bold text-white mb-4 leading-snug">{step.phrase}</p>
             <PlayPhraseButton text={step.phrase} dark />
           </div>
 
           {/* Rep counter */}
           <div className="text-center">
-            <div className="font-heading text-[52px] font-semibold text-white leading-none">
+            <div className="font-heading font-bold text-white leading-none" style={{ fontSize: 110 }}>
               {reps}
-              <span className="text-[20px] text-white/40 font-normal"> / {repGoal}</span>
+              <span className="text-white/50 font-normal" style={{ fontSize: 40 }}>/{repGoal}</span>
             </div>
-            <p className="text-[11.5px] text-white/50 mt-1">ครั้ง</p>
+            <p className="text-[20px] font-bold text-white/70 mt-1">ครั้ง</p>
           </div>
 
           {/* Progress bar */}
@@ -194,7 +194,7 @@ export default function SessionLoud() {
           {!sessionDone ? (
             <button
               onPointerDown={() => (recording ? stop() : start())}
-              className={`w-28 h-28 rounded-full flex flex-col items-center justify-center gap-1 text-white font-semibold text-[13px] select-none transition-transform active:scale-95 ${
+              className={`w-[168px] h-[168px] rounded-full flex flex-col items-center justify-center gap-2 text-white font-bold text-[20px] select-none transition-transform active:scale-95 ${
                 pulse ? 'scale-95' : ''
               }`}
               style={{
@@ -208,21 +208,21 @@ export default function SessionLoud() {
                 boxShadow: '0 0 0 6px rgba(255,255,255,0.06)',
               }}
             >
-              <Mic size={28} />
+              <Mic size={44} />
               {recording
                 ? (isSustain ? `${holdSec.toFixed(1)} วิ` : 'กำลังฟัง…')
                 : (isSustain ? 'กดเริ่มออกเสียง' : 'กดแล้วพูด')}
             </button>
           ) : (
-            <div className="w-28 h-28 rounded-full bg-[rgba(27,156,76,0.85)] flex flex-col items-center justify-center gap-1 text-white">
-              <Check size={32} />
-              <span className="text-[12px] font-semibold">เสร็จแล้ว!</span>
+            <div className="w-[168px] h-[168px] rounded-full bg-[rgba(27,156,76,0.85)] flex flex-col items-center justify-center gap-2 text-white">
+              <Check size={48} />
+              <span className="text-[20px] font-bold">เสร็จแล้ว!</span>
             </div>
           )}
 
           {/* Live sustain hint */}
           {isSustain && recording && !sessionDone && (
-            <p className="text-[12px] text-white/55 -mt-1">
+            <p className="text-[20px] text-white/70 leading-relaxed text-center max-w-[560px]">
               ค้างเสียง "อา" ไว้ให้นานที่สุด · ระบบจะหยุดให้เองเมื่อคุณเงียบ · เป้าหมาย {step.holdMin ?? 5}–{step.holdTarget ?? 7} วินาที
             </p>
           )}
@@ -230,17 +230,17 @@ export default function SessionLoud() {
           {/* Per-attempt feedback — each scored part shown separately */}
           {result && !sessionDone && (
             <div className="text-center">
-              <div className="flex items-center justify-center gap-5">
+              <div className="flex items-center justify-center gap-8 flex-wrap">
                 {parts.map((p) => (
                   <div key={p.key}>
-                    <p className="font-heading text-[22px] font-semibold leading-none" style={{ color: p.score >= 80 ? '#29B85E' : '#FF8452' }}>
+                    <p className="font-heading text-[40px] font-bold leading-none" style={{ color: p.score >= 80 ? '#29B85E' : '#FF8452' }}>
                       {p.score}%
                     </p>
-                    <p className="text-[11px] text-white/55 mt-0.5">{p.label}</p>
+                    <p className="text-[20px] text-white/70 mt-1">{p.label}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-[12px] mt-1.5" style={{ color: passed ? '#29B85E' : '#FF8452' }}>
+              <p className="text-[20px] font-bold mt-2 leading-relaxed" style={{ color: passed ? '#29B85E' : '#FF8452' }}>
                 {passed
                   ? 'ผ่าน — นับ 1 ครั้ง ✓'
                   : `ยังไม่นับ — ต้องเกิน 80% ทุกส่วน (${VERDICT_TH[result.db.verdict] || result.db.verdict}${result.hold ? `, ค้างเสียง ${result.hold.hold_sec} วิ` : ''}${result.word && result.word.verdict !== 'correct' ? `, ได้ยิน “${transcript || '—'}”` : ''})`}
@@ -248,11 +248,11 @@ export default function SessionLoud() {
             </div>
           )}
           {error && !sessionDone && (
-            <p className="text-[12px] text-[#FF8452] text-center max-w-[280px]">{error}</p>
+            <p className="text-[20px] text-[#FF8452] text-center max-w-[460px] leading-relaxed">{error}</p>
           )}
 
           {/* Live dB meter with the good band highlighted */}
-          <div className="w-full max-w-[260px]">
+          <div className="w-full max-w-[560px]">
             <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
               <div
                 className="absolute top-0 bottom-0 bg-white/25"
@@ -260,7 +260,7 @@ export default function SessionLoud() {
               />
               <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'linear-gradient(90deg,#D94A1D,#FF8452)', transition: 'width 0.1s' }} />
             </div>
-            <div className="flex justify-between text-[10px] text-white/35 mt-1">
+            <div className="flex justify-between flex-wrap gap-2 text-[20px] font-bold text-white/60 mt-2">
               <span>เบา</span>
               <span>ช่วงดี {band.good_min}–{band.good_max}</span>
               <span>ดัง</span>
@@ -268,14 +268,14 @@ export default function SessionLoud() {
           </div>
 
           {micStatus === 'calibrating' && (
-            <div className="text-white/60 text-[12px] flex items-center gap-1.5">
-              <Mic size={15} />
+            <div className="text-white/70 text-[20px] flex items-center gap-2.5">
+              <Mic size={24} />
               กำลังวัดเสียงพื้นหลัง — โปรดนิ่งเงียบสักครู่…
             </div>
           )}
           {(micStatus === 'requesting' || micStatus === 'denied' || micStatus === 'error') && (
-            <div className="text-white/60 text-[12px] flex items-center gap-1.5">
-              <Mic size={15} />
+            <div className="text-white/70 text-[20px] flex items-center gap-2.5">
+              <Mic size={24} />
               {micStatus === 'denied' ? 'กรุณาอนุญาตไมโครโฟน' : 'กำลังเปิดไมโครโฟน…'}
             </div>
           )}
@@ -300,10 +300,10 @@ export default function SessionLoud() {
       {/* Completion popup — celebrate and go to the next step or home */}
       {sessionDone && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
-            <div className="text-[46px] leading-none mb-2">🎉</div>
-            <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">Congratulations!</h2>
-            <p className="text-[14px] text-ink-secondary mb-4">
+          <div className="bg-surface rounded-card w-full max-w-[560px] p-8 text-center shadow-2xl">
+            <div className="text-[64px] leading-none mb-3">🎉</div>
+            <h2 className="font-heading text-[34px] font-bold text-ink-primary mb-2">เก่งมาก ทำครบแล้ว</h2>
+            <p className="text-[22px] text-ink-secondary leading-relaxed mb-5">
               ยินดีด้วย! คุณฝึก “{step.name}” ครบ {repGoal} ครั้งแล้ว
             </p>
 
@@ -311,9 +311,9 @@ export default function SessionLoud() {
               <div className="text-left mb-5">
                 {chartMetrics.map((m) => (
                   <div key={m.key} className="mb-3">
-                    <div className="flex justify-between text-[12.5px] mb-1">
+                    <div className="flex justify-between gap-3 text-[20px] mb-1.5">
                       <span className="text-ink-secondary">{m.label}</span>
-                      <span className="font-semibold text-teal-800">
+                      <span className="font-bold text-teal-800">
                         {m.cur}%
                         {m.prev != null && (
                           <span style={{ color: m.cur >= m.prev ? '#147A3D' : '#D94A1D' }}>
@@ -333,13 +333,13 @@ export default function SessionLoud() {
                   </div>
                 ))}
                 {chartMetrics.some((m) => m.prev != null) && (
-                  <div className="flex gap-4 text-[11px] text-ink-muted mt-1">
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: '#1B9C4C' }} /> ครั้งนี้</span>
-                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(27,156,76,0.4)' }} /> ครั้งก่อน</span>
+                  <div className="flex gap-5 flex-wrap text-[20px] text-ink-secondary mt-2">
+                    <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 rounded-full" style={{ background: '#1B9C4C' }} /> ครั้งนี้</span>
+                    <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 rounded-full" style={{ background: 'rgba(27,156,76,0.4)' }} /> ครั้งก่อน</span>
                   </div>
                 )}
                 {verdict && (
-                  <p className="text-[13.5px] font-semibold mt-3 text-center" style={{ color: verdict.color }}>{verdict.text}</p>
+                  <p className="text-[22px] font-bold mt-4 text-center leading-relaxed" style={{ color: verdict.color }}>{verdict.text}</p>
                 )}
               </div>
             )}
@@ -347,14 +347,14 @@ export default function SessionLoud() {
             {nextStep && (
               <button
                 onClick={goNextStep}
-                className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
+                className="btn-primary w-full min-h-[64px] flex items-center justify-center gap-3 mb-3"
               >
-                ฝึกต่อ — {nextStep.name} <ChevronRight size={18} />
+                ฝึกต่อ <ChevronRight size={26} />
               </button>
             )}
             <button
               onClick={retryStep}
-              className="w-full py-2.5 rounded-pill border border-coral-700 text-coral-700 font-semibold text-[13.5px] hover:bg-coral-100 transition-colors mb-2"
+              className="w-full min-h-[64px] px-6 rounded-btn border-[3px] border-coral-600 text-coral-700 font-bold text-[22px] hover:bg-coral-100 transition-colors mb-3"
             >
               ทำแบบฝึกหัดนี้ซ้ำ
             </button>
@@ -362,17 +362,17 @@ export default function SessionLoud() {
               onClick={() => navigate('/home')}
               className={
                 nextStep
-                  ? 'w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors inline-flex items-center justify-center gap-1.5'
-                  : 'btn-primary w-full flex items-center justify-center gap-2'
+                  ? 'w-full min-h-[64px] text-[22px] font-bold text-ink-secondary hover:text-teal-700 transition-colors inline-flex items-center justify-center gap-2.5'
+                  : 'btn-primary w-full min-h-[64px] flex items-center justify-center gap-3'
               }
             >
-              <Home size={nextStep ? 16 : 18} /> กลับสู่หน้าหลัก
+              <Home size={26} /> กลับสู่หน้าหลัก
             </button>
           </div>
         </div>
       )}
 
-      <p className="max-w-[1100px] mx-auto mt-3 text-[11.5px] text-ink-muted">
+      <p className="max-w-[1100px] mx-auto mt-4 text-[20px] text-ink-secondary leading-relaxed">
         * ค่า dB ยังไม่ได้สอบเทียบ noise floor ของไมโครโฟน · ช่วงเป้าหมายและคำจะปรับตามที่นักกายภาพกำหนดให้ผู้ป่วยแต่ละคน
       </p>
     </div>

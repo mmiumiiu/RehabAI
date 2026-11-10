@@ -69,10 +69,6 @@ export default function TrainingLoud() {
 
   const done = steps.filter((s) => prog.loud.includes(s.id)).length
   const left = steps.length - done
-  const minutesLeft = steps
-    .filter((s) => !prog.loud.includes(s.id))
-    .reduce((sum, s) => sum + (s.minutes || 0), 0)
-
   const nextStep = steps.find((s) => !prog.loud.includes(s.id))
   const start = (s) => navigate(`/training/loud/session?step=${s.id}`)
 
@@ -89,8 +85,8 @@ export default function TrainingLoud() {
         <section className="flex-[2_1_420px] min-w-0 bg-surface rounded-card border-[1.5px] border-line shadow-card p-6 flex flex-wrap gap-6 items-center">
           <ProgressRing value={done} goal={steps.length} label="ขั้นตอน" color={ACCENT} />
           <div className="flex-1 min-w-[220px] flex flex-col gap-4">
-            <h2 className="font-heading text-b-h2 font-bold m-0 leading-[1.3]">
-              {left > 0 ? `เหลืออีก ${left} ขั้นตอน ประมาณ ${minutesLeft} นาที` : 'ฝึกครบทุกขั้นตอนแล้ววันนี้'}
+            <h2 className="font-heading text-b-h1 font-bold m-0 leading-[1.2] whitespace-nowrap">
+              {left > 0 ? `เหลืออีก ${left} ขั้นตอน` : 'ฝึกครบแล้ว เก่งมาก'}
             </h2>
             {nextStep && (
               <Button

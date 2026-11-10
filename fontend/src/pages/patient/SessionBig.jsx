@@ -69,7 +69,7 @@ export default function SessionBig() {
   const nextEx = BIG_EXERCISES[BIG_EXERCISES.findIndex((e) => e.id === ex.id) + 1] || null
   function goNext() {
     if (!nextEx) return navigate('/home')
-    navigate(nextEx.weightShift ? '/training/big/session-weightshift' : `/training/big/session?exercise=${nextEx.id}`)
+    navigate(`/training/big/session?exercise=${nextEx.id}`)
   }
 
   // Record the session + mark this exercise done for today once the target is
@@ -104,12 +104,12 @@ export default function SessionBig() {
           {ex.video ? (
             <video src={ex.video} autoPlay loop muted playsInline className="w-full h-full object-contain" style={{ transform: 'scale(1.35)' }} />
           ) : (
-            <div className="text-white/60 text-[13px] text-center px-6">
+            <div className="text-white/70 text-[20px] text-center px-6">
               <Camera size={36} className="mx-auto mb-2 opacity-70" />
               ยังไม่มีวิดีโอสาธิตสำหรับท่านี้
             </div>
           )}
-          <span className="absolute top-4 left-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px]">
+          <span className="absolute top-4 left-4 bg-white/[0.12] text-white px-4 py-2 rounded-[10px] text-[20px] font-bold">
             ท่าสาธิต
           </span>
         </div>
@@ -139,28 +139,32 @@ export default function SessionBig() {
             <div className="relative z-[1] text-center text-white/70 px-6">
               <Camera size={40} className="mx-auto mb-3 opacity-70" />
               {status === 'denied'
-                ? <p className="text-[13.5px]">ไม่สามารถเข้าถึงกล้องได้ — กรุณาอนุญาตการใช้กล้องในเบราว์เซอร์</p>
-                : <p className="text-[13.5px]">กำลังเปิดกล้อง…</p>}
+                ? <p className="text-[20px] leading-relaxed">ไม่สามารถเข้าถึงกล้องได้ — กรุณาอนุญาตการใช้กล้องในเบราว์เซอร์</p>
+                : <p className="text-[20px]">กำลังเปิดกล้อง…</p>}
             </div>
           )}
 
           <SOSButton reason="fall" />
 
-          <div className="absolute top-4 left-4 bg-white/[0.12] text-white px-4 py-2 rounded-[10px] font-heading text-[14px] font-semibold">
-            ครั้งที่ {repCount} / {ex.target}
+          <div className="absolute top-4 left-4 bg-black/35 text-white px-6 py-3 rounded-[18px] text-center">
+            <div className="font-heading font-bold leading-none" style={{ fontSize: 96 }}>
+              {repCount}
+              <span className="text-white/70 font-normal" style={{ fontSize: 36 }}>/{ex.target}</span>
+            </div>
+            <div className="text-[20px] font-bold text-white/80 mt-1">ครั้ง</div>
           </div>
 
-          <div className="absolute top-4 right-4 bg-white/[0.12] text-white px-3 py-1.5 rounded-lg text-[11px] flex items-center gap-1.5">
+          <div className="absolute top-4 right-4 bg-white/[0.12] text-white px-4 py-2.5 rounded-[12px] text-[20px] font-bold flex items-center gap-2.5">
             {recording
-              ? <><span className="w-[7px] h-[7px] rounded-full bg-[#FF8452] rec-pulse" />กำลังนับ</>
-              : <><span className="w-[7px] h-[7px] rounded-full bg-[#1B9C4C]" />ตรวจจับท่าทาง</>}
+              ? <><span className="w-[12px] h-[12px] rounded-full bg-[#FF8452] rec-pulse" />กำลังนับ</>
+              : <><span className="w-[12px] h-[12px] rounded-full bg-[#1B9C4C]" />ตรวจจับท่าทาง</>}
           </div>
 
           <div
-            className="absolute bottom-4 left-4 right-4 px-4 py-3 rounded-[10px] text-white text-[13.5px] font-medium flex items-center gap-2"
+            className="absolute bottom-4 left-4 right-4 px-5 py-4 rounded-[16px] text-white text-[24px] font-bold leading-snug flex items-center gap-3"
             style={{ background: showRetry && !complete ? 'rgba(216,38,79,0.90)' : complete ? 'rgba(27,156,76,0.92)' : 'rgba(27,156,76,0.80)' }}
           >
-            {showRetry && !complete ? <Refresh size={18} /> : <Check size={18} />}
+            {showRetry && !complete ? <Refresh size={28} className="flex-shrink-0" /> : <Check size={28} className="flex-shrink-0" />}
             {barMsg}
           </div>
         </div>
@@ -170,20 +174,20 @@ export default function SessionBig() {
         <div className="card p-6">
           <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
             <div className="min-w-0 flex-1">
-              <h2 className="font-heading text-[18px] font-semibold text-ink-primary mb-1.5">{ex.name}</h2>
-              <p className="text-[13.5px] text-ink-secondary leading-relaxed">{ex.how}</p>
+              <h2 className="font-heading text-[30px] font-bold text-ink-primary mb-2">{ex.name}</h2>
+              <p className="text-[20px] text-ink-secondary leading-relaxed">{ex.how}</p>
             </div>
             <button
               onClick={() => navigate('/training/big')}
-              className="flex-shrink-0 py-2.5 px-5 rounded-pill border border-danger text-danger font-semibold text-[13.5px] hover:bg-[#FCE1E7] transition-colors"
+              className="flex-shrink-0 min-h-[64px] px-7 rounded-btn border-[3px] border-danger text-danger font-bold text-[22px] hover:bg-coral-100 transition-colors"
             >
               หยุดฝึก
             </button>
           </div>
 
           <ProgressBar value={repCount} max={ex.target} tone="big" />
-          <div className="flex justify-between text-[11.5px] text-ink-muted mt-1.5 mb-4">
-            <span>ครั้งที่ {repCount}</span>
+          <div className="flex justify-between text-[20px] text-ink-secondary mt-2 mb-5">
+            <span>ทำแล้ว {repCount}</span>
             <span>เป้าหมาย {ex.target}</span>
           </div>
 
@@ -193,8 +197,8 @@ export default function SessionBig() {
               { k: 'เวลาในเซสชันนี้', v: clock },
             ].map((s) => (
               <div key={s.k} className="rounded-xl bg-bg px-4 py-3 flex flex-col gap-0.5">
-                <span className="text-[11.5px] text-ink-secondary">{s.k}</span>
-                <span className="font-semibold font-mono text-[14px]">{s.v}</span>
+                <span className="text-[20px] text-ink-secondary">{s.k}</span>
+                <span className="font-bold font-mono text-[26px]">{s.v}</span>
               </div>
             ))}
           </div>
@@ -205,32 +209,32 @@ export default function SessionBig() {
           patient back to Home to pick the next one. */}
       {complete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-surface rounded-2xl w-full max-w-[440px] p-7 text-center shadow-2xl">
-            <div className="text-[46px] leading-none mb-2">🎉</div>
-            <h2 className="font-heading text-[24px] font-semibold text-ink-primary mb-1">Congratulations!</h2>
-            <p className="text-[14px] text-ink-secondary mb-5">
+          <div className="bg-surface rounded-card w-full max-w-[520px] p-8 text-center shadow-2xl">
+            <div className="text-[64px] leading-none mb-3">🎉</div>
+            <h2 className="font-heading text-[34px] font-bold text-ink-primary mb-2">เก่งมาก ทำครบแล้ว</h2>
+            <p className="text-[22px] text-ink-secondary leading-relaxed mb-6">
               ยินดีด้วย! คุณทำท่า “{ex.name}” ครบ {ex.target} ครั้งแล้ว
             </p>
 
             <button
               onClick={goNext}
-              className="btn-primary w-full flex items-center justify-center gap-2 mb-2"
+              className="btn-primary w-full min-h-[64px] flex items-center justify-center gap-3 mb-3"
             >
               {nextEx ? (
-                <>ไปท่าถัดไป — {nextEx.name} <ChevronRight size={18} /></>
+                <>ไปท่าถัดไป <ChevronRight size={26} /></>
               ) : (
-                <><Home size={18} /> เสร็จสิ้น — ไปหน้าหลัก</>
+                <><Home size={26} /> เสร็จสิ้น — ไปหน้าหลัก</>
               )}
             </button>
             <button
               onClick={() => navigate(`/training/big/session?exercise=${exId}&retry=${Date.now()}`)}
-              className="w-full py-2.5 rounded-pill border border-teal-700 text-teal-700 font-semibold text-[13.5px] hover:bg-teal-100 transition-colors mb-2"
+              className="w-full min-h-[64px] px-6 rounded-btn border-[3px] border-teal-700 text-teal-700 font-bold text-[22px] hover:bg-teal-100 transition-colors mb-3"
             >
               ทำท่านี้ซ้ำ
             </button>
             <button
               onClick={() => navigate('/training/big')}
-              className="w-full py-2.5 text-[13.5px] text-ink-secondary hover:text-teal-700 transition-colors"
+              className="w-full min-h-[64px] text-[22px] font-bold text-ink-secondary hover:text-teal-700 transition-colors"
             >
               กลับไปรายการท่าฝึก
             </button>

@@ -83,10 +83,9 @@ export default function TrainingBig() {
   const prog = useExerciseProgress()
   const [filter, setFilter] = useState('all')
 
-  const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
-  const bigDone = standing.filter((e) => prog.big.includes(e.id)).length
-  const bigLeft = standing.length - bigDone
-  const minutesLeft = bigLeft * 3
+  // Progress is over the whole set of 7, matching the home page.
+  const bigDone = BIG_EXERCISES.filter((e) => prog.big.includes(e.id)).length
+  const bigLeft = BIG_EXERCISES.length - bigDone
 
   // Next up = first exercise of the day that isn't finished yet.
   const nextEx = BIG_EXERCISES.find((e) => !prog.big.includes(e.id))
@@ -95,8 +94,7 @@ export default function TrainingBig() {
   const countOf = (key) => (key === 'all' ? BIG_EXERCISES.length : BIG_EXERCISES.filter((e) => e.posture === key).length)
 
   function start(ex) {
-    if (ex.weightShift) navigate('/training/big/session-weightshift')
-    else navigate(`/training/big/session?exercise=${ex.id}`)
+    navigate(`/training/big/session?exercise=${ex.id}`)
   }
 
   return (
@@ -111,10 +109,10 @@ export default function TrainingBig() {
       <div className="flex flex-wrap gap-5 items-stretch">
         {/* Summary: ring + next-exercise button */}
         <section className="flex-[2_1_420px] min-w-0 bg-surface rounded-card border-[1.5px] border-line shadow-card p-6 flex flex-wrap gap-6 items-center">
-          <ProgressRing value={bigDone} goal={standing.length} label="ท่า" />
+          <ProgressRing value={bigDone} goal={BIG_EXERCISES.length} label="ท่า" />
           <div className="flex-1 min-w-[220px] flex flex-col gap-4">
-            <h2 className="font-heading text-b-h2 font-bold m-0 leading-[1.3]">
-              {bigLeft > 0 ? `เหลืออีก ${bigLeft} ท่า ประมาณ ${minutesLeft} นาที` : 'ฝึกครบทุกท่าแล้ววันนี้'}
+            <h2 className="font-heading text-b-h1 font-bold m-0 leading-[1.2] whitespace-nowrap">
+              {bigLeft > 0 ? `เหลืออีก ${bigLeft} ท่า` : 'ฝึกครบแล้ว เก่งมาก'}
             </h2>
             {nextEx && (
               <Button variant="blue" onClick={() => start(nextEx)} className="min-h-[57px] self-start">

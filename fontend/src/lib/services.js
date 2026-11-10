@@ -27,7 +27,7 @@ export const auth = {
       uid: 'demo-' + role,
       email,
       role,
-      name: role === 'therapist' ? 'ก.พ. ธนกร รักษาดี' : 'สมชาย ใจดี',
+      name: role === 'therapist' ? 'กภ. ธนกร รักษาดี' : 'สมชาย ใจดี',
       parkinsonStage: 'stage1',
       createdAt: '15 มิ.ย. 2568',
       verificationStatus: role === 'therapist' ? 'active' : undefined,
