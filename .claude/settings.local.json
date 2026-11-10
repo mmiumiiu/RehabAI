@@ -40,7 +40,8 @@
       "Bash(xargs sed -i '' 's/RehabAI/BRIDGE/g')",
       "Bash(python3 -)",
       "Bash(python3 -c ' *)",
-      "Bash(echo \"exit:$?\")"
+      "Bash(echo \"exit:$?\")",
+      "Bash(git add *)"
     ]
   }
 }

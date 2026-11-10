@@ -2,6 +2,10 @@
 // Everything is async + localStorage-backed so the UI behaves like the real thing
 // and can be swapped for real Firebase later without touching components.
 
+import {
+  DEMO_EMAIL, DEMO_PLAN, DEMO_TODAY_BIG, DEMO_TODAY_LOUD, demoTimestamp,
+} from './demoPlan.js'
+
 const LS_KEY = 'rehabai_session'
 const wait = (ms = 500) => new Promise((r) => setTimeout(r, ms))
 
@@ -208,6 +212,12 @@ export const sessionHistory = {
     window.dispatchEvent(new CustomEvent('rehabai:session-added', { detail: entry }))
     return entry
   },
+  // Bulk write with explicit timestamps — used to seed demo data, which needs
+  // rows dated in the past (add() always stamps "now").
+  replaceAll(rows) {
+    localStorage.setItem(historyKey(), JSON.stringify(rows))
+    window.dispatchEvent(new CustomEvent('rehabai:session-added'))
+  },
   clear() {
     localStorage.removeItem(historyKey())
     window.dispatchEvent(new CustomEvent('rehabai:session-added'))
@@ -233,6 +243,15 @@ export const exerciseProgress = {
       if (v && v.date === todayStr()) return { date: v.date, big: v.big || [], loud: v.loud || [] }
     } catch { /* ignore */ }
     return { date: todayStr(), big: [], loud: [] }
+  },
+  // Replace today's progress outright (demo seeding).
+  set({ big = [], loud = [] }) {
+    localStorage.setItem(progressKey(), JSON.stringify({ date: todayStr(), big, loud }))
+    window.dispatchEvent(new CustomEvent('rehabai:progress'))
+  },
+  clear() {
+    localStorage.removeItem(progressKey())
+    window.dispatchEvent(new CustomEvent('rehabai:progress'))
   },
   // kind: 'big' | 'loud'
   mark(kind, id) {
@@ -268,6 +287,15 @@ export const loudResults = {
     localStorage.setItem(loudResultsKey(), JSON.stringify(all))
     window.dispatchEvent(new CustomEvent('rehabai:loud-results'))
     return entry
+  },
+  // Bulk write with explicit timestamps (demo seeding).
+  replaceAll(rows) {
+    localStorage.setItem(loudResultsKey(), JSON.stringify(rows))
+    window.dispatchEvent(new CustomEvent('rehabai:loud-results'))
+  },
+  clear() {
+    localStorage.removeItem(loudResultsKey())
+    window.dispatchEvent(new CustomEvent('rehabai:loud-results'))
   },
 }
 
@@ -472,5 +500,98 @@ export const community = {
     await wait(150)
     localStorage.removeItem(communityKey())
     window.dispatchEvent(new CustomEvent('rehabai:community'))
+  },
+}
+
+// ─── Demo / presentation data ───────────────────────────────────────────────
+// Fills the demo account (patient@demo.com) with a believable training history
+// so every screen has something to show during a presentation. The shape lives
+// in demoPlan.js, which mockData also reads to build the therapist's view of
+// สมชาย ใจดี — so both sides always agree.
+//
+// Seeding runs on sign-in when the account is empty, and the profile page has a
+// "รีเซ็ตข้อมูลตัวอย่าง" button that wipes and re-seeds.
+export const demoData = {
+  isDemoAccount() {
+    return readSession()?.email === DEMO_EMAIL
+  },
+
+  // Build the session rows the plan describes, newest first.
+  _rows() {
+    const rows = []
+    for (const day of DEMO_PLAN) {
+      if (day.big) {
+        const ts = demoTimestamp(day.ago, 8, 40)
+        rows.push({
+          id: `demo-big-${day.ago}`,
+          ts,
+          date: thaiDate(ts),
+          type: 'big',
+          score: day.bigScore,
+          reps: 8,
+          goal: 8,
+          duration: `${String(day.big).padStart(2, '0')}:00`,
+        })
+      }
+      if (day.loud) {
+        const ts = demoTimestamp(day.ago, 17, 10)
+        rows.push({
+          id: `demo-loud-${day.ago}`,
+          ts,
+          date: thaiDate(ts),
+          type: 'loud',
+          score: day.loudScore,
+          reps: 5,
+          goal: 5,
+          duration: `${String(day.loud).padStart(2, '0')}:00`,
+        })
+      }
+    }
+    return rows.sort((a, b) => b.ts - a.ts)
+  },
+
+  // Voice results for the LOUD trend chart, one per day that had a voice session.
+  _loudRows() {
+    return DEMO_PLAN.filter((d) => d.loud).map((d) => {
+      const ts = demoTimestamp(d.ago, 17, 10)
+      return {
+        id: `demo-voice-${d.ago}`,
+        ts,
+        date: thaiDate(ts),
+        stepId: 1,
+        stepName: 'ฝึกออกเสียงค้าง',
+        loud: d.loudScore,
+        word: null,
+        hold: Math.max(60, d.loudScore - 4),
+      }
+    }).sort((a, b) => b.ts - a.ts)
+  },
+
+  // Write everything. `force` re-seeds even when history already exists.
+  // `bigIds` is the BIG exercise order from mockData — passed in by the caller
+  // so this module never has to import mockData (which imports this one).
+  async seed({ force = false, bigIds = [] } = {}) {
+    if (!this.isDemoAccount()) return false
+    if (!force && sessionHistory.getAll().length > 0) return false
+    await wait(200)
+    sessionHistory.replaceAll(this._rows())
+    loudResults.replaceAll(this._loudRows())
+    // Part-way through today, so the home page shows "ฝึกต่อ".
+    exerciseProgress.set({
+      big: bigIds.slice(0, DEMO_TODAY_BIG),
+      loud: Array.from({ length: DEMO_TODAY_LOUD }, (_, i) => i + 1),
+    })
+    return true
+  },
+
+  // Back to the presentation baseline: clears what the demo user did during the
+  // session (including their community posts) and re-seeds.
+  async reset({ bigIds = [] } = {}) {
+    if (!this.isDemoAccount()) return false
+    sessionHistory.clear()
+    loudResults.clear()
+    exerciseProgress.clear()
+    await community.clear()
+    return this.seed({ force: true, bigIds })
   },
 }

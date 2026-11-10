@@ -30,8 +30,9 @@ function useSessionClock() {
 export default function SessionBig() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const exId = Number(params.get('exercise')) || 1
-  const ex = BIG_EXERCISES.find((e) => e.id === exId) || BIG_EXERCISES[0]
+  // No ?exercise= → start at the first exercise in the training order.
+  const ex = BIG_EXERCISES.find((e) => e.id === Number(params.get('exercise'))) || BIG_EXERCISES[0]
+  const exId = ex.id
   const clock = useSessionClock()
 
   const { videoRef, status } = useCamera(true)

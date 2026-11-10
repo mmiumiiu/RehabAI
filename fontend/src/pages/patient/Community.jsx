@@ -42,31 +42,32 @@ function TagButton({ tag, posts, on, onClick }) {
   )
 }
 
+// Stacked top to bottom — date row, then title, time, place — so a long event
+// name wraps onto its own lines instead of being squeezed beside the date.
 function EventCard({ event }) {
   return (
-    <article className={`${CARD} p-5 flex flex-col gap-4`}>
-      <div className="flex items-center gap-4">
-        <span
-          className="w-[60px] h-[60px] rounded-[15px] flex flex-col items-center justify-center flex-shrink-0"
-          style={{ background: event.tint }}
-        >
-          <span className="text-b-xs font-bold" style={{ color: '#B4233A' }}>{event.month}</span>
-          <span className="text-b-h3 font-bold leading-none">{event.day}</span>
-        </span>
-        <div className="min-w-0">
-          <h3 className="font-heading text-b-btn font-bold m-0 leading-tight">{event.title}</h3>
-          <div className="text-b-sm text-ink-secondary flex items-center gap-1.5 flex-wrap">
-            <Clock size={16} /> {event.time}
-          </div>
-        </div>
+    <article className={`${CARD} p-5 flex flex-col gap-3`}>
+      {/* Date — full-width top row */}
+      <div
+        className="flex items-center gap-3 self-start px-4 py-2 rounded-[14px]"
+        style={{ background: event.tint }}
+      >
+        <span className="text-b-h3 font-bold leading-none">{event.day}</span>
+        <span className="text-b-label font-bold" style={{ color: '#B4233A' }}>{event.month}</span>
       </div>
 
-      <div className="text-b-sm flex items-start gap-1.5">
-        <MapPin size={16} className="flex-shrink-0 mt-0.5" /> {event.place}
+      <h3 className="font-heading text-b-h3 font-bold m-0 leading-snug break-words">{event.title}</h3>
+
+      <div className="text-b-base flex items-start gap-2">
+        <Clock size={20} className="flex-shrink-0 mt-0.5" /> {event.time}
       </div>
 
-      <div className="text-b-sm text-ink-secondary flex items-center gap-1.5">
-        <Users size={16} /> ไปด้วยแล้ว {event.goingCount} คน
+      <div className="text-b-base flex items-start gap-2">
+        <MapPin size={20} className="flex-shrink-0 mt-0.5" /> {event.place}
+      </div>
+
+      <div className="text-b-sm text-ink-secondary flex items-center gap-2">
+        <Users size={18} /> ไปด้วยแล้ว {event.goingCount} คน
       </div>
 
       <button

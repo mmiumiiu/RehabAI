@@ -1,6 +1,9 @@
 // Mock data + domain constants derived directly from RehabAI_Build_Spec.md.
 // This stands in for Firestore; the service layer (lib/services.js) reads from here.
 import { loudPhrases } from './services.js'
+import {
+  demoTotalDays, demoStreak, demoWeekCount, demoWeekMinutes, demoAvgScore, demoLastScore,
+} from './demoPlan.js'
 
 export const PARKINSON_STAGES = [
   {
@@ -183,14 +186,18 @@ export const emergencyContactsSeed = [
 // `totalDays` / `avgAccuracy` feed the detail-page stat cards, and `week` is the
 // 7-day minutes series (oldest → today) for the training-time chart.
 export const PATIENTS = [
+  // สมชาย ใจดี is the demo patient (patient@demo.com). Every number here is
+  // derived from demoPlan.js — the same plan that seeds his own device — so the
+  // therapist sees exactly what he sees.
   {
     id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: 'วันนี้ 08:40',
-    streak: 5, lastScore: 88, weekCount: 5, initials: 'สช',
-    daysSince: 0, totalDays: 22, avgAccuracy: 86,
-    week: [
-      { big: 18, loud: 8 }, { big: 22, loud: 10 }, { big: 0, loud: 0 }, { big: 25, loud: 11 },
-      { big: 15, loud: 7 }, { big: 20, loud: 9 }, { big: 0, loud: 0 },
-    ],
+    initials: 'สช', daysSince: 0,
+    streak: demoStreak(),
+    lastScore: demoLastScore(),
+    weekCount: demoWeekCount(),
+    totalDays: demoTotalDays(),
+    avgAccuracy: demoAvgScore(),
+    week: demoWeekMinutes(),
   },
   {
     id: 'p2', name: 'นภาพร ชื่นใจ', stage: 'stage1', lastActive: 'เมื่อวาน',
@@ -303,7 +310,13 @@ export function nextGardenLevel(trees) {
   return GARDEN_LEVELS.find((l) => l.trees > trees) || null
 }
 
-export const MY_GARDEN = { trees: 22, streak: 5, totalDays: 22 }
+// 1 training day = 1 tree, so the garden tracks the demo history: 22 trees puts
+// it at level 4 (สวนดอกไม้).
+export const MY_GARDEN = {
+  trees: demoTotalDays(),
+  streak: demoStreak(),
+  totalDays: demoTotalDays(),
+}
 
 // Neighbours ringing the player's plot. left/top are percentages of the map
 // box, taken from the mockup so the ring keeps its shape at any size.

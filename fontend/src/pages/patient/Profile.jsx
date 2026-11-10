@@ -41,7 +41,7 @@ function LinkRow({ to, icon: Icon, label, desc, last }) {
 }
 
 export default function Profile() {
-  const { user, updateUser, signOut } = useAuth()
+  const { user, updateUser, signOut, resetDemoData, isDemoAccount } = useAuth()
   const navigate = useNavigate()
   const [profile, setProfile] = useState({
     name: user?.name || '',
@@ -50,6 +50,8 @@ export default function Profile() {
   })
   const [therapist, setTherapist] = useState(() => therapistLink.get())
   const [saved, setSaved] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const [reset, setReset] = useState(false)
 
   async function logout() {
     await signOut()
@@ -65,6 +67,19 @@ export default function Profile() {
     updateUser({ name: profile.name, phone: profile.phone, parkinsonStage: profile.stage })
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  // Demo account only — puts the presentation data back to its baseline.
+  async function restoreDemo() {
+    if (!confirm('รีเซ็ตข้อมูลตัวอย่างกลับเป็นค่าเริ่มต้นใช่ไหม\n(ประวัติการฝึก ความคืบหน้าวันนี้ และโพสต์ในชุมชนที่คุณสร้างจะถูกตั้งค่าใหม่)')) return
+    setResetting(true)
+    try {
+      await resetDemoData()
+      setReset(true)
+      setTimeout(() => setReset(false), 2500)
+    } finally {
+      setResetting(false)
+    }
   }
 
   const stageLabel = PARKINSON_STAGES.find((s) => s.value === profile.stage)?.short
@@ -189,6 +204,19 @@ export default function Profile() {
         </div>
         <Button variant="outline" className="self-start min-h-[54px]">อัปเดตรหัสผ่าน</Button>
       </Section>
+
+      {/* Demo data — only for the presentation account */}
+      {isDemoAccount() && (
+        <Section title="ข้อมูลตัวอย่างสำหรับนำเสนอ">
+          <p className="text-b-base text-ink-secondary leading-[1.6] m-0">
+            บัญชีนี้มีประวัติการฝึกตัวอย่างให้ดูทุกหน้า ถ้าทดลองกดใช้งานจนข้อมูลเปลี่ยนไป
+            กดปุ่มนี้เพื่อตั้งค่ากลับเป็นชุดเดิมก่อนนำเสนอ
+          </p>
+          <Button as="button" variant="outline" onClick={restoreDemo} disabled={resetting} className="self-start min-h-[57px]">
+            <Refresh size={20} /> {resetting ? 'กำลังรีเซ็ต…' : reset ? 'รีเซ็ตแล้ว ✓' : 'รีเซ็ตข้อมูลตัวอย่าง'}
+          </Button>
+        </Section>
+      )}
 
       {/* Danger zone */}
       <section
