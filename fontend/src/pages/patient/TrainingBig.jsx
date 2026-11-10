@@ -170,7 +170,9 @@ export default function TrainingBig() {
           <ExerciseCard
             key={ex.id}
             ex={ex}
-            index={ex.id}
+            // Position in the training order, not `ex.id` — ids are stable keys
+            // and no longer run in list order.
+            index={BIG_EXERCISES.indexOf(ex) + 1}
             done={prog.big.includes(ex.id)}
             next={nextEx?.id === ex.id}
             onStart={start}

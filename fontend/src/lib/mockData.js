@@ -15,32 +15,12 @@ export const PARKINSON_STAGES = [
   },
 ]
 
-// LSVT BIG — grouped by posture: seated first (ท่านั่ง), then standing (ท่ายืน).
-// Order within the list is fixed by id. `posture` drives the section grouping on
+// LSVT BIG — array order is the order the patient trains in: the three poses
+// that have a demo animation (`video`) come first, then the rest. `id` is a
+// stable key (session URLs, the rep scorer, today's progress) and deliberately
+// does NOT follow the list order. `posture` drives the ท่านั่ง/ท่ายืน filter on
 // the training-list page; `highRisk` shows the "เสี่ยงสูง" badge (fall risk).
 export const BIG_EXERCISES = [
-  {
-    id: 1,
-    posture: 'seated',
-    name: 'บนล่าง (Floor to Ceiling)',
-    nameEn: 'Floor to Ceiling',
-    how: 'นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→ขึ้นเหนือศีรษะ→กางแขนค้างไว้ 10 วินาที แล้วกลับสู่ท่าเริ่มต้น',
-    target: 8,
-    targetLabel: '8 ครั้ง',
-    status: 'todo',
-    accuracy: 84,
-  },
-  {
-    id: 2,
-    posture: 'seated',
-    name: 'ซ้ายขวา (Sitting Side to Side)',
-    nameEn: 'Sitting Side to Side',
-    how: 'นั่งตัวตรง กางแขน 1 ข้างออกไปด้านข้าง วาดแขนลงข้างล่างกวาดไปจนขึ้นไปถึงหัว',
-    target: 8,
-    targetLabel: '8 ครั้ง/ข้าง',
-    status: 'todo',
-    accuracy: 80,
-  },
   {
     id: 3,
     posture: 'standing',
@@ -77,6 +57,28 @@ export const BIG_EXERCISES = [
     targetLabel: '8 ครั้ง/ข้าง',
     status: 'todo',
     accuracy: 66,
+  },
+  {
+    id: 1,
+    posture: 'seated',
+    name: 'บนล่าง (Floor to Ceiling)',
+    nameEn: 'Floor to Ceiling',
+    how: 'นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→ขึ้นเหนือศีรษะ→กางแขนค้างไว้ 10 วินาที แล้วกลับสู่ท่าเริ่มต้น',
+    target: 8,
+    targetLabel: '8 ครั้ง',
+    status: 'todo',
+    accuracy: 84,
+  },
+  {
+    id: 2,
+    posture: 'seated',
+    name: 'ซ้ายขวา (Sitting Side to Side)',
+    nameEn: 'Sitting Side to Side',
+    how: 'นั่งตัวตรง กางแขน 1 ข้างออกไปด้านข้าง วาดแขนลงข้างล่างกวาดไปจนขึ้นไปถึงหัว',
+    target: 8,
+    targetLabel: '8 ครั้ง/ข้าง',
+    status: 'todo',
+    accuracy: 80,
   },
   {
     id: 6,
@@ -358,26 +360,27 @@ export const GARDEN_RULES = [
 // ─── Community (mockup sections #community and #communitypost) ──────────────
 // Peer-support feed. Mock stand-in for Firestore; comments are keyed by post id.
 
-export const COMMUNITY_TOPICS = ['ประสบการณ์', 'ชะลออาการ', 'ชวนทำกิจกรรม', 'ให้กำลังใจ']
+export const COMMUNITY_TOPICS = ['ประสบการณ์', 'ชวนทำกิจกรรม', 'ให้กำลังใจ']
 
-// Pill colours per topic, straight from the mockup.
+// Pill colours per topic, from the mockup. Unknown topics fall back to the
+// ประสบการณ์ style in TopicPill, so this can lag behind COMMUNITY_TOPICS safely.
 export const TOPIC_STYLES = {
   ประสบการณ์: { background: '#E0F1FA', color: '#0B3550' },
-  ชะลออาการ: { background: '#E3F1DC', color: '#24661A' },
   ชวนทำกิจกรรม: { background: '#FFF1C7', color: '#6B4A00' },
   ให้กำลังใจ: { background: '#EEE8FA', color: '#4B2A86' },
 }
 
-// `verified` marks a therapist account (teal badge); otherwise the badge shows
-// how long the member has lived with Parkinson's.
+// `verified` marks a therapist account — the only badge shown under an author's
+// name. Members carry no badge (no years-with-Parkinson's, no relationship to the
+// patient). `tags` drives the hashtag filter row at the top of the page.
 export const COMMUNITY_POSTS = [
   {
     id: 1,
     author: 'ป้าแดง',
-    badge: 'เป็นมา 4 ปี',
     when: '2 ชั่วโมงที่แล้ว',
     topic: 'ประสบการณ์',
     body: 'ช่วงแรกมือสั่นจนติดกระดุมเสื้อเองไม่ได้ ท้อมาก ตอนนี้ฝึกทุกเช้าวันละ 20 นาที ติดต่อกันมา 3 เดือน รู้สึกว่าเดินมั่นคงขึ้น ติดกระดุมได้เองแล้ว ใครเพิ่งเริ่มอย่าเพิ่งท้อนะคะ ค่อย ๆ ไปทีละวัน',
+    tags: ['#เดินทุกเช้า'],
     cheers: 128, comments: 24, shares: 6,
     memberFor: 'สมาชิก 7 เดือน · 42 โพสต์', streak: 21, gardenLevel: 7,
   },
@@ -387,18 +390,19 @@ export const COMMUNITY_POSTS = [
     verified: true,
     badge: 'นักกายภาพยืนยันแล้ว',
     when: 'เมื่อเช้า',
-    topic: 'ชะลออาการ',
+    topic: 'ประสบการณ์',
     body: 'เคล็ดลับวันนี้: ตอนเดินให้ก้าวยาว ๆ และแกว่งแขนให้สุด ทำวันละ 10 นาที ช่วยฝึกการทรงตัวและลดการเดินซอยเท้า ควรมีคนอยู่ใกล้ ๆ หรือเดินข้างราวจับนะครับ มีคำถามถามใต้โพสต์นี้ได้เลย',
+    tags: ['#เดินทุกเช้า', '#นอนหลับสบาย'],
     cheers: 96, comments: 31, shares: 40,
     memberFor: 'นักกายภาพบำบัด · โรงพยาบาลศิริราช',
   },
   {
     id: 3,
     author: 'ลุงสมพงษ์',
-    badge: 'เป็นมา 2 ปี',
     when: 'เมื่อวาน',
     topic: 'ชวนทำกิจกรรม',
     body: 'ใครอยู่แถวสีลมมารำไทชิด้วยกันไหมครับ ช้า ๆ ไม่หนัก ผมไปมา 2 เดือน ได้เพื่อนเยอะ ใจก็สบายขึ้น ใครไปไม่ไหวมาเป็นกำลังใจทางนี้ได้ครับ',
+    tags: ['#ไทชิ'],
     cheers: 54, comments: 18, shares: 9,
     memberFor: 'สมาชิก 1 ปี · 15 โพสต์', streak: 9, gardenLevel: 6,
     event: { month: 'พ.ย.', day: 15, title: 'รำไทชิเช้าวันเสาร์', time: '07:00–08:00 น.', place: 'สวนลุมพินี ประตูฝั่งสีลม', going: 12 },
@@ -406,10 +410,10 @@ export const COMMUNITY_POSTS = [
   {
     id: 4,
     author: 'น้าจันทร์',
-    badge: 'เป็นมา 1 ปี',
     when: '2 วันก่อน',
     topic: 'ให้กำลังใจ',
     body: 'วันนี้หลานบอกว่าได้ยินยายพูดชัดขึ้นเยอะ ดีใจจนน้ำตาซึม ขอบคุณทุกคนในกลุ่มที่คอยส่งกำลังใจกันนะคะ ถ้าใครเหนื่อยวันนี้ ส่งกำลังใจให้ค่ะ สู้ไปด้วยกัน',
+    tags: ['#ร้องเพลงฝึกเสียง'],
     cheers: 211, comments: 47, shares: 12,
     memberFor: 'สมาชิก 4 เดือน · 9 โพสต์', streak: 3, gardenLevel: 4,
   },
@@ -418,20 +422,34 @@ export const COMMUNITY_POSTS = [
 // `reply: true` indents the comment under the one above it.
 export const COMMUNITY_COMMENTS = {
   1: [
-    { id: 1, author: 'น้าจันทร์', badge: 'เป็นมา 1 ปี', when: '1 ชั่วโมงที่แล้ว', cheers: 18, body: 'อ่านแล้วมีกำลังใจขึ้นเยอะเลยค่ะป้า ฉันก็ติดกระดุมยากเหมือนกัน จะลองฝึกทุกเช้าดูค่ะ' },
-    { id: 2, author: 'ป้าแดง', badge: 'เจ้าของโพสต์', when: '50 นาทีที่แล้ว', cheers: 12, reply: true, body: 'สู้ ๆ นะน้า ช่วงแรกฝึกแค่ 5 นาทีก่อนก็ได้ ไม่ต้องหักโหม' },
+    { id: 1, author: 'น้าจันทร์', when: '1 ชั่วโมงที่แล้ว', cheers: 18, body: 'อ่านแล้วมีกำลังใจขึ้นเยอะเลยค่ะป้า ฉันก็ติดกระดุมยากเหมือนกัน จะลองฝึกทุกเช้าดูค่ะ' },
+    { id: 2, author: 'ป้าแดง', when: '50 นาทีที่แล้ว', cheers: 12, reply: true, body: 'สู้ ๆ นะน้า ช่วงแรกฝึกแค่ 5 นาทีก่อนก็ได้ ไม่ต้องหักโหม' },
     { id: 3, author: 'กภ.สุนิสา รักษ์ดี', verified: true, badge: 'นักกายภาพยืนยันแล้ว', when: '30 นาทีที่แล้ว', cheers: 34, body: 'ดีใจด้วยครับป้าแดง การฝึกสม่ำเสมอสำคัญที่สุด ส่วนการติดกระดุม ลองฝึกหยิบเหรียญใส่กระปุกวันละนิดช่วยเรื่องนิ้วมือได้ครับ' },
-    { id: 4, author: 'ลุงสมพงษ์', badge: 'เป็นมา 2 ปี', when: '10 นาทีที่แล้ว', cheers: 7, body: 'เป็นกำลังใจให้ครับ วันเสาร์มารำไทชิด้วยกันนะครับป้า' },
+    { id: 4, author: 'ลุงสมพงษ์', when: '10 นาทีที่แล้ว', cheers: 7, body: 'เป็นกำลังใจให้ครับ วันเสาร์มารำไทชิด้วยกันนะครับป้า' },
   ],
 }
 
 export const QUICK_COMMENTS = ['สู้ ๆ นะคะ', 'ขอบคุณที่แบ่งปัน', 'เป็นกำลังใจให้', 'ขอลองทำตามบ้าง']
 
+// Three events so the "กิจกรรมใกล้คุณ" row fills exactly one line.
 export const COMMUNITY_EVENTS = [
-  { id: 1, month: 'พ.ย.', day: 15, title: 'รำไทชิเช้าวันเสาร์', place: 'สวนลุมพินี', going: 12, tint: '#FFF6E0' },
-  { id: 2, month: 'พ.ย.', day: 20, title: 'ร้องเพลงฝึกเสียง', place: 'ออนไลน์', going: 26, tint: '#E0F1FA' },
+  {
+    id: 1, month: 'พ.ย.', day: 15, title: 'รำไทชิเช้าวันเสาร์',
+    time: '07:00–08:00 น.', place: 'สวนลุมพินี ประตูฝั่งสีลม', going: 12, tint: '#FFF6E0',
+  },
+  {
+    id: 2, month: 'พ.ย.', day: 20, title: 'ร้องเพลงฝึกเสียง',
+    time: '19:00–20:00 น.', place: 'ออนไลน์ (Zoom)', going: 26, tint: '#E0F1FA',
+  },
+  {
+    id: 3, month: 'พ.ย.', day: 23, title: 'เดินด้วยกันเช้าวันอาทิตย์',
+    time: '06:30–07:30 น.', place: 'สวนรถไฟ ประตู 2', going: 18, tint: '#EEE8FA',
+  },
 ]
 
+// Hashtag filters. `posts` is the seeded headline count; the feed itself is
+// filtered by each post's own `tags` (user posts get theirs from the #words
+// they type).
 export const COMMUNITY_TAGS = [
   { tag: '#เดินทุกเช้า', posts: 86 },
   { tag: '#ไทชิ', posts: 41 },

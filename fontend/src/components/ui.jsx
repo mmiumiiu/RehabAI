@@ -117,10 +117,15 @@ export function ProgressBar({ value, max = 100, tone = 'big', className = '' }) 
 
 // Mockup stat card: white, a 6px coloured top rule, optional icon tile, then a
 // large figure over a small label.
-export function StatCard({ icon: Icon, value, label, rule = '#157AB5', tint = '#E0F1FA', className = '' }) {
+// `layout`: 'flex' (default) sizes itself inside a flex-wrap row; 'grid' lets the
+// parent grid column decide the width, so a row of 3 fills exactly.
+export function StatCard({
+  icon: Icon, value, label, rule = '#157AB5', tint = '#E0F1FA', layout = 'flex', className = '',
+}) {
+  const sizing = layout === 'grid' ? 'w-full min-w-0' : 'flex-1 min-w-[150px]'
   return (
     <div
-      className={`flex-1 min-w-[150px] bg-surface rounded-card border-[1.5px] border-line shadow-card p-5 flex flex-col gap-3 ${className}`}
+      className={`${sizing} bg-surface rounded-card border-[1.5px] border-line shadow-card p-5 flex flex-col gap-3 ${className}`}
       style={{ borderTop: `6px solid ${rule}` }}
     >
       {Icon && (

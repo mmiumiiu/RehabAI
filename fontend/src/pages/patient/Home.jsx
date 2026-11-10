@@ -92,9 +92,6 @@ export default function Home() {
   const trainedDays = new Set(rows.map((r) => startOfDay(r.ts)))
   const weekStart = startOfWeek()
   const daysThisWeek = [...trainedDays].filter((d) => d >= weekStart).length
-  const scored = rows.filter((r) => r.score != null)
-  const avgScore = scored.length ? Math.round(scored.reduce((s, r) => s + r.score, 0) / scored.length) : null
-
   const programsLeft = (bigLeft ? 1 : 0) + (loudLeft ? 1 : 0)
   const minutesLeft = (bigLeft ? 20 : 0) + (loudLeft ? 10 : 0)
   const firstTarget = bigLeft ? '/training/big' : '/training/loud'
@@ -169,12 +166,11 @@ export default function Home() {
         />
       </section>
 
-      {/* Four stat cards */}
-      <div className="flex flex-wrap gap-4">
-        <StatCard value={`${streak} วัน`} label="ฝึกติดต่อกัน" />
-        <StatCard value={`${trainedDays.size} วัน`} label="ฝึกรวมทั้งหมด" />
-        <StatCard value={`${doneToday} รายการ`} label="ทำแล้ววันนี้" />
-        <StatCard value={avgScore == null ? '—' : `${avgScore}%`} label="คะแนนเฉลี่ย" />
+      {/* Three stat cards — one full row on desktop, stacked on phones */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard layout="grid" value={`${streak} วัน`} label="ฝึกติดต่อกัน" />
+        <StatCard layout="grid" value={`${trainedDays.size} วัน`} label="ฝึกรวมทั้งหมด" />
+        <StatCard layout="grid" value={`${doneToday} รายการ`} label="ทำแล้ววันนี้" />
       </div>
 
       {/* Two training programmes */}

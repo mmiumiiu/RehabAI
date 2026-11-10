@@ -296,3 +296,181 @@ export const therapistLink = {
     localStorage.removeItem(LINK_KEY)
   },
 }
+
+// ─── Community feed ─────────────────────────────────────────────────────────
+// Peer-support feed: the patient's own posts, comments, and per-viewer state
+// (cheers / saves / "ไปด้วย" / follows). Stands in for Firestore collections
+// `posts`, `posts/{id}/comments` and `users/{uid}/reactions`.
+//
+// The seeded posts in mockData are read-only demo content; everything the user
+// does is stored here and merged on top when reading. Swapping in Firebase means
+// replacing this object only — components call nothing else.
+//
+// Stored PER ACCOUNT, like sessionHistory, so each account sees its own state.
+const COMMUNITY_KEY = 'rehabai_community'
+
+function communityKey() {
+  const u = readSession()
+  return `${COMMUNITY_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+
+const EMPTY_STATE = {
+  posts: [],        // posts this user wrote, newest first
+  comments: {},     // postId -> [comment]
+  cheers: {},       // postId -> true
+  commentCheers: {}, // commentId -> true
+  saves: {},        // postId -> true
+  going: {},        // postId -> true
+  follows: {},      // author name -> true
+}
+
+function readCommunity() {
+  try {
+    return { ...EMPTY_STATE, ...JSON.parse(localStorage.getItem(communityKey()) || '{}') }
+  } catch {
+    return { ...EMPTY_STATE }
+  }
+}
+
+function writeCommunity(state) {
+  try {
+    localStorage.setItem(communityKey(), JSON.stringify(state))
+  } catch {
+    // localStorage is a few MB; post images are the only thing big enough to
+    // fill it. Surface a message the composer can show instead of failing mute.
+    throw new Error('พื้นที่เก็บข้อมูลเต็ม — ลองลบรูปออกบางรูป หรือลบโพสต์เก่า')
+  }
+  // 'storage' only fires in OTHER tabs, so emit a same-tab event too.
+  window.dispatchEvent(new CustomEvent('rehabai:community'))
+}
+
+// Pull "#คำ" out of post text. Thai has no word spacing, so a tag runs until
+// whitespace or punctuation.
+function extractTags(text) {
+  const found = String(text).match(/#[^\s#.,!?()[\]{}"'“”‘’]+/g) || []
+  return [...new Set(found)]
+}
+
+export const community = {
+  // Raw per-viewer state — components read reaction flags straight off this.
+  state() {
+    return readCommunity()
+  },
+
+  // Author identity for new posts/comments, taken from the signed-in account.
+  me() {
+    const u = readSession()
+    return { name: u?.name || 'ผู้ใช้งาน' }
+  },
+
+  // post = { text, topic, images:[dataUrl] }
+  // Any #hashtag the user types becomes a tag, so their post shows up under the
+  // matching hashtag filter.
+  async addPost({ text, topic, images = [] }) {
+    await wait(300)
+    const body = String(text || '').trim()
+    if (!body) throw new Error('กรุณาเขียนข้อความก่อนโพสต์')
+    const ts = Date.now()
+    const post = {
+      id: `u${ts}`,
+      own: true,
+      author: this.me().name,
+      when: 'เมื่อสักครู่',
+      ts,
+      topic,
+      body,
+      images,
+      tags: extractTags(body),
+      cheers: 0,
+      shares: 0,
+    }
+    const s = readCommunity()
+    s.posts = [post, ...s.posts]
+    writeCommunity(s)
+    return post
+  },
+
+  async deletePost(postId) {
+    await wait(200)
+    const s = readCommunity()
+    s.posts = s.posts.filter((p) => p.id !== postId)
+    delete s.comments[postId]
+    delete s.cheers[postId]
+    delete s.saves[postId]
+    writeCommunity(s)
+  },
+
+  // comment = { text } on any post (seeded or own)
+  async addComment(postId, text) {
+    await wait(250)
+    const body = String(text || '').trim()
+    if (!body) throw new Error('กรุณาเขียนความคิดเห็นก่อนส่ง')
+    const ts = Date.now()
+    const comment = {
+      id: `c${ts}`,
+      own: true,
+      author: this.me().name,
+      when: 'เมื่อสักครู่',
+      ts,
+      body,
+      cheers: 0,
+    }
+    const s = readCommunity()
+    s.comments[postId] = [...(s.comments[postId] || []), comment]
+    writeCommunity(s)
+    return comment
+  },
+
+  async deleteComment(postId, commentId) {
+    await wait(200)
+    const s = readCommunity()
+    s.comments[postId] = (s.comments[postId] || []).filter((c) => c.id !== commentId)
+    writeCommunity(s)
+  },
+
+  // Toggles below are the per-viewer reactions. Each returns the new flag.
+  _toggle(bucket, key) {
+    const s = readCommunity()
+    const on = !s[bucket][key]
+    if (on) s[bucket][key] = true
+    else delete s[bucket][key]
+    writeCommunity(s)
+    return on
+  },
+
+  async toggleCheer(postId) {
+    return this._toggle('cheers', String(postId))
+  },
+
+  async toggleCommentCheer(commentId) {
+    return this._toggle('commentCheers', String(commentId))
+  },
+
+  async toggleSave(postId) {
+    return this._toggle('saves', String(postId))
+  },
+
+  async toggleGoing(postId) {
+    return this._toggle('going', String(postId))
+  },
+
+  // Standalone "กิจกรรมใกล้คุณ" cards, keyed apart from post ids.
+  async toggleEventGoing(eventId) {
+    return this._toggle('going', `ev:${eventId}`)
+  },
+
+  isEventGoing(eventId) {
+    return !!readCommunity().going[`ev:${eventId}`]
+  },
+
+  async toggleFollow(author) {
+    return this._toggle('follows', author)
+  },
+
+  // Wipes this account's community data (used by tests / "reset demo").
+  async clear() {
+    await wait(150)
+    localStorage.removeItem(communityKey())
+    window.dispatchEvent(new CustomEvent('rehabai:community'))
+  },
+}

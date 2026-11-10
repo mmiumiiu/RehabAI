@@ -83,11 +83,11 @@ export default function Dashboard() {
         </Link>
       </header>
 
-      {/* Stat cards */}
-      <div className="flex flex-wrap gap-4">
-        <StatCard icon={Activity} value={`${trainedDays.size} วัน`} label="ฝึกรวมทั้งหมด" />
-        <StatCard icon={Flame} value={`${streak} วัน`} label="ฝึกติดต่อกัน" rule="#6B4A00" tint="#FFF1C7" />
-        <StatCard icon={Clock} value={hoursLabel(weekMinutes)} label="เวลาฝึกสัปดาห์นี้" />
+      {/* Three stat cards — one full row on desktop, stacked on phones */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard layout="grid" icon={Activity} value={`${trainedDays.size} วัน`} label="ฝึกรวมทั้งหมด" />
+        <StatCard layout="grid" icon={Flame} value={`${streak} วัน`} label="ฝึกติดต่อกัน" rule="#6B4A00" tint="#FFF1C7" />
+        <StatCard layout="grid" icon={Clock} value={hoursLabel(weekMinutes)} label="เวลาฝึกสัปดาห์นี้" />
       </div>
 
       <FrequencyChart data={freq} />
