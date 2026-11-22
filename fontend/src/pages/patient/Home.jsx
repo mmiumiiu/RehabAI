@@ -6,7 +6,7 @@ import { useCheers, timeAgo } from '../../lib/useCheers.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { useSessionHistory, trainingStreak } from '../../lib/useSessionHistory.js'
+import { useGarden } from '../../lib/useGarden.js'
 
 export default function Home() {
   const { user } = useAuth()
@@ -23,8 +23,8 @@ export default function Home() {
   const loudLeft = loudSteps.filter((s) => !prog.loud.includes(s.id)).length
   const doneToday = prog.big.length + prog.loud.length
 
-  const rows = useSessionHistory()
-  const streak = trainingStreak(rows)
+  // Same streak as the garden: consecutive days with a whole program finished.
+  const { streak } = useGarden()
 
   return (
     <div className="max-w-[900px]">

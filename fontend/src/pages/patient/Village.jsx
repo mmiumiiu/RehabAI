@@ -7,6 +7,7 @@ import {
 } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useGarden } from '../../lib/useGarden.js'
+import { useVillage } from '../../lib/useVillage.js'
 
 // Village map — a pale-green meadow holding one island per garden. The player's
 // plot sits dead centre at 1.5× the size with a red glow; tapping a neighbour
@@ -44,7 +45,7 @@ function LevelBadge({ level }) {
 
 // One clickable island on the map. Hovering lifts it and turns its ring blue
 // (handled inside GardenPlot via `group-hover`) so it reads as tappable.
-function Plot({ left, top, width, seed, trees, label, mine, onClick }) {
+function Plot({ left, top, width, seed, trees, label, mine, wateredToday, onClick }) {
   const level = gardenLevelOf(trees).level
   return (
     <div
@@ -82,6 +83,7 @@ function Plot({ left, top, width, seed, trees, label, mine, onClick }) {
             className="-mt-2 inline-flex items-center gap-2 px-3.5 py-1 rounded-[10px] font-bold whitespace-nowrap bg-surface"
             style={{ border: '2px solid #D7DEE3', color: '#2B2650', fontSize: 16 }}
           >
+            {wateredToday && <span title="วันนี้รดน้ำให้แล้ว" aria-label="วันนี้รดน้ำให้แล้ว">💧</span>}
             {label}
             <LevelBadge level={level} />
           </span>
@@ -92,15 +94,21 @@ function Plot({ left, top, width, seed, trees, label, mine, onClick }) {
 }
 
 // Neighbour garden overlay — mockup's "vpanel" dialog.
+// Watering and cheers are saved per account (village in lib/garden.js): one
+// watering per neighbour per day, and each message once per day.
 function NeighborPanel({ neighbor, onClose }) {
   const level = gardenLevelOf(neighbor.trees)
-  const [watered, setWatered] = useState(neighbor.watered)
-  const [justWatered, setJustWatered] = useState(false)
-  const [sentCheer, setSentCheer] = useState(null)
+  const village = useVillage()
+  const mine = village.wateredBy(neighbor.id)
+  const watered = neighbor.watered + mine.count
+  const sentToday = village.sentToday(neighbor.id)
+  const [splash, setSplash] = useState(false)
 
   function water() {
-    setWatered((n) => n + 1)
-    setJustWatered(true)
+    if (village.water(neighbor.id)) {
+      setSplash(true)
+      setTimeout(() => setSplash(false), 1400)
+    }
   }
 
   return (
@@ -117,6 +125,11 @@ function NeighborPanel({ neighbor, onClose }) {
         className="absolute left-1/2 -translate-x-1/2 bottom-[16%] w-[62%] h-auto"
         title={`สวนของ${neighbor.name}`}
       />
+      {splash && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-[42%] text-[64px] animate-bounce pointer-events-none" aria-hidden="true">
+          💧💧💧
+        </div>
+      )}
 
       <div className="absolute left-0 right-0 top-0 p-5 flex justify-between items-start gap-3 flex-wrap">
         <div className="rounded-[17px] px-5 py-3" style={WOOD_BIG}>
@@ -154,10 +167,17 @@ function NeighborPanel({ neighbor, onClose }) {
         <button
           type="button"
           onClick={water}
-          className="flex-[1_1_240px] min-h-[62px] px-6 rounded-btn text-white text-b-btn font-bold flex items-center justify-center gap-3 bg-teal-700 hover:bg-teal-800 transition-colors"
+          disabled={mine.today}
+          className={`flex-[1_1_240px] min-h-[62px] px-6 rounded-btn text-b-btn font-bold flex flex-col items-center justify-center transition-colors ${
+            mine.today ? 'bg-teal-100 text-teal-900 cursor-default' : 'bg-teal-700 hover:bg-teal-800 text-white'
+          }`}
         >
-          {justWatered ? <Check size={22} /> : null}
-          รดน้ำต้นไม้ให้ · {watered} ครั้งแล้ว
+          <span className="flex items-center gap-2.5">
+            {mine.today ? <><Check size={22} /> วันนี้รดน้ำให้แล้ว</> : '💧 รดน้ำต้นไม้ให้'}
+          </span>
+          <span className="text-b-sm font-semibold opacity-90">
+            รดไปแล้ว {watered} ครั้ง{mine.count > 0 ? ` · จากคุณ ${mine.count} ครั้ง` : ''}
+          </span>
         </button>
 
         <div className="flex-[2_1_380px] rounded-[17px] px-4 py-3.5 flex flex-col gap-2.5" style={WOOD_BIG}>
@@ -169,14 +189,15 @@ function NeighborPanel({ neighbor, onClose }) {
               <button
                 key={m}
                 type="button"
-                onClick={() => setSentCheer(m)}
+                onClick={() => village.cheer(neighbor.id, m)}
+                disabled={sentToday.has(m)}
                 className={`min-h-[54px] rounded-[14px] border-[3px] text-b-base font-bold transition-colors ${
-                  sentCheer === m
+                  sentToday.has(m)
                     ? 'bg-indigo-600 border-indigo-600 text-white'
                     : 'bg-indigo-100 border-[#CDBDF0] text-indigo-700 hover:bg-[#E3DAF7]'
                 }`}
               >
-                {sentCheer === m ? 'ส่งแล้ว ✓' : m}
+                {sentToday.has(m) ? 'ส่งแล้ว ✓' : m}
               </button>
             ))}
           </div>
@@ -191,6 +212,8 @@ export default function Village() {
   const { user } = useAuth()
   const [open, setOpen] = useState(null)
   const { trees: myTrees } = useGarden()
+  const village = useVillage()
+  const wateredToday = village.wateredToday()
 
   const myName = user?.name?.split(' ')[0] || 'คุณ'
   const neighbor = VILLAGE_NEIGHBORS.find((n) => n.id === open) || null
@@ -200,8 +223,11 @@ export default function Village() {
       {/* Page header — outside the map, same shape as every other page */}
       <header className="flex flex-wrap justify-between items-center gap-4">
         <div>
-          <p className="text-b-label font-semibold text-ink-secondary m-0 mb-1">แตะที่สวนเพื่อเข้าไปดู</p>
+          <p className="text-b-label font-semibold text-ink-secondary m-0 mb-1">แตะที่สวนเพื่อเข้าไปรดน้ำและส่งกำลังใจ</p>
           <h1 className="font-heading text-b-h1 font-bold m-0 leading-[1.25]">แผนที่หมู่บ้าน</h1>
+          <p className="text-b-sm font-semibold m-0 mt-1" style={{ color: wateredToday.length ? '#1E7A40' : '#6B6590' }}>
+            💧 วันนี้รดน้ำให้เพื่อนแล้ว {wateredToday.length}/{VILLAGE_NEIGHBORS.length} สวน
+          </p>
         </div>
         <Link
           to="/garden"
@@ -235,6 +261,7 @@ export default function Village() {
             seed={n.id}
             trees={n.trees}
             label={n.name}
+            wateredToday={wateredToday.includes(n.id)}
             onClick={() => setOpen(n.id)}
           />
         ))}

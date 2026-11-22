@@ -96,3 +96,77 @@ export const garden = {
     window.dispatchEvent(new CustomEvent('rehabai:garden'))
   },
 }
+
+// ─── Village: watering / cheering neighbours' gardens ───────────────────────
+// What THIS patient did for their neighbours, stored per account so it survives
+// reloads: one watering per neighbour per day, plus the cheers put in their box.
+// Neighbours themselves are mock (VILLAGE_NEIGHBORS) until there are real peers.
+const VILLAGE_KEY = 'rehabai_village'
+
+function villageKey() {
+  const u = auth.current()
+  return `${VILLAGE_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+
+function readVillage() {
+  try {
+    const v = JSON.parse(localStorage.getItem(villageKey()) || '{}')
+    return { waterings: v.waterings || {}, cheers: v.cheers || [] }
+  } catch {
+    return { waterings: {}, cheers: [] }
+  }
+}
+
+function writeVillage(v) {
+  localStorage.setItem(villageKey(), JSON.stringify(v))
+  window.dispatchEvent(new CustomEvent('rehabai:village'))
+}
+
+export const village = {
+  state: readVillage,
+
+  // How many times this patient has watered a neighbour, and whether today.
+  wateredBy(neighborId) {
+    const days = readVillage().waterings[neighborId] || []
+    return { count: days.length, today: days.includes(dayStr()) }
+  },
+
+  // Returns false if already watered this neighbour today.
+  water(neighborId) {
+    const v = readVillage()
+    const days = v.waterings[neighborId] || []
+    if (days.includes(dayStr())) return false
+    v.waterings[neighborId] = [...days, dayStr()]
+    writeVillage(v)
+    return true
+  },
+
+  // Cheers sent to a neighbour, newest first.
+  cheersTo(neighborId) {
+    return readVillage().cheers.filter((c) => c.to === neighborId)
+  },
+
+  // Messages already sent to a neighbour today.
+  sentToday(neighborId) {
+    const today = dayStr()
+    return new Set(readVillage().cheers.filter((c) => c.to === neighborId && c.day === today).map((c) => c.text))
+  },
+
+  // Returns false if this exact message was already sent to them today.
+  cheer(neighborId, text) {
+    const v = readVillage()
+    const today = dayStr()
+    if (v.cheers.some((c) => c.to === neighborId && c.text === text && c.day === today)) return false
+    v.cheers = [{ to: neighborId, text, day: today, ts: Date.now() }, ...v.cheers].slice(0, 200)
+    writeVillage(v)
+    return true
+  },
+
+  // Neighbours watered today — for the "วันนี้รดน้ำให้เพื่อนแล้ว" counter.
+  wateredToday() {
+    const today = dayStr()
+    return Object.entries(readVillage().waterings)
+      .filter(([, days]) => days.includes(today))
+      .map(([id]) => Number(id))
+  },
+}
