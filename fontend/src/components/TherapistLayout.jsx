@@ -16,7 +16,7 @@ export default function TherapistLayout() {
   const name = user?.name || 'นักกายภาพบำบัด'
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-app flex overflow-hidden">
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-[236px] flex-shrink-0 flex-col p-4 bg-surface border-r border-line">
         <div className="mb-6 px-1.5 flex items-center gap-3">

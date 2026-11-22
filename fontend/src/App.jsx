@@ -74,7 +74,9 @@ export default function App() {
     const session = pathname.endsWith('/session')
     const base = therapist ? 1.3 : 1.4
     const scaled = therapist || session ? base : base * factor
-    document.body.style.zoom = String(Math.round(scaled * 100) / 100)
+    const zoom = Math.round(scaled * 100) / 100
+    document.body.style.zoom = String(zoom)
+    document.documentElement.style.setProperty('--app-zoom', String(zoom))
   }, [pathname, factor])
 
   return (

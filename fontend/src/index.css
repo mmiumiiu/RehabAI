@@ -9,12 +9,24 @@
   body {
     @apply text-ink-primary font-body;
     margin: 0;
-    min-height: 100vh;
+    /* 100vh is scaled by body zoom in Chrome — divide it back out. */
+    min-height: calc(100vh / var(--app-zoom, 1));
     background: #D8D3F3;
-    /* Overall zoom is set per-portal in App.jsx (patient 1.25, therapist 1). */
+    /* Overall zoom is set per-portal in App.jsx, which also sets --app-zoom. */
   }
   h1, h2, h3, h4 {
     @apply font-heading;
+  }
+}
+
+@layer utilities {
+  /* Viewport height that stays correct under body { zoom }. Chrome scales vh
+     units by the zoom, so a plain 100vh box is 1.4× (or more) taller than the
+     screen and anything pinned to its bottom — like the chat input — ends up
+     off-screen. Dividing by the zoom App.jsx applies cancels that out. */
+  .h-app {
+    height: calc(100vh / var(--app-zoom, 1));
+    height: calc(100dvh / var(--app-zoom, 1));
   }
 }
 

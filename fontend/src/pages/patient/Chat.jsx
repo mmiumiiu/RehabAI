@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { Avatar } from '../../components/ui.jsx'
-import { ArrowLeft, Send, AlertTriangle } from '../../components/icons.jsx'
+import { Send, AlertTriangle } from '../../components/icons.jsx'
 import { therapistLink } from '../../lib/services.js'
 import { chatService } from '../../lib/chatService.js'
 
@@ -31,55 +30,53 @@ export default function Chat() {
     setText('')
   }
 
+  // Height = visible screen (corrected for the app zoom) minus the header, page
+  // padding and — on mobile — the bottom nav, so the input is always on screen.
   return (
-    <div className="max-w-[720px] h-[calc(100vh-196px)] md:h-[calc(100vh-140px)] flex flex-col">
-      <Link to="/profile" className="inline-flex items-center gap-1.5 text-[13px] text-ink-secondary hover:text-teal-700 mb-3">
-        <ArrowLeft size={16} /> กลับไปโปรไฟล์
-      </Link>
-
-      <div className="card flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-3.5 border-b border-line">
-          <Avatar text={initialsOf(therapist.name)} />
+    <div className="max-w-[760px] mx-auto h-[calc(100dvh/var(--app-zoom,1)-185px)] md:h-[calc(100dvh/var(--app-zoom,1)-136px)] min-h-[300px] flex flex-col">
+      <div className="card flex-1 min-h-0 flex flex-col overflow-hidden">
+        <div className="flex items-center gap-3.5 px-5 py-3.5 border-b border-line flex-shrink-0">
+          <Avatar text={initialsOf(therapist.name)} size={44} />
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-ink-primary">{therapist.name}</div>
-            <div className="text-[11.5px] text-ok-fg flex items-center gap-1.5">
+            <div className="text-[18px] font-semibold text-ink-primary">{therapist.name}</div>
+            <div className="text-[14px] text-ok-fg flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#147A3D]" /> ออนไลน์
             </div>
           </div>
         </div>
 
-        <div className="flex items-start gap-2 px-5 py-2.5 text-[12px]" style={{ background: '#FFF7D6', color: '#8A6400' }}>
-          <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
-          <p>ช่องทางนี้ไม่ใช่สำหรับเหตุฉุกเฉิน นักกายภาพบำบัดจะตอบภายใน 1-2 วันทำการ หากมีเหตุฉุกเฉินให้ใช้ปุ่ม SOS หรือโทร 1669</p>
+        <div className="flex items-start gap-2.5 px-5 py-2 text-[14px] leading-snug flex-shrink-0" style={{ background: '#FFF7D6', color: '#8A6400' }}>
+          <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" />
+          <p>ไม่ใช่ช่องทางฉุกเฉิน · นักกายภาพตอบภายใน 1–2 วันทำการ · ฉุกเฉินกด SOS หรือโทร 1669</p>
         </div>
 
-        <div className="flex-1 overflow-auto thin-scroll px-5 py-4 space-y-3 bg-bg/50">
+        <div className="flex-1 min-h-0 overflow-auto thin-scroll px-5 py-4 space-y-3.5 bg-bg/50">
           {messages.map((m) => (
             <div key={m.id} className={`flex ${m.from === 'patient' ? 'justify-end' : 'justify-start'}`}>
-              <div className="max-w-[75%]">
+              <div className="max-w-[80%]">
                 <div
-                  className={`px-4 py-2.5 rounded-2xl text-[13.5px] leading-relaxed ${
+                  className={`px-4 py-3 rounded-2xl text-[18px] leading-relaxed ${
                     m.from === 'patient' ? 'bg-teal-700 text-white rounded-br-sm' : 'bg-white border border-line rounded-bl-sm'
                   }`}
                 >
                   {m.text}
                 </div>
-                <div className={`text-[10.5px] text-ink-muted mt-1 ${m.from === 'patient' ? 'text-right' : ''}`}>{m.at}</div>
+                <div className={`text-[13px] text-ink-muted mt-1 ${m.from === 'patient' ? 'text-right' : ''}`}>{m.at}</div>
               </div>
             </div>
           ))}
           <div ref={endRef} />
         </div>
 
-        <form onSubmit={send} className="flex items-center gap-2 px-4 py-3 border-t border-line">
+        <form onSubmit={send} className="flex items-center gap-2.5 px-4 py-3 border-t border-line bg-surface flex-shrink-0">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="พิมพ์ข้อความ…"
-            className="flex-1 border border-line rounded-full px-4 py-2.5 text-[14px] outline-none focus:border-teal-700"
+            className="flex-1 min-w-0 border-2 border-line rounded-full px-5 py-3 text-[18px] outline-none focus:border-teal-700"
           />
-          <button type="submit" className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center flex-shrink-0">
-            <Send size={18} />
+          <button type="submit" aria-label="ส่งข้อความ" className="w-[52px] h-[52px] rounded-full bg-teal-700 text-white flex items-center justify-center flex-shrink-0">
+            <Send size={22} />
           </button>
         </form>
       </div>

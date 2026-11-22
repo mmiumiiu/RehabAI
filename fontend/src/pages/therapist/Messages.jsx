@@ -38,7 +38,7 @@ export default function Messages() {
   }
 
   return (
-    <div className="h-[calc(100vh-56px)] md:h-screen flex flex-col">
+    <div className="h-[calc(100dvh/var(--app-zoom,1)-56px)] md:h-[calc(100dvh/var(--app-zoom,1))] flex flex-col">
       <header className="px-4 md:px-8 py-4 md:py-5 border-b border-line bg-surface flex-shrink-0">
         <h1 className="font-heading text-[20px] font-semibold text-ink-primary">ข้อความ</h1>
       </header>
