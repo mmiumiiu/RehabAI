@@ -90,13 +90,13 @@ export default function GardenPlot({ level = 1, trees = 1, seed = 1, className =
         <ellipse
           className="transition-opacity group-hover:opacity-0"
           cx={cx} cy={cy} rx={rx + 9} ry={ry + 9}
-          fill="none" stroke="#D32F2F" strokeWidth="7" opacity="0.5"
+          fill="none" stroke="#E8554D" strokeWidth="7" opacity="0.5"
         />
       )}
       <ellipse
         className="opacity-0 transition-opacity group-hover:opacity-100"
         cx={cx} cy={cy} rx={rx + 9} ry={ry + 9}
-        fill="none" stroke="#157AB5" strokeWidth="7"
+        fill="none" stroke="#2FA65A" strokeWidth="7"
       />
 
       {/* thick soil rim, then the grass top */}

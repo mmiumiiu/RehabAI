@@ -7,7 +7,7 @@ import {
   gardenLevelOf, nextGardenLevel,
 } from '../../lib/mockData.js'
 
-// "สวนของฉัน" — the "#garden" section of design/bridge-mockup.html.
+// "สวนของฉัน" — the "#garden" section of the garden mockup.
 // Data is mock (mockData.js) until the backend exists.
 
 const RULE_ICONS = [Activity, Award, ShieldCheck, Users]
@@ -18,8 +18,8 @@ function GrowthTile({ level, current }) {
     <div
       className="flex-1 min-w-[130px] flex flex-col gap-2 p-3 rounded-[14px] border-[3px]"
       style={on
-        ? { borderColor: '#157AB5', background: '#E0F1FA' }
-        : { borderColor: '#CDE3EE', background: '#FFFFFF' }}
+        ? { borderColor: '#2FA65A', background: '#E3F6E9' }
+        : { borderColor: '#E9E6F7', background: '#FFFFFF' }}
     >
       <div className="rounded-[10px] overflow-hidden bg-teal-50">
         <GardenPlot level={level.level} trees={level.trees} seed={level.level * 3} className="w-full h-auto" />
@@ -85,7 +85,7 @@ export default function Garden() {
             <p className="text-b-base leading-[1.5] m-0">เพื่อนมารดน้ำ ดอกไม้บานเพิ่ม</p>
             <div
               className="rounded-[17px] border-2 px-5 py-4 text-b-label font-semibold leading-[1.6]"
-              style={{ background: '#E0F1FA', borderColor: '#A9D3C6', color: '#0B3550' }}
+              style={{ background: '#E3F6E9', borderColor: '#BDEFCF', color: '#14522B' }}
             >
               วันที่ไม่ได้ฝึก ต้นไม้ไม่ตาย แค่รอคุณกลับมา
             </div>
@@ -106,7 +106,7 @@ export default function Garden() {
             <div
               key={w.name + w.when}
               className="flex items-center gap-4 py-3 border-t-2"
-              style={{ borderColor: '#E6F1F7' }}
+              style={{ borderColor: '#EFEDF9' }}
             >
               <span className="w-[40px] h-[40px] rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-b-base font-bold flex-shrink-0">
                 {w.name[0]}
@@ -176,7 +176,7 @@ export default function Garden() {
             </thead>
             <tbody>
               {GARDEN_LEVELS.map((l) => (
-                <tr key={l.level} style={l.level === level.level ? { background: '#E0F1FA' } : undefined}>
+                <tr key={l.level} style={l.level === level.level ? { background: '#E3F6E9' } : undefined}>
                   <td className="px-5 py-3 text-b-base font-bold">ระดับ {l.level}</td>
                   <td className="px-5 py-3 text-b-base font-bold">{l.name}</td>
                   <td className="px-5 py-3 text-b-base">{l.trees} ต้น</td>

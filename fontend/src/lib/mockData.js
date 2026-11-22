@@ -1,9 +1,6 @@
 // Mock data + domain constants derived directly from RehabAI_Build_Spec.md.
 // This stands in for Firestore; the service layer (lib/services.js) reads from here.
 import { loudPhrases } from './services.js'
-import {
-  demoTotalDays, demoStreak, demoWeekCount, demoWeekMinutes, demoAvgScore, demoLastScore,
-} from './demoPlan.js'
 
 export const PARKINSON_STAGES = [
   {
@@ -18,12 +15,32 @@ export const PARKINSON_STAGES = [
   },
 ]
 
-// LSVT BIG — array order is the order the patient trains in: the three poses
-// that have a demo animation (`video`) come first, then the rest. `id` is a
-// stable key (session URLs, the rep scorer, today's progress) and deliberately
-// does NOT follow the list order. `posture` drives the ท่านั่ง/ท่ายืน filter on
+// LSVT BIG — grouped by posture: seated first (ท่านั่ง), then standing (ท่ายืน).
+// Order within the list is fixed by id. `posture` drives the section grouping on
 // the training-list page; `highRisk` shows the "เสี่ยงสูง" badge (fall risk).
 export const BIG_EXERCISES = [
+  {
+    id: 1,
+    posture: 'seated',
+    name: 'บนล่าง (Floor to Ceiling)',
+    nameEn: 'Floor to Ceiling',
+    how: 'นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→ขึ้นเหนือศีรษะ→กางแขนค้างไว้ 10 วินาที แล้วกลับสู่ท่าเริ่มต้น',
+    target: 8,
+    targetLabel: '8 ครั้ง',
+    status: 'todo',
+    accuracy: 84,
+  },
+  {
+    id: 2,
+    posture: 'seated',
+    name: 'ซ้ายขวา (Sitting Side to Side)',
+    nameEn: 'Sitting Side to Side',
+    how: 'นั่งตัวตรง กางแขน 1 ข้างออกไปด้านข้าง วาดแขนลงข้างล่างกวาดไปจนขึ้นไปถึงหัว',
+    target: 8,
+    targetLabel: '8 ครั้ง/ข้าง',
+    status: 'todo',
+    accuracy: 80,
+  },
   {
     id: 3,
     posture: 'standing',
@@ -60,28 +77,6 @@ export const BIG_EXERCISES = [
     targetLabel: '8 ครั้ง/ข้าง',
     status: 'todo',
     accuracy: 66,
-  },
-  {
-    id: 1,
-    posture: 'seated',
-    name: 'บนล่าง (Floor to Ceiling)',
-    nameEn: 'Floor to Ceiling',
-    how: 'นั่งริมขอบเก้าอี้ ผลักแขนไปข้างหน้า→ลงพื้น→ขึ้นเหนือศีรษะ→กางแขนค้างไว้ 10 วินาที แล้วกลับสู่ท่าเริ่มต้น',
-    target: 8,
-    targetLabel: '8 ครั้ง',
-    status: 'todo',
-    accuracy: 84,
-  },
-  {
-    id: 2,
-    posture: 'seated',
-    name: 'ซ้ายขวา (Sitting Side to Side)',
-    nameEn: 'Sitting Side to Side',
-    how: 'นั่งตัวตรง กางแขน 1 ข้างออกไปด้านข้าง วาดแขนลงข้างล่างกวาดไปจนขึ้นไปถึงหัว',
-    target: 8,
-    targetLabel: '8 ครั้ง/ข้าง',
-    status: 'todo',
-    accuracy: 80,
   },
   {
     id: 6,
@@ -182,40 +177,18 @@ export const emergencyContactsSeed = [
 ]
 
 // Therapist portal patient list. Spec §4.3
-// `daysSince` = days since the last session (drives the "ไม่ได้ฝึก N วัน" flag),
-// `totalDays` / `avgAccuracy` feed the detail-page stat cards, and `week` is the
-// 7-day minutes series (oldest → today) for the training-time chart.
 export const PATIENTS = [
-  // สมชาย ใจดี is the demo patient (patient@demo.com). Every number here is
-  // derived from demoPlan.js — the same plan that seeds his own device — so the
-  // therapist sees exactly what he sees.
   {
-    id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: 'วันนี้ 08:40',
-    initials: 'สช', daysSince: 0,
-    streak: demoStreak(),
-    lastScore: demoLastScore(),
-    weekCount: demoWeekCount(),
-    totalDays: demoTotalDays(),
-    avgAccuracy: demoAvgScore(),
-    week: demoWeekMinutes(),
+    id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: '2 ชม. ที่แล้ว',
+    streak: 5, lastScore: 86, weekCount: 4, initials: 'สช',
   },
   {
-    id: 'p2', name: 'นภาพร ชื่นใจ', stage: 'stage1', lastActive: 'เมื่อวาน',
-    streak: 2, lastScore: 64, weekCount: 3, initials: 'นภ',
-    daysSince: 1, totalDays: 11, avgAccuracy: 68,
-    week: [
-      { big: 0, loud: 0 }, { big: 14, loud: 6 }, { big: 0, loud: 0 }, { big: 12, loud: 8 },
-      { big: 0, loud: 0 }, { big: 16, loud: 5 }, { big: 0, loud: 0 },
-    ],
+    id: 'p2', name: 'วิภา สุขสันต์', stage: 'stage2', lastActive: 'เมื่อวานนี้',
+    streak: 12, lastScore: 79, weekCount: 6, initials: 'วภ',
   },
   {
-    id: 'p3', name: 'วิชัย ถาวรกุล', stage: 'stage2', lastActive: '4 วันก่อน',
-    streak: 0, lastScore: 41, weekCount: 1, initials: 'วช',
-    daysSince: 4, totalDays: 6, avgAccuracy: 52,
-    week: [
-      { big: 10, loud: 4 }, { big: 0, loud: 0 }, { big: 0, loud: 0 }, { big: 0, loud: 0 },
-      { big: 0, loud: 0 }, { big: 0, loud: 0 }, { big: 0, loud: 0 },
-    ],
+    id: 'p3', name: 'ประเสริฐ มั่นคง', stage: 'stage1', lastActive: '3 วันที่แล้ว',
+    streak: 0, lastScore: 71, weekCount: 1, initials: 'ปส',
   },
 ]
 
@@ -310,12 +283,11 @@ export function nextGardenLevel(trees) {
   return GARDEN_LEVELS.find((l) => l.trees > trees) || null
 }
 
-// 1 training day = 1 tree, so the garden tracks the demo history: 22 trees puts
-// it at level 4 (สวนดอกไม้).
+// 1 training day = 1 tree: 22 trees puts the garden at level 4 (สวนดอกไม้).
 export const MY_GARDEN = {
-  trees: demoTotalDays(),
-  streak: demoStreak(),
-  totalDays: demoTotalDays(),
+  trees: 22,
+  streak: 5,
+  totalDays: 22,
 }
 
 // Neighbours ringing the player's plot. left/top are percentages of the map
@@ -378,9 +350,9 @@ export const COMMUNITY_TOPICS = ['ประสบการณ์', 'ชวนท
 // Pill colours per topic, from the mockup. Unknown topics fall back to the
 // ประสบการณ์ style in TopicPill, so this can lag behind COMMUNITY_TOPICS safely.
 export const TOPIC_STYLES = {
-  ประสบการณ์: { background: '#E0F1FA', color: '#0B3550' },
-  ชวนทำกิจกรรม: { background: '#FFF1C7', color: '#6B4A00' },
-  ให้กำลังใจ: { background: '#EEE8FA', color: '#4B2A86' },
+  ประสบการณ์: { background: '#E3F6E9', color: '#14522B' },
+  ชวนทำกิจกรรม: { background: '#FFF4D6', color: '#B8860B' },
+  ให้กำลังใจ: { background: '#EFEBFE', color: '#473CC7' },
 }
 
 // `verified` marks a therapist account — the only badge shown under an author's
@@ -452,11 +424,11 @@ export const COMMUNITY_EVENTS = [
   },
   {
     id: 2, month: 'พ.ย.', day: 20, title: 'ร้องเพลงฝึกเสียง',
-    time: '19:00–20:00 น.', place: 'ออนไลน์ (Zoom)', going: 26, tint: '#E0F1FA',
+    time: '19:00–20:00 น.', place: 'ออนไลน์ (Zoom)', going: 26, tint: '#E3F6E9',
   },
   {
     id: 3, month: 'พ.ย.', day: 23, title: 'เดินด้วยกันเช้าวันอาทิตย์',
-    time: '06:30–07:30 น.', place: 'สวนรถไฟ ประตู 2', going: 18, tint: '#EEE8FA',
+    time: '06:30–07:30 น.', place: 'สวนรถไฟ ประตู 2', going: 18, tint: '#EFEBFE',
   },
 ]
 

@@ -26,7 +26,7 @@ const WOOD_BIG = { ...WOOD, border: '4px solid #8E5F2C', boxShadow: '0 5px 0 #8E
 function levelColor(level) {
   if (level >= 7) return '#C9971C'
   if (level >= 5) return '#E07B1A'
-  if (level >= 3) return '#157AB5'
+  if (level >= 3) return '#2FA65A'
   return '#7B8A93'
 }
 
@@ -72,14 +72,14 @@ function Plot({ left, top, width, seed, trees, label, mine, onClick }) {
         {mine ? (
           <span
             className="-mt-2 inline-flex items-center px-4 py-1.5 rounded-[12px] font-bold whitespace-nowrap text-white"
-            style={{ background: '#D32F2F', fontSize: 20 }}
+            style={{ background: '#E8554D', fontSize: 20 }}
           >
             สวนของคุณ · ระดับ {level}
           </span>
         ) : (
           <span
             className="-mt-2 inline-flex items-center gap-2 px-3.5 py-1 rounded-[10px] font-bold whitespace-nowrap bg-surface"
-            style={{ border: '2px solid #D7DEE3', color: '#0B2E45', fontSize: 16 }}
+            style={{ border: '2px solid #D7DEE3', color: '#2B2650', fontSize: 16 }}
           >
             {label}
             <LevelBadge level={level} />

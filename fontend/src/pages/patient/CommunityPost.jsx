@@ -20,7 +20,7 @@ function Comment({ postId, comment, state, onReply }) {
   return (
     <div
       className="flex gap-4 py-4 border-t-[1.5px]"
-      style={{ borderColor: '#E6F1F7', marginLeft: comment.reply ? 60 : 0 }}
+      style={{ borderColor: '#EFEDF9', marginLeft: comment.reply ? 60 : 0 }}
     >
       <Avatar name={comment.author} size={43} verified={comment.verified} />
       <div className="flex-1 min-w-0 flex flex-col gap-2">
@@ -148,7 +148,7 @@ export default function CommunityPost() {
                 {(error || speech.error) && (
                   <p
                     className="text-b-base font-semibold leading-[1.6] m-0 rounded-[14px] border-2 px-4 py-3"
-                    style={{ background: '#FBE3E0', borderColor: '#EDB3AD', color: '#B3261E' }}
+                    style={{ background: '#FDE8E4', borderColor: '#FBC0BA', color: '#B33630' }}
                   >
                     {error || speech.error}
                   </p>
@@ -206,7 +206,7 @@ export default function CommunityPost() {
                 <StatCard value={`${post.streak} วัน`} label="ฝึกติดต่อกัน" />
                 <div
                   className="flex-1 min-w-[130px] bg-surface rounded-card border-[1.5px] border-line shadow-card p-4 flex flex-col gap-2"
-                  style={{ borderTop: '6px solid #157AB5' }}
+                  style={{ borderTop: '6px solid #2FA65A' }}
                 >
                   <div className="rounded-[10px] overflow-hidden bg-teal-50">
                     <GardenPlot level={post.gardenLevel} trees={post.gardenLevel * 15} seed={post.id} className="w-full h-auto" />
@@ -237,7 +237,7 @@ export default function CommunityPost() {
 
           <div
             className="flex gap-4 items-start rounded-[17px] border-2 px-5 py-4 text-b-label leading-[1.6]"
-            style={{ background: '#E0F1FA', borderColor: '#B4DCEC', color: '#0B3550' }}
+            style={{ background: '#E3F6E9', borderColor: '#BDEFCF', color: '#14522B' }}
           >
             <AlertTriangle size={22} className="flex-shrink-0" />
             {COMMUNITY_DISCLAIMER}

@@ -16,7 +16,7 @@ import { useAuth } from '../../context/AuthContext.jsx'
 // "ชุมชนของเรา" — single full-width column on a white page, no tabs and no right
 // rail. Order: rules bar (yellow) → events → hashtags → composer → topic filter
 // → feed.
-// Cards are white with a light-blue (#CDE3EE) border. Every control is ≥50px
+// Cards are white with a light-blue (#E9E6F7) border. Every control is ≥50px
 // tall and wired to the `community` service, so state survives a refresh.
 
 const CARD = 'bg-surface rounded-card border-[1.5px] border-line'
@@ -167,7 +167,7 @@ export default function Community() {
       {/* 1 · Community rules — yellow bar straight under the heading */}
       <section
         className="rounded-card border-2 p-6 flex flex-col gap-4"
-        style={{ background: '#FFF1C7', borderColor: '#E6CF86', color: '#6B4A00' }}
+        style={{ background: '#FFF4D6', borderColor: '#E6CF86', color: '#B8860B' }}
       >
         <h2 className="flex items-center gap-3 font-heading text-b-h2 font-bold m-0 leading-[1.3]">
           <AlertTriangle size={26} className="flex-shrink-0" /> กติกาของชุมชน
@@ -276,7 +276,7 @@ export default function Community() {
         {(error || speech.error) && (
           <p
             className="text-b-base font-semibold leading-[1.6] m-0 rounded-[14px] border-2 px-4 py-3"
-            style={{ background: '#FBE3E0', borderColor: '#EDB3AD', color: '#B3261E' }}
+            style={{ background: '#FDE8E4', borderColor: '#FBC0BA', color: '#B33630' }}
           >
             {error || speech.error}
           </p>

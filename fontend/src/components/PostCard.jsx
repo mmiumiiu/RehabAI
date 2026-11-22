@@ -16,7 +16,7 @@ export function AuthorBadge({ label, verified }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 text-b-xs font-bold px-3 py-0.5 rounded-pill"
-      style={{ background: '#DDF3F1', color: '#0E5E58' }}
+      style={{ background: '#E3F6E9', color: '#1E7A40' }}
     >
       <ShieldCheck size={15} />
       {label || 'นักกายภาพยืนยันแล้ว'}
@@ -43,8 +43,8 @@ export function Avatar({ name, size = 48, verified }) {
         width: size,
         height: size,
         fontSize: size * 0.36,
-        background: verified ? '#DDF3F1' : '#E0F1FA',
-        color: verified ? '#0E5E58' : '#0B3550',
+        background: verified ? '#E3F6E9' : '#E3F6E9',
+        color: verified ? '#1E7A40' : '#14522B',
       }}
     >
       {String(name || '?').replace(/^กภ\./, '').slice(0, 2)}
@@ -92,7 +92,7 @@ function PostImages({ images, alt }) {
 function EventBlock({ post }) {
   const { event } = post
   return (
-    <div className="flex flex-wrap items-center gap-5 px-5 py-4 rounded-btn" style={{ background: '#F5FAFD' }}>
+    <div className="flex flex-wrap items-center gap-5 px-5 py-4 rounded-btn" style={{ background: '#F7F6FD' }}>
       <div className="w-[69px] h-[69px] rounded-[14px] bg-surface flex flex-col items-center justify-center flex-shrink-0">
         <span className="text-b-xs font-bold" style={{ color: '#B4233A' }}>{event.month}</span>
         <span className="text-b-h3 font-bold leading-none">{event.day}</span>
@@ -125,7 +125,7 @@ async function sharePost(post, done) {
   const text = `${post.author}: ${post.body.slice(0, 80)}`
   try {
     if (navigator.share) {
-      await navigator.share({ title: 'BRIDGE — ชุมชนของเรา', text, url })
+      await navigator.share({ title: 'RehabAI — ชุมชนของเรา', text, url })
       done('shared')
       return
     }
@@ -208,7 +208,7 @@ export default function PostCard({ post, linkBody = true, onReply, onTagClick })
 
       {post.event && <EventBlock post={post} />}
 
-      <div className="flex flex-wrap gap-1.5 border-t-[1.5px] pt-2" style={{ borderColor: '#E6F1F7' }}>
+      <div className="flex flex-wrap gap-1.5 border-t-[1.5px] pt-2" style={{ borderColor: '#EFEDF9' }}>
         <Action
           icon={Award}
           label="ให้กำลังใจ"
