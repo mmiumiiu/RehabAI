@@ -41,7 +41,7 @@ Both portals are guarded by `RequireAuth` in `App.jsx` which checks `user.role` 
 
 **Camera/mic hooks** (`src/lib/useCamera.js`):
 - `useCamera(enabled)` — requests webcam, returns `{ videoRef, status }`. Status: `idle | requesting | live | denied | error`.
-- `useMicLevel(enabled)` — requests mic, returns `{ db, status }` where `db` is a mapped 40–90 dB scale (uncalibrated).
+- `useMicLevel(enabled)` — requests mic, returns `{ db, status, calibration, recalibrate }`. `db` is a 40–90 display scale relative to the room's noise floor, measured over 3 s (median) while `status === 'calibrating'`; `calibration.room` is `quiet | some | noisy | unstable`. The mic itself is uncalibrated, so absolute dB values are not real SPL.
 
 **Live session pages** (`SessionBig`, `SessionLoud`, `SessionWeightShift`) — full-screen, rendered outside `PatientLayout` (no sidebar). They overlay a simulated pose skeleton (`PoseSkeleton.jsx`) on the live webcam feed. Real MediaPipe inference is the backlog item that replaces the simulation.
 
@@ -63,6 +63,5 @@ Both portals are guarded by `RequireAuth` in `App.jsx` which checks `user.role` 
 
 - Real Firebase Auth + Firestore replacing `src/lib/services.js` stubs
 - Real MediaPipe Pose inference in session pages (replacing `PoseSkeleton` simulation)
-- Microphone noise-floor calibration
 - SMS gateway (Twilio or Thai provider) replacing `sms` stub
 - Clinical pre/post-tests (UPDRS, 10MWT, etc.)

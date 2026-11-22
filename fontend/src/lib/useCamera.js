@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Requests the webcam and binds the stream to a <video> ref.
 // Real pose estimation (MediaPipe) would consume this same stream; here the
@@ -53,17 +53,36 @@ export function useCamera(enabled = true) {
 export function useMicLevel(enabled = true) {
   const [db, setDb] = useState(0)
   const [status, setStatus] = useState('idle')
+  // Room-noise calibration, shown to the patient before they speak:
+  //   progress 0…1 while measuring; then noiseDbfs (dB re. full scale — the
+  //   mic is uncalibrated, so only the relative level is meaningful) and
+  //   room: 'quiet' | 'some' | 'noisy' | 'unstable' (a loud sound interrupted it).
+  const [calibration, setCalibration] = useState({ progress: 0, noiseDbfs: null, room: null })
   const raf = useRef(null)
+  const recalibrateRef = useRef(() => {})
 
   useEffect(() => {
     if (!enabled) return
     let ctx, analyser, source, stream, cancelled = false
     let calibrationSamples = []
+    let calibrationStart = 0
+    let lastProgress = -1
     let noiseFloorPower = null
-    const CALIBRATION_FRAMES = 60  // ~1 s at 60 fps
+    const CALIBRATION_MS = 3000    // patient is asked to stay quiet this long
     const DISPLAY_MIN = 40
     const DISPLAY_MAX = 90
     const SIGNAL_RANGE_DB = 35     // dB above noise floor that maps to display max
+
+    const begin = () => {
+      calibrationSamples = []
+      calibrationStart = performance.now()
+      lastProgress = -1
+      noiseFloorPower = null
+      setDb(DISPLAY_MIN)
+      setCalibration({ progress: 0, noiseDbfs: null, room: null })
+      setStatus('calibrating')
+    }
+    recalibrateRef.current = () => { if (analyser) begin() }
 
     setStatus('requesting')
     navigator.mediaDevices
@@ -78,7 +97,7 @@ export function useMicLevel(enabled = true) {
         source.connect(analyser)
         // Float32Array avoids the 8-bit precision loss of getByteTimeDomainData
         const data = new Float32Array(analyser.fftSize)
-        setStatus('calibrating')
+        begin()
 
         const loop = () => {
           analyser.getFloatTimeDomainData(data)  // samples in -1…+1
@@ -89,9 +108,27 @@ export function useMicLevel(enabled = true) {
 
           if (noiseFloorPower === null) {
             // ── Calibration phase ───────────────────────────────────────────
+            // Time-based (frame rate varies by device). The floor is the MEDIAN
+            // power, so a cough or a door slam doesn't skew it the way a mean would.
             calibrationSamples.push(power)
-            if (calibrationSamples.length >= CALIBRATION_FRAMES) {
-              noiseFloorPower = calibrationSamples.reduce((a, b) => a + b, 0) / calibrationSamples.length
+            const elapsed = performance.now() - calibrationStart
+            const progress = Math.min(1, elapsed / CALIBRATION_MS)
+            const step = Math.floor(progress * 20)
+            if (step !== lastProgress) {
+              lastProgress = step
+              setCalibration((c) => ({ ...c, progress }))
+            }
+            if (elapsed >= CALIBRATION_MS && calibrationSamples.length >= 10) {
+              const sorted = [...calibrationSamples].sort((a, b) => a - b)
+              const median = sorted[Math.floor(sorted.length / 2)]
+              const p90 = sorted[Math.floor(sorted.length * 0.9)]
+              noiseFloorPower = median
+              const noiseDbfs = Math.round(10 * Math.log10(median + 1e-12))
+              // A p90 >10 dB above the median means someone spoke / something
+              // loud happened during the measurement.
+              const spiky = p90 > median * 10
+              const room = spiky ? 'unstable' : noiseDbfs < -55 ? 'quiet' : noiseDbfs < -42 ? 'some' : 'noisy'
+              setCalibration({ progress: 1, noiseDbfs, room })
               setStatus('live')
             }
           } else {
@@ -114,11 +151,13 @@ export function useMicLevel(enabled = true) {
 
     return () => {
       cancelled = true
+      recalibrateRef.current = () => {}
       if (raf.current) cancelAnimationFrame(raf.current)
       stream?.getTracks().forEach((t) => t.stop())
       ctx?.close?.()
     }
   }, [enabled])
 
-  return { db, status }
+  const recalibrate = useCallback(() => recalibrateRef.current(), [])
+  return { db, status, calibration, recalibrate }
 }

@@ -29,7 +29,7 @@ const VOICE_FLOOR = 47
 //   enabled  — whether the mic is live (default true)
 //   onResult — called with the score payload after each completed attempt
 export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTarget = 7, enabled = true, onResult } = {}) {
-  const { db, status: micStatus } = useMicLevel(enabled)
+  const { db, status: micStatus, calibration, recalibrate } = useMicLevel(enabled)
   const [recording, setRecording] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [holdSec, setHoldSec] = useState(0)  // live phonation duration while recording
@@ -100,6 +100,9 @@ export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTa
   }, [recording])
 
   function start() {
+    // Wait for the room-noise measurement — scores against a half-measured
+    // floor would be meaningless.
+    if (micStatus !== 'live') return
     // Speech recognition is only needed when a word is being scored. Steps that
     // score just loudness + duration (no target word) skip it entirely.
     const useSR = !!targetRef.current
@@ -192,7 +195,7 @@ export function useLoudScorer({ band, target, mode = 'word', holdMin = 5, holdTa
     }
   }
 
-  return { db, micStatus, recording, transcript, holdSec, result, error, supported: !!SR, start, stop }
+  return { db, micStatus, calibration, recalibrate, recording, transcript, holdSec, result, error, supported: !!SR, start, stop }
 }
 
 // Loudness band (dB): min · good_min–good_max · max.
