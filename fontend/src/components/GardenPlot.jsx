@@ -144,7 +144,7 @@ export default function GardenPlot({ level = 1, trees = 1, seed = 1, className =
       ))}
 
       {/* a single seedling at level 1 */}
-      {level === 1 && (
+      {level === 1 && trees > 0 && (
         <g transform={`translate(${cx} ${cy})`}>
           <rect x={-1.6} y={-16} width={3.2} height={16} rx={1.6} fill={SOIL} />
           <ellipse cx={-7} cy={-17} rx={8} ry={5} fill="#5CB04A" />

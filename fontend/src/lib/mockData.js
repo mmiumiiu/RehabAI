@@ -283,13 +283,6 @@ export function nextGardenLevel(trees) {
   return GARDEN_LEVELS.find((l) => l.trees > trees) || null
 }
 
-// 1 training day = 1 tree: 22 trees puts the garden at level 4 (สวนดอกไม้).
-export const MY_GARDEN = {
-  trees: 22,
-  streak: 5,
-  totalDays: 22,
-}
-
 // Neighbours ringing the player's plot. left/top are percentages of the map
 // box, taken from the mockup so the ring keeps its shape at any size.
 export const VILLAGE_NEIGHBORS = [

@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import GardenPlot from '../../components/GardenPlot.jsx'
 import { MapPin, ArrowLeft, Check } from '../../components/icons.jsx'
 import {
-  VILLAGE_NEIGHBORS, MY_GARDEN, NEIGHBOR_PLOT_WIDTH, CHEER_MESSAGES, gardenLevelOf,
+  VILLAGE_NEIGHBORS, NEIGHBOR_PLOT_WIDTH, CHEER_MESSAGES, gardenLevelOf,
 } from '../../lib/mockData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useGarden } from '../../lib/useGarden.js'
 
 // Village map — a pale-green meadow holding one island per garden. The player's
 // plot sits dead centre at 1.5× the size with a red glow; tapping a neighbour
@@ -189,6 +190,7 @@ export default function Village() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [open, setOpen] = useState(null)
+  const { trees: myTrees } = useGarden()
 
   const myName = user?.name?.split(' ')[0] || 'คุณ'
   const neighbor = VILLAGE_NEIGHBORS.find((n) => n.id === open) || null
@@ -243,7 +245,7 @@ export default function Village() {
           top={48}
           width={NEIGHBOR_PLOT_WIDTH * 1.5}
           seed={99}
-          trees={MY_GARDEN.trees}
+          trees={myTrees}
           label={myName}
           mine
           onClick={() => navigate('/garden')}

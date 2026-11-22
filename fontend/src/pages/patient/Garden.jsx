@@ -3,12 +3,15 @@ import GardenPlot from '../../components/GardenPlot.jsx'
 import { StatCard } from '../../components/ui.jsx'
 import { MapPin, Activity, Award, Users, ShieldCheck } from '../../components/icons.jsx'
 import {
-  MY_GARDEN, GARDEN_LEVELS, GARDEN_WATERINGS, GARDEN_CHEERS, GARDEN_RULES,
+  GARDEN_LEVELS, GARDEN_WATERINGS, GARDEN_CHEERS, GARDEN_RULES,
   gardenLevelOf, nextGardenLevel,
 } from '../../lib/mockData.js'
+import { garden } from '../../lib/garden.js'
+import { useGarden } from '../../lib/useGarden.js'
 
 // "สวนของฉัน" — the "#garden" section of the garden mockup.
-// Data is mock (mockData.js) until the backend exists.
+// Tree count / streak come from real training days (lib/garden.js); the
+// waterings and cheers lists are still mock until the village is wired up.
 
 const RULE_ICONS = [Activity, Award, ShieldCheck, Users]
 
@@ -31,13 +34,15 @@ function GrowthTile({ level, current }) {
 }
 
 export default function Garden() {
-  const { trees, streak, totalDays } = MY_GARDEN
+  const { trees, streak, totalDays, week, todayDone } = useGarden()
   const level = gardenLevelOf(trees)
   const next = nextGardenLevel(trees)
 
-  // Progress from this level's requirement toward the next one.
-  const span = next ? next.trees - level.trees : 0
-  const pct = next ? Math.round(((trees - level.trees) / span) * 100) : 100
+  // Progress from this level's requirement toward the next one (before the
+  // first tree, progress runs from 0 toward level 1).
+  const from = trees < level.trees ? 0 : level.trees
+  const span = next ? next.trees - from : 0
+  const pct = next ? Math.max(0, Math.min(100, Math.round(((trees - from) / span) * 100))) : 100
 
   return (
     <div className="flex flex-col gap-7">
@@ -62,17 +67,39 @@ export default function Garden() {
           </div>
           <div className="p-6 flex flex-col gap-3.5">
             <div className="flex justify-between items-baseline flex-wrap gap-2">
-              <h2 className="font-heading text-b-h2 font-bold m-0">ระดับ {level.level} · {level.name}</h2>
+              <h2 className="font-heading text-b-h2 font-bold m-0">
+                {trees === 0 ? 'ยังไม่มีต้นไม้' : <>ระดับ {level.level} · {level.name}</>}
+              </h2>
               <span className="text-b-h3 font-bold text-teal-700">ต้นไม้ {trees} ต้น</span>
             </div>
             <div className="h-[16px] rounded-pill bg-teal-50 overflow-hidden">
               <div className="h-full rounded-pill bg-teal-700" style={{ width: `${pct}%` }} />
             </div>
             <p className="text-b-btn m-0">
-              {next
-                ? <>ปลูกอีก <b>{next.trees - trees} ต้น</b> สวนจะเป็น <b>{next.name}</b></>
-                : 'สวนของคุณอยู่ระดับสูงสุดแล้ว'}
+              {trees === 0
+                ? <>ฝึกให้ครบ 1 โปรแกรมวันนี้ เพื่อปลูก<b>ต้นไม้ต้นแรก</b></>
+                : next
+                  ? <>ปลูกอีก <b>{next.trees - trees} ต้น</b> สวนจะเป็น <b>{next.name}</b></>
+                  : 'สวนของคุณอยู่ระดับสูงสุดแล้ว'}
             </p>
+            <p className="text-b-label m-0 font-semibold" style={{ color: todayDone ? '#1E7A40' : '#6B6590' }}>
+              {todayDone ? '✓ วันนี้ปลูกต้นไม้แล้ว' : 'วันนี้ยังไม่ได้ปลูก — ฝึกให้ครบ 1 โปรแกรมเพื่อปลูกต้นไม้'}
+            </p>
+            {!todayDone && (
+              <div className="flex flex-wrap gap-3">
+                <Link to="/training/big" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-btn font-heading font-bold text-[14px] text-white bg-teal-600 border-[2.5px] border-teal-800 shadow-[0_4px_0_#1E7A40]">
+                  ไปฝึกเคลื่อนไหว
+                </Link>
+                <Link to="/training/loud" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-btn font-heading font-bold text-[14px] text-white bg-coral-600 border-[2.5px] border-coral-700 shadow-[0_4px_0_#B33630]">
+                  ไปฝึกเสียง
+                </Link>
+              </div>
+            )}
+            {trees === 0 && (
+              <button type="button" onClick={() => garden.seedDemo()} className="self-start text-b-sm text-ink-muted underline bg-transparent border-0 p-0 cursor-pointer">
+                ใส่ข้อมูลตัวอย่าง (สำหรับนำเสนอ)
+              </button>
+            )}
           </div>
         </section>
 
@@ -94,6 +121,7 @@ export default function Garden() {
           <div className="flex flex-wrap gap-4">
             <StatCard value={`${streak} วัน`} label="ฝึกติดต่อกัน" />
             <StatCard value={`${totalDays} วัน`} label="ฝึกรวมทั้งหมด" />
+            <StatCard value={`${week}/7 วัน`} label="ฝึกในสัปดาห์นี้" rule={week >= 4 ? '#D9A616' : '#2FA65A'} />
           </div>
         </div>
       </div>
