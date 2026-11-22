@@ -22,6 +22,8 @@ export default function Home() {
   const bigLeft = standing.filter((e) => !prog.big.includes(e.id)).length
   const loudLeft = loudSteps.filter((s) => !prog.loud.includes(s.id)).length
   const doneToday = prog.big.length + prog.loud.length
+  // A program is done once all its counted exercises are finished.
+  const programsLeft = (bigLeft > 0 ? 1 : 0) + (loudLeft > 0 ? 1 : 0)
 
   // Same streak as the garden: consecutive days with a whole program finished.
   const { streak } = useGarden()
@@ -39,8 +41,14 @@ export default function Home() {
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill text-[13.5px] font-bold" style={{ background: '#F7C132', color: '#5C4400' }}>
             <Flame size={15} /> ฝึกต่อเนื่อง {streak} วัน
           </span>
-          <div className="font-heading text-[27px] font-semibold mt-3 mb-1">วันนี้เหลืออีก {bigLeft + loudLeft} โปรแกรม 💪</div>
-          <div className="text-[14.5px] opacity-85">ทำได้ดีมาก! ฝึกให้ครบวันนี้เพื่อรักษาสถิติของคุณ · ทำแล้ว {doneToday} ท่า</div>
+          <div className="font-heading text-[27px] font-semibold mt-3 mb-1">
+            {programsLeft === 0 ? 'วันนี้ฝึกครบทั้ง 2 โปรแกรมแล้ว 🎉' : `วันนี้เหลืออีก ${programsLeft} โปรแกรม 💪`}
+          </div>
+          <div className="text-[14.5px] opacity-85">
+            {programsLeft === 0
+              ? `เก่งมาก! ทำไปแล้ววันนี้ ${doneToday} ท่า`
+              : `เคลื่อนไหวเหลือ ${bigLeft} ท่า · ฝึกเสียงเหลือ ${loudLeft} แบบ · ทำแล้ว ${doneToday} ท่า`}
+          </div>
         </div>
         <button
           onClick={() => navigate('/training/big')}

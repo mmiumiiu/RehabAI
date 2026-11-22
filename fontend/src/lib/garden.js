@@ -1,7 +1,7 @@
 // Garden progress built from real training. One training day = one tree.
 //
-// A day counts once the patient finishes a whole program that day — every LSVT
-// BIG exercise, or every LSVT LOUD step (see GARDEN_RULES in mockData.js). The
+// A day counts once the patient finishes a whole program that day — every
+// standing LSVT BIG exercise, or every LSVT LOUD step (see GARDEN_RULES in mockData.js). The
 // day log is stored per account in localStorage, like sessionHistory, so it can
 // be swapped for a Firestore collection later without touching the pages.
 import { auth } from './services.js'
@@ -58,7 +58,10 @@ export const garden = {
   // Called whenever today's exercise progress changes: plants a tree once a
   // whole program is complete.
   syncFromProgress(progress) {
-    if (BIG_EXERCISES.every((e) => progress.big.includes(e.id))) this.markProgram('big')
+    // Same rule as the training page's "x/5 ท่าเสร็จแล้ว": the seated poses
+    // need a chair and aren't counted, so a BIG day = every standing exercise.
+    const standing = BIG_EXERCISES.filter((e) => e.posture === 'standing')
+    if (standing.every((e) => progress.big.includes(e.id))) this.markProgram('big')
     const loud = getLoudSteps()
     if (loud.length && loud.every((s) => progress.loud.includes(s.id))) this.markProgram('loud')
   },
