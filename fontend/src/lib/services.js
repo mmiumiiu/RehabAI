@@ -474,3 +474,95 @@ export const community = {
   },
 }
 
+
+// ─── Garden + encouragement shared with the therapist ───────────────────────
+// Same pattern as loudPhrases: a localStorage cache (so it works in one browser
+// with no backend) plus the backend's /cheers and /garden endpoints so the
+// therapist and patient see the same data across devices. Keyed by patient id —
+// the signed-in demo patient is DEMO_PATIENT_ID (mockData.js).
+const CHEERS_KEY = 'rehabai_cheers'
+const GARDEN_SHARE_KEY = 'rehabai_garden_share'
+
+function readJson(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') ?? fallback } catch { return fallback }
+}
+function writeIfChanged(key, value, event) {
+  const next = JSON.stringify(value)
+  if (localStorage.getItem(key) === next) return
+  localStorage.setItem(key, next)
+  window.dispatchEvent(new CustomEvent(event))
+}
+
+export const cheers = {
+  // Cached list for a patient, newest first: [{ id, text, from, role, ts }]
+  get(patientId) {
+    return readJson(`${CHEERS_KEY}::${patientId}`, [])
+  },
+  async pull(patientId) {
+    try {
+      const res = await fetch(`${API_URL}/cheers/${patientId}`)
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data.cheers)) {
+          // Keep any cheers sent while the backend was unreachable.
+          const known = new Set(data.cheers.map((c) => c.id))
+          const localOnly = this.get(patientId).filter((c) => c.localOnly && !known.has(c.id))
+          const merged = [...localOnly, ...data.cheers].sort((a, b) => b.ts - a.ts)
+          writeIfChanged(`${CHEERS_KEY}::${patientId}`, merged, 'rehabai:cheers')
+        }
+      }
+    } catch { /* offline — keep cached */ }
+    return this.get(patientId)
+  },
+  // Therapist side: send a cheer to a patient.
+  async send(patientId, { text, from }) {
+    const body = String(text || '').trim()
+    if (!body) throw new Error('กรุณาเขียนข้อความก่อนส่ง')
+    const ts = Date.now()
+    const cheer = { id: `t${ts}`, text: body, from: from || 'นักกายภาพบำบัด', role: 'therapist', ts }
+    let synced = false
+    try {
+      const res = await fetch(`${API_URL}/cheers/${patientId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cheer),
+      })
+      synced = res.ok
+    } catch { /* offline */ }
+    const entry = synced ? cheer : { ...cheer, localOnly: true }
+    writeIfChanged(`${CHEERS_KEY}::${patientId}`, [entry, ...this.get(patientId)], 'rehabai:cheers')
+    return entry
+  },
+}
+
+export const gardenShare = {
+  get(patientId) {
+    return readJson(`${GARDEN_SHARE_KEY}::${patientId}`, null)
+  },
+  // Patient side: publish the current garden stats.
+  async push(patientId, stats) {
+    const { trees, streak, week, todayDone } = stats
+    writeIfChanged(`${GARDEN_SHARE_KEY}::${patientId}`, { trees, streak, week, todayDone }, 'rehabai:garden-share')
+    try {
+      await fetch(`${API_URL}/garden/${patientId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trees, streak, week, todayDone }),
+      })
+    } catch { /* offline — cached locally */ }
+  },
+  // Therapist side: read the patient's latest stats.
+  async pull(patientId) {
+    try {
+      const res = await fetch(`${API_URL}/garden/${patientId}`)
+      if (res.ok) {
+        const data = await res.json()
+        if (data.garden) {
+          const { trees, streak, week, todayDone } = data.garden
+          writeIfChanged(`${GARDEN_SHARE_KEY}::${patientId}`, { trees, streak, week, todayDone }, 'rehabai:garden-share')
+        }
+      }
+    } catch { /* offline — keep cached */ }
+    return this.get(patientId)
+  },
+}

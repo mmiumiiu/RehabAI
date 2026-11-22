@@ -227,6 +227,48 @@ def set_loud_phrases(payload: dict):
         loud_phrases_store = [str(x).strip() for x in items if str(x).strip()][:100]
     return {"phrases": loud_phrases_store}
 
+# ── Garden + encouragement (therapist ↔ patient) ─────────────────────────────
+# In memory, like loud_phrases_store. The patient app POSTs its garden stats
+# whenever a tree is planted; the therapist reads them and POSTs cheer messages
+# that show up in the patient's "กล่องให้กำลังใจ". Keyed by patient id.
+cheers_store: dict[str, list[dict]] = {}
+garden_store: dict[str, dict] = {}
+
+
+@app.get("/cheers/{patient_id}")
+def get_cheers(patient_id: str):
+    return {"cheers": cheers_store.get(patient_id, [])}
+
+
+@app.post("/cheers/{patient_id}")
+def add_cheer(patient_id: str, payload: dict):
+    text = str(payload.get("text", "")).strip()[:300]
+    if not text:
+        raise HTTPException(status_code=422, detail="text required")
+    cheer = {
+        "id": str(payload.get("id") or int(time.time() * 1000)),
+        "text": text,
+        "from": str(payload.get("from", "นักกายภาพบำบัด"))[:80],
+        "role": "therapist",
+        "ts": int(payload.get("ts") or time.time() * 1000),
+    }
+    items = [c for c in cheers_store.get(patient_id, []) if c["id"] != cheer["id"]]
+    cheers_store[patient_id] = [cheer, *items][:50]
+    return {"cheers": cheers_store[patient_id]}
+
+
+@app.get("/garden/{patient_id}")
+def get_garden(patient_id: str):
+    return {"garden": garden_store.get(patient_id)}
+
+
+@app.post("/garden/{patient_id}")
+def set_garden(patient_id: str, payload: dict):
+    keys = ("trees", "streak", "week", "todayDone")
+    garden_store[patient_id] = {k: payload.get(k) for k in keys} | {"ts": int(time.time() * 1000)}
+    return {"garden": garden_store[patient_id]}
+
+
 @app.get("/tts")
 def tts(text: str = Query(..., min_length=1, max_length=500)):
     """Thai text-to-speech via gTTS. Returns an mp3 so the voice is identical on

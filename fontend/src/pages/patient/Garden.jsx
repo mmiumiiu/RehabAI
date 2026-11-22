@@ -8,6 +8,8 @@ import {
 } from '../../lib/mockData.js'
 import { garden } from '../../lib/garden.js'
 import { useGarden } from '../../lib/useGarden.js'
+import { useCheers, timeAgo } from '../../lib/useCheers.js'
+import { DEMO_PATIENT_ID } from '../../lib/mockData.js'
 
 // "สวนของฉัน" — the "#garden" section of the garden mockup.
 // Tree count / streak come from real training days (lib/garden.js); the
@@ -35,6 +37,7 @@ function GrowthTile({ level, current }) {
 
 export default function Garden() {
   const { trees, streak, totalDays, week, todayDone } = useGarden()
+  const therapistCheers = useCheers(DEMO_PATIENT_ID)
   const level = gardenLevelOf(trees)
   const next = nextGardenLevel(trees)
 
@@ -150,6 +153,15 @@ export default function Garden() {
         {/* Encouragement box */}
         <section className="flex-1 min-w-[300px] bg-indigo-100 rounded-card p-6 flex flex-col gap-3.5">
           <h2 className="font-heading text-b-h2 font-bold m-0 leading-[1.3]">กล่องให้กำลังใจ</h2>
+          {therapistCheers.map((c) => (
+            <div key={c.id} className="bg-surface rounded-[14px] px-5 py-3.5 border-l-[6px] border-teal-600">
+              <div className="text-b-btn font-bold">“{c.text}”</div>
+              <div className="text-b-sm text-ink-secondary flex flex-wrap items-center gap-2">
+                <span className="text-b-xs font-bold rounded-pill px-2.5 py-0.5 bg-teal-100 text-teal-800">นักกายภาพ</span>
+                จาก {c.from} · {timeAgo(c.ts)}
+              </div>
+            </div>
+          ))}
           {GARDEN_CHEERS.map((c) => (
             <div key={c.text + c.from} className="bg-surface rounded-[14px] px-5 py-3.5">
               <div className="text-b-btn font-bold">“{c.text}”</div>

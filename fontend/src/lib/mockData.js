@@ -180,16 +180,29 @@ export const emergencyContactsSeed = [
 export const PATIENTS = [
   {
     id: 'p1', name: 'สมชาย ใจดี', stage: 'stage1', lastActive: '2 ชม. ที่แล้ว',
-    streak: 5, lastScore: 86, weekCount: 4, initials: 'สช',
+    streak: 5, lastScore: 86, weekCount: 4, initials: 'สช', gardenTrees: 22,
   },
   {
     id: 'p2', name: 'วิภา สุขสันต์', stage: 'stage2', lastActive: 'เมื่อวานนี้',
-    streak: 12, lastScore: 79, weekCount: 6, initials: 'วภ',
+    streak: 12, lastScore: 79, weekCount: 6, initials: 'วภ', gardenTrees: 41,
   },
   {
     id: 'p3', name: 'ประเสริฐ มั่นคง', stage: 'stage1', lastActive: '3 วันที่แล้ว',
-    streak: 0, lastScore: 71, weekCount: 1, initials: 'ปส',
+    streak: 0, lastScore: 71, weekCount: 1, initials: 'ปส', gardenTrees: 6,
   },
+]
+
+// The signed-in patient account stands in for this therapist-side patient, so
+// cheers the therapist sends to สมชาย ใจดี reach whoever is logged in as a
+// patient, and that patient's real garden shows on the therapist side.
+export const DEMO_PATIENT_ID = 'p1'
+
+// One-tap messages on the therapist's "ส่งกำลังใจ" card.
+export const THERAPIST_CHEERS = [
+  'เก่งมากครับ ฝึกต่อเนื่องแบบนี้ดีมาก',
+  'สัปดาห์นี้ทำได้ดีขึ้นเยอะเลย',
+  'พรุ่งนี้มาฝึกต่อนะครับ เป็นกำลังใจให้',
+  'ท่าก้าวเท้ากว้างขึ้นชัดเจน ภูมิใจด้วยครับ',
 ]
 
 export const CHAT_SEED = [

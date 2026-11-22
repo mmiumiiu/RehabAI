@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Card, SectionTitle, Button } from '../../components/ui.jsx'
 import { Flame, Activity, Mic, ChevronRight, Chart } from '../../components/icons.jsx'
-import { BIG_EXERCISES } from '../../lib/mockData.js'
+import { BIG_EXERCISES, DEMO_PATIENT_ID } from '../../lib/mockData.js'
+import { useCheers, timeAgo } from '../../lib/useCheers.js'
 import { useLoudSteps } from '../../lib/useLoudSteps.js'
 import { useExerciseProgress } from '../../lib/useExerciseProgress.js'
 import { useAuth } from '../../context/AuthContext.jsx'
@@ -9,6 +10,10 @@ import { useSessionHistory, trainingStreak } from '../../lib/useSessionHistory.j
 
 export default function Home() {
   const { user } = useAuth()
+  const navigate = useNavigate()
+  // Latest message from the therapist, shown for 3 days after it arrives.
+  const latestCheer = useCheers(DEMO_PATIENT_ID)[0]
+  const showCheer = latestCheer && Date.now() - latestCheer.ts < 3 * 24 * 60 * 60 * 1000
   const loudSteps = useLoudSteps()
   const prog = useExerciseProgress()
 
@@ -45,6 +50,19 @@ export default function Home() {
           เริ่มฝึกต่อ ›
         </button>
       </div>
+
+      {showCheer && (
+        <div className="rounded-card p-5 mb-7 flex items-center gap-4 border-2" style={{ background: '#FFF4D6', borderColor: '#FCE988' }}>
+          <div className="text-[34px] leading-none flex-shrink-0">💌</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] font-bold" style={{ color: '#B8860B' }}>
+              กำลังใจจาก {latestCheer.from} · {timeAgo(latestCheer.ts)}
+            </div>
+            <div className="font-heading text-[19px] font-semibold text-ink-primary mt-0.5">“{latestCheer.text}”</div>
+          </div>
+          <Button variant="outline" to="/garden" className="flex-shrink-0">ดูกล่องให้กำลังใจ</Button>
+        </div>
+      )}
 
       <SectionTitle>เลือกโปรแกรมฝึกวันนี้</SectionTitle>
       <div className="grid md:grid-cols-2 gap-[18px]">

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import GardenPlot from './GardenPlot.jsx'
 import { Button } from './ui.jsx'
 import { garden } from '../lib/garden.js'
-import { exerciseProgress } from '../lib/services.js'
-import { gardenLevelOf, nextGardenLevel } from '../lib/mockData.js'
+import { exerciseProgress, gardenShare } from '../lib/services.js'
+import { gardenLevelOf, nextGardenLevel, DEMO_PATIENT_ID } from '../lib/mockData.js'
 import { useAuth } from '../context/AuthContext.jsx'
 
 // Mounted once in App. Watches today's exercise progress; when a whole program
 // is finished it plants today's tree (garden.markProgram) and pops up a
 // "ต้นไม้ต้นใหม่งอกแล้ว" celebration on top of the session's own completion popup.
+// Also publishes the garden stats for the therapist's view.
 export default function GardenGrowth() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -19,12 +20,17 @@ export default function GardenGrowth() {
     if (user?.role !== 'patient') return
     const sync = () => garden.syncFromProgress(exerciseProgress.get())
     const onGrew = (e) => setGrew(e.detail)
+    // Publish garden stats so the therapist sees this patient's real garden.
+    const share = () => gardenShare.push(DEMO_PATIENT_ID, garden.stats())
     sync() // catch up if a program was finished before this mounted
+    share()
     window.addEventListener('rehabai:progress', sync)
     window.addEventListener('rehabai:garden-grew', onGrew)
+    window.addEventListener('rehabai:garden', share)
     return () => {
       window.removeEventListener('rehabai:progress', sync)
       window.removeEventListener('rehabai:garden-grew', onGrew)
+      window.removeEventListener('rehabai:garden', share)
     }
   }, [user?.role, user?.email])
 

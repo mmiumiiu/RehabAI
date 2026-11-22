@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import TherapistProgress from '../../components/TherapistProgress.jsx'
 import LoudTargetSettings from '../../components/LoudTargetSettings.jsx'
 import LoudPhraseSettings from '../../components/LoudPhraseSettings.jsx'
+import TherapistGardenCheer from '../../components/TherapistGardenCheer.jsx'
 import { Card, Button, Badge, SectionTitle } from '../../components/ui.jsx'
 import { ArrowLeft, Chat, Mic } from '../../components/icons.jsx'
 import { PATIENTS, HISTORY, PARKINSON_STAGES } from '../../lib/mockData.js'
@@ -82,6 +83,9 @@ export default function PatientDetail() {
         )}
 
         <TherapistProgress />
+
+        <SectionTitle>สวนและกำลังใจ</SectionTitle>
+        <TherapistGardenCheer patient={patient} />
 
         <SectionTitle>ตั้งค่า LSVT LOUD สำหรับผู้ป่วยคนนี้</SectionTitle>
         <LoudTargetSettings />
