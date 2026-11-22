@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext.jsx'
 import PatientLayout from './components/PatientLayout.jsx'
 import TherapistLayout from './components/TherapistLayout.jsx'
 import GardenGrowth from './components/GardenGrowth.jsx'
+import { useFontScale } from './lib/useFontScale.js'
 
 // Patient pages
 import Login from './pages/patient/Login.jsx'
@@ -62,10 +63,19 @@ export default function App() {
   const { user } = useAuth()
   const { pathname } = useLocation()
 
+  // Patient's text-size choice (ปกติ / ใหญ่ / ใหญ่มาก) scales the whole page.
+  // Not applied to the therapist portal, or to the full-screen live sessions
+  // whose camera layout is sized to the screen.
+  const { factor } = useFontScale(user?.email)
+
   // Overall zoom, bumped up ~half a step for readability.
   useEffect(() => {
-    document.body.style.zoom = pathname.startsWith('/therapist') ? '1.3' : '1.4'
-  }, [pathname])
+    const therapist = pathname.startsWith('/therapist')
+    const session = pathname.endsWith('/session')
+    const base = therapist ? 1.3 : 1.4
+    const scaled = therapist || session ? base : base * factor
+    document.body.style.zoom = String(Math.round(scaled * 100) / 100)
+  }, [pathname, factor])
 
   return (
     <>

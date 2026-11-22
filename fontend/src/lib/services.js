@@ -566,3 +566,27 @@ export const gardenShare = {
     return this.get(patientId)
   },
 }
+
+// ─── Display preferences (patient) ──────────────────────────────────────────
+// Text size for older users. Stored per account (separate from the session
+// object, which signIn overwrites) so the choice survives logging out and in.
+const FONT_SCALE_KEY = 'rehabai_font_scale'
+export const FONT_SCALES = [
+  { value: 'normal', label: 'ปกติ', factor: 1 },
+  { value: 'large', label: 'ใหญ่', factor: 1.12 },
+  { value: 'xlarge', label: 'ใหญ่มาก', factor: 1.25 },
+]
+function fontScaleKey() {
+  const u = readSession()
+  return `${FONT_SCALE_KEY}::${u?.email || u?.uid || 'guest'}`
+}
+export const displayPrefs = {
+  fontScale() {
+    const v = localStorage.getItem(fontScaleKey())
+    return FONT_SCALES.some((s) => s.value === v) ? v : 'normal'
+  },
+  setFontScale(value) {
+    localStorage.setItem(fontScaleKey(), value)
+    window.dispatchEvent(new CustomEvent('rehabai:font-scale'))
+  },
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Home, Activity, Chart, User, Chat, Sprout, Users } from './icons.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import FontSizeControl from './FontSizeControl.jsx'
 
 // Colorful nav — one hue per item (indigo / green / blue / red / pink)
 const NAV = [
@@ -96,6 +97,7 @@ export default function PatientLayout() {
             <p className="font-heading text-[16px] md:text-[18px] font-semibold text-ink-primary m-0 truncate max-w-[180px] md:max-w-none">{name}</p>
           </div>
           <div className="flex items-center gap-2.5">
+            <div className="hidden sm:block"><FontSizeControl compact /></div>
             <button onClick={() => navigate('/profile')} title="โปรไฟล์" className="w-11 h-11 rounded-[14px] flex items-center justify-center text-[12px] font-bold" style={{ background: '#FBE7F1', color: '#B03A76' }}>
               {initials}
             </button>

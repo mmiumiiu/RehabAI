@@ -5,6 +5,7 @@ import { Mail, Phone, User, Bell, ShieldCheck, Chat, ChevronRight, Refresh, LogO
 import { PARKINSON_STAGES } from '../../lib/mockData.js'
 import { therapistLink } from '../../lib/services.js'
 import { useAuth } from '../../context/AuthContext.jsx'
+import FontSizeControl from '../../components/FontSizeControl.jsx'
 
 function Block({ title, children }) {
   return (
@@ -44,6 +45,11 @@ export default function Profile() {
         </div>
         <button className="ml-auto text-[12.5px] text-teal-700 font-semibold hover:underline">แก้ไขรูป</button>
       </Card>
+
+      <Block title="ขนาดตัวอักษร">
+        <p className="text-[13px] text-ink-secondary mb-3">เลือกขนาดที่อ่านสบายตา ใช้กับทุกหน้าในแอป (ยกเว้นหน้าฝึกที่เปิดกล้อง)</p>
+        <FontSizeControl />
+      </Block>
 
       <Block title="ข้อมูลส่วนตัว">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
