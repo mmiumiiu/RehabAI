@@ -33,7 +33,7 @@ const VERDICT_TH = {
 
 // Room-noise result from the mic calibration (useMicLevel), with what to do about it.
 const ROOM = {
-  quiet: { label: '✓ เสียงห้องเงียบดี', style: { background: 'rgba(41,184,94,0.18)', color: '#7BE0A2' } },
+  quiet: { label: '✓ เริ่มการฝึกได้', style: { background: 'rgba(41,184,94,0.18)', color: '#7BE0A2' } },
   some: {
     label: 'เสียงห้องมีรบกวนเล็กน้อย',
     style: { background: 'rgba(247,193,50,0.18)', color: '#F7C132' },
@@ -289,12 +289,12 @@ export default function SessionLoud() {
           </div>
 
           {micStatus === 'calibrating' && (
-            <div className="w-full max-w-[320px] rounded-xl bg-white/[0.08] px-5 py-4 text-center">
+            <div className="w-full max-w-[400px] rounded-xl bg-white/[0.08] px-5 py-4 text-center">
               <p className="text-white text-[15px] font-semibold mb-1 flex items-center justify-center gap-2">
-                <Mic size={16} /> กรุณาเงียบสักครู่
+                <Mic size={16} /> ตรวจสอบระดับความดังของสภาพแวดล้อม
               </p>
               <p className="text-white/60 text-[12px] mb-3">
-                กำลังวัดเสียงรอบตัว อีก {Math.max(1, Math.ceil(3 * (1 - calibration.progress)))} วินาที
+                กรุณาเงียบสักครู่ · อีก {Math.max(1, Math.ceil(3 * (1 - calibration.progress)))} วินาที
               </p>
               <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                 <div className="h-full rounded-full bg-white/70" style={{ width: `${Math.round(calibration.progress * 100)}%`, transition: 'width 0.15s' }} />
@@ -419,7 +419,7 @@ export default function SessionLoud() {
       )}
 
       <p className="max-w-[1100px] mx-auto mt-3 text-[11.5px] text-ink-muted">
-        * ค่า dB ยังไม่ได้สอบเทียบ noise floor ของไมโครโฟน · ช่วงเป้าหมายและคำจะปรับตามที่นักกายภาพกำหนดให้ผู้ป่วยแต่ละคน
+        * ค่า dB วัดเทียบกับเสียงรอบตัวที่ตรวจไว้ก่อนเริ่ม ไม่ใช่ค่าเดซิเบลจริงแบบเครื่องวัดเสียง · ช่วงเป้าหมายและคำจะปรับตามที่นักกายภาพกำหนดให้ผู้ป่วยแต่ละคน
       </p>
     </div>
   )
